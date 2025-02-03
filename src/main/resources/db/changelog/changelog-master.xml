@@ -1,0 +1,90 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:mongodb="http://www.liquibase.org/xml/ns/mongodb"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+    http://www.liquibase.org/xml/ns/mongodb
+    https://www.liquibase.org/xml/ns/mongodb/liquibase-mongodb-latest.xsd">
+
+    <changeSet id="1" author="tgerstel">
+        <comment>create_collection</comment>
+        <mongodb:createCollection collectionName="quiz"/>
+        <mongodb:createCollection collectionName="question"/>
+    </changeSet>
+
+    <changeSet id="2" author="tgerstel">
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                    _id: ObjectId("679b5c8ff26c6778aeea483a"),
+                    question: "What is the capital of France?",
+                    answers: [
+                        {
+                            no: 1,
+                            value: "Paris",
+                            isCorrect: true
+                        },
+                        {
+                            no: 2,
+                            value: "London",
+                            isCorrect: false
+                        },
+                        {
+                            no: 3,
+                            value: "Berlin",
+                            isCorrect: false
+                        }
+                    ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                    _id: ObjectId("679b5c8ff26c6778aeea483b"),
+                    question: "What is 2 + 2?",
+                    answers: [
+                        {
+                            no: 1,
+                            value: "3",
+                            isCorrect: false
+                        },
+                        {
+                            no: 2,
+                            value: "4",
+                            isCorrect: true
+                        },
+                        {
+                            no: 3,
+                            value: "5",
+                            isCorrect: false
+                        }
+                    ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="quiz">
+            <mongodb:document>
+                {
+                    title: "Sample Quiz",
+                    userId: 1,
+                    approved: true,
+                    questions: [
+                        {
+                            "$ref": "question",
+                            "$id": ObjectId("679b5c8ff26c6778aeea483a"),
+                            "$db": ""
+                        },
+                        {
+                            "$ref": "question",
+                            "$id": ObjectId("679b5c8ff26c6778aeea483b"),
+                            "$db": ""
+                        },
+                    ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+    </changeSet>
+</databaseChangeLog>

@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.liquibase.gradle' version '2.2.2'
 }
 
 group = 'com.tgerstel'
@@ -23,19 +24,31 @@ repositories {
     mavenCentral()
 }
 
+liquibase {
+    activities {
+        main {
+            changeLogFile 'src/main/resources/db/changelog/changelog-master.xml'
+        }
+    }
+    runList = 'main'
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.liquibase:liquibase-core'
+    liquibaseRuntime 'org.liquibase:liquibase-core'
+    liquibaseRuntime 'org.liquibase.ext:liquibase-mongodb:4.31.0'
+    liquibaseRuntime 'info.picocli:picocli:4.7.6'
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:mongodb'
+    testImplementation 'org.liquibase:liquibase-core'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
