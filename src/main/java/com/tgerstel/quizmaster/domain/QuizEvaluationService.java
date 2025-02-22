@@ -11,14 +11,15 @@ import com.tgerstel.quizmaster.domain.port.QuizEvaluator;
 import com.tgerstel.quizmaster.domain.port.QuizRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class QuizEvaluationService implements QuizEvaluator {
 
     private final QuizRepository quizRepository;
 
-    private static final int QUIZ_PASS_RATE = 70;
+    private static final int QUIZ_PASS_RATE = 65;
 
     public QuizEvaluationService(QuizRepository quizRepository) {
         this.quizRepository = quizRepository;
@@ -58,21 +59,18 @@ public class QuizEvaluationService implements QuizEvaluator {
         return questions.stream()
                 .filter(q -> q.id().equals(questionId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Question not found: " + questionId));
+                .orElseThrow(() -> new IllegalArgumentException("Question with id: " + questionId + " not related to the quiz"));
     }
 
-    private List<Integer> getCorrectAnswers(EvalQuestion question) {
+    private Set<Integer> getCorrectAnswers(EvalQuestion question) {
         return question.answers().stream()
                 .filter(EvalAnswer::isCorrect)
                 .map(EvalAnswer::no)
-                .sorted()
-                .toList();
+                .collect(Collectors.toSet());
     }
 
-    private List<Integer> getActualAnswers(QuestionSolution solution) {
-        return solution.answers().stream()
-                .sorted()
-                .toList();
+    private Set<Integer> getActualAnswers(QuestionSolution solution) {
+        return new HashSet<>(solution.answers());
     }
 
     private boolean isQuizPassed(int correctSolutions, int questionCount) {
@@ -81,4 +79,5 @@ public class QuizEvaluationService implements QuizEvaluator {
         }
         return correctSolutions * 100 / questionCount >= QUIZ_PASS_RATE;
     }
+
 }
