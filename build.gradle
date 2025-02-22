@@ -1,8 +1,9 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.4.2'
+    id 'org.springframework.boot' version '3.4.3'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.liquibase.gradle' version '2.2.2'
+    id 'groovy'
+    id 'com.adarshr.test-logger' version '3.2.0'
 }
 
 group = 'com.tgerstel'
@@ -35,9 +36,10 @@ liquibase {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.liquibase:liquibase-core'
+    implementation 'org.liquibase.ext:liquibase-mongodb:4.31.0'
     liquibaseRuntime 'org.liquibase:liquibase-core'
     liquibaseRuntime 'org.liquibase.ext:liquibase-mongodb:4.31.0'
     liquibaseRuntime 'info.picocli:picocli:4.7.6'
@@ -47,11 +49,47 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.14.2'
     testImplementation 'org.testcontainers:mongodb'
     testImplementation 'org.liquibase:liquibase-core'
+    testImplementation 'io.rest-assured:rest-assured:5.5.1'
+    testImplementation 'org.spockframework:spock-core:2.4-M5-groovy-4.0'
+    testImplementation 'org.spockframework:spock-spring:2.4-M5-groovy-4.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('bootJar') {
+    mainClass = 'com.tgerstel.quizmaster.QuizMasterApplication'
+}
+
+jar {
+    sourceSets {
+        main {
+            resources {
+                exclude '**frontend/quizmaster**'
+            }
+        }
+    }
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+testlogger {
+    theme 'standard' // other options: 'mocha', 'plain', 'standard-parallel', 'mocha-parallel'
+    showStandardStreams true
+    showPassed true
+    showSkipped true
+    showFailed true
+    showSummary true
+    showSimpleNames false
+    showStackTraces true
+    showCauses true
+    showExceptions true
+    showFullStackTraces false
+    showPassedStandardStreams false
+    showSkippedStandardStreams false
 }

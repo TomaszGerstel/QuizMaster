@@ -3,11 +3,9 @@ package com.tgerstel.quizmaster.adapter.endpoint;
 import com.tgerstel.quizmaster.domain.model.QuizResult;
 import com.tgerstel.quizmaster.domain.port.QuizEvaluator;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/submission")
 public class SubmissionController {
