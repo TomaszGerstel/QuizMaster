@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_USER}:${MONGO_PASS}@localhost:27017/quizmaster
+  liquibase:
+    enabled: true
+    url: ${spring.data.mongodb.uri}
+    change-log: db/changelog/changelog-master.xml

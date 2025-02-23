@@ -1,0 +1,5 @@
+spring:
+  liquibase:
+    enabled: false
+    url: ${spring.data.mongodb.uri}
+    change-log: db/changelog/changelog-master.xml
