@@ -1,12 +1,5 @@
 spring:
   application:
     name: QuizMaster
-  profiles:
-    active: dev
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/quizmaster
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.xml
-    contexts: dev
+  config:
+    import: optional:file:.env[.properties]
