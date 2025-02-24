@@ -14,14 +14,14 @@ services:
     volumes:
       - ./.env:/app/.env:r
 
-#  frontend:
-#    build:
-#      context: ./src/main/resources/frontend/quizmaster
-#      dockerfile: Dockerfile
-#    ports:
-#      - "4200:4200"
-#    depends_on:
-#      - backend
+  frontend:
+    build:
+      context: ./src/main/resources/frontend/quizmaster
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
 
   mongodb:
     image: mongo:latest
