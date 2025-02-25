@@ -1,0 +1,17 @@
+<div>
+  <h2>All Quizzes</h2>
+  <ul>
+    <li *ngFor="let quiz of quizzes" (click)="selectQuiz(quiz.id)">
+      {{ quiz.title }}
+    </li>
+  </ul>
+
+  <div *ngIf="selectedQuiz">
+    <h3 *ngIf="selectedQuiz.title != null">{{ selectedQuiz.title }}</h3>
+    <ul>
+      <li *ngFor="let question of selectedQuiz.questions">
+        {{ question.question }}
+      </li>
+    </ul>
+  </div>
+</div>
