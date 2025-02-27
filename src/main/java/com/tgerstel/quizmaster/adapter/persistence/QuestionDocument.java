@@ -5,6 +5,8 @@ import com.tgerstel.quizmaster.domain.model.Question;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -16,7 +18,9 @@ public class QuestionDocument {
 
     public Question toQuestion() {
         var mappedAnswers = answers.stream().map(BaseAnswer::toAnswer).toList();
-        return new Question(id, question, mappedAnswers);
+        var shuffledAnswers = new ArrayList<>(mappedAnswers);
+        Collections.shuffle(shuffledAnswers);
+        return new Question(id, question, shuffledAnswers);
     }
 
     public EvalQuestion toEvalQuestion() {

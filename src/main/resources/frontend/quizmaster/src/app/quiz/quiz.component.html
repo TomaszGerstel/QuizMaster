@@ -1,16 +1,44 @@
-<div>
+<div class="container">
   <h2>All Quizzes</h2>
-  <ul>
-    <li *ngFor="let quiz of quizzes" (click)="selectQuiz(quiz.id)">
-      {{ quiz.title }}
-    </li>
-  </ul>
+  <div class="list-group">
+    <a class="list-group-item list-group-item-action fw-bolder" title="click to start"
+       *ngFor="let quiz of quizzes" (click)="selectQuiz(quiz.id)">
+      {{ quiz.title + " (" + quiz.questionsQuantity + " questions)" }}
+    </a>
+  </div>
 
-  <div *ngIf="selectedQuiz">
+  <div *ngIf="selectedQuiz" class="mt-4">
     <h3 *ngIf="selectedQuiz.title != null">{{ selectedQuiz.title }}</h3>
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let question of selectedQuiz.questions">
+        <h4>{{ question.question }}</h4>
+        <ul class="list-group">
+          <li class="list-group-item" *ngFor="let answer of question.answers">
+            <label>
+              <input type="checkbox" (change)="toggleAnswer(question.id, answer.no)"
+                     [disabled]="isFormDisabled"> {{ answer.content }}
+            </label>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <div class="">
+      <button class="btn btn-primary mt-3 me-2" (click)="submitAnswers()" [disabled]="isSubmitDisabled">Submit Answers
+      </button>
+      <button class="btn btn-secondary mt-3" (click)="resetForm()">Refresh</button>
+    </div>
+  </div>
+
+  <div *ngIf="quizResult" class="mt-4" #resultSection>
+    <h3>Quiz Result</h3>
     <ul>
-      <li *ngFor="let question of selectedQuiz.questions">
-        {{ question.question }}
+      <li>
+        Result:<span
+        [ngClass]="{'text-success': quizResult.isPositive, 'text-danger': !quizResult.isPositive}">
+      {{ quizResult.isPositive ? 'POSITIVE' : 'NEGATIVE' }}</span>
+      </li>
+      <li>
+        Quiz Score: {{ quizResult.quizScore + '/' + quizResult.questionsCount }}
       </li>
     </ul>
   </div>

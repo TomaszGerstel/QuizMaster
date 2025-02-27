@@ -9,6 +9,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -29,7 +31,9 @@ public class QuizDocument {
 
     public QuizDTO toDTO() {
         var mappedQuestions = questions.stream().map(QuestionDocument::toQuestion).toList();
-        return new QuizDTO(id, title, mappedQuestions);
+        var shuffledQuestions = new ArrayList<>(mappedQuestions);
+        Collections.shuffle(shuffledQuestions);
+        return new QuizDTO(id, title, shuffledQuestions);
     }
 
     public QuizEvalDTO toEvalDTO() {

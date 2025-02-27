@@ -59,18 +59,9 @@ public class QuizControllerIT {
                 .body("title", equalTo("Quiz 2"))
 
                 .body("questions.size()", is(2))
-
-                .body("questions[0].question", equalTo("What is the capital of France?"))
-                .body("questions[0].answers.size()", is(3))
-                .body("questions[0].answers[0].content", equalTo("London"))
-                .body("questions[0].answers[1].content", equalTo("Paris"))
-                .body("questions[0].answers[2].content", equalTo("Madrid"))
-
-                .body("questions[1].question", equalTo("What is the capital of Germany?"))
-                .body("questions[1].answers.size()", is(3))
-                .body("questions[1].answers[0].content", equalTo("London"))
-                .body("questions[1].answers[1].content", equalTo("Berlin"))
-                .body("questions[1].answers[2].content", equalTo("Madrid"));
+                .body("questions.question", hasItems("What is the capital of France?", "What is the capital of Germany?"))
+                .body("questions.find { it.question == 'What is the capital of France?' }.answers.content", hasItems("London", "Paris", "Madrid"))
+                .body("questions.find { it.question == 'What is the capital of Germany?' }.answers.content", hasItems("London", "Berlin", "Madrid"));
     }
 
     @Test
