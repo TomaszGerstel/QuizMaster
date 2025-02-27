@@ -17,50 +17,512 @@
         <mongodb:insertOne collectionName="question">
             <mongodb:document>
                 {
-                    _id: ObjectId("679b5c8ff26c6778aeea483a"),
-                    question: "What is the capital of France?",
-                    answers: [
-                        {
-                            no: 1,
-                            value: "Paris",
-                            isCorrect: true
-                        },
-                        {
-                            no: 2,
-                            value: "London",
-                            isCorrect: false
-                        },
-                        {
-                            no: 3,
-                            value: "Berlin",
-                            isCorrect: false
-                        }
-                    ]
+                _id: ObjectId("679b5c8ff26c6778aeea483a"),
+                question: "What describes overloading well?",
+                answers: [
+                { no: 1, value: "must have the same name", isCorrect: true },
+                { no: 2, value: "different argument list", isCorrect: true },
+                { no: 3, value: "same return type", isCorrect: false },
+                { no: 4, value: "access modifier same", isCorrect: false }
+                ]
                 }
             </mongodb:document>
         </mongodb:insertOne>
+
         <mongodb:insertOne collectionName="question">
             <mongodb:document>
                 {
-                    _id: ObjectId("679b5c8ff26c6778aeea483b"),
-                    question: "What is 2 + 2?",
-                    answers: [
-                        {
-                            no: 1,
-                            value: "3",
-                            isCorrect: false
-                        },
-                        {
-                            no: 2,
-                            value: "4",
-                            isCorrect: true
-                        },
-                        {
-                            no: 3,
-                            value: "5",
-                            isCorrect: false
-                        }
-                    ]
+                _id: ObjectId("679b5c8ff26c6778aeea483b"),
+                question: "What methods come from the java.lang.Object class?",
+                answers: [
+                { no: 1, value: "hashCode", isCorrect: true },
+                { no: 2, value: "toString", isCorrect: true },
+                { no: 3, value: "equals", isCorrect: true },
+                { no: 4, value: "notify", isCorrect: true },
+                { no: 5, value: "wait", isCorrect: true },
+                { no: 6, value: "sort", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea483c"),
+                question: "Differences in HashMap and Hashtable",
+                answers: [
+                { no: 1, value: "HashMap is synchronized and thread-safe.", isCorrect: false },
+                { no: 2, value: "Hashtable is synchronized.", isCorrect: true },
+                { no: 3, value: "HashMap allows one null key and null values.", isCorrect: true },
+                { no: 4, value: "Hashtable allows one null key and multiple null values.", isCorrect: false },
+                { no: 5, value: "HashMap is faster than Hashtable.", isCorrect: true },
+                { no: 6, value: "Hashtable is faster than HashMap.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4832"),
+                question: "Select correct variable names",
+                answers: [
+                { no: 1, value: "int 1variable;", isCorrect: false },
+                { no: 2, value: "int variable1;", isCorrect: true },
+                { no: 3, value: "int _variable;", isCorrect: true },
+                { no: 4, value: "int variable-1;", isCorrect: false },
+                { no: 5, value: "int price@amount;", isCorrect: false },
+                { no: 6, value: "int class;", isCorrect: false },
+                { no: 7, value: "int $value;", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea483d"),
+                question: "select methods from Thread class",
+                answers: [
+                { no: 1, value: "start", isCorrect: true },
+                { no: 2, value: "run", isCorrect: true },
+                { no: 3, value: "sleep", isCorrect: true },
+                { no: 4, value: "stop", isCorrect: false },
+                { no: 5, value: "execute", isCorrect: false },
+                { no: 6, value: "interrupt", isCorrect: true },
+                { no: 7, value: "wait", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea483e"),
+                question: "What classes have the 'time zone' concept?",
+                answers: [
+                { no: 1, value: "Duration", isCorrect: false },
+                { no: 2, value: "ZonedDateTime", isCorrect: true },
+                { no: 3, value: "LocalDateTime", isCorrect: false },
+                { no: 4, value: "LocalTime", isCorrect: false },
+                { no: 5, value: "Instant", isCorrect: false },
+                { no: 7, value: "OffsetDateTime", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea483f"),
+                question: "Which statements are true when comparing for-each and traditional for loops?",
+                answers: [
+                { no: 1, value: "Both can iterate through an array starting with the first element.", isCorrect: true },
+                { no: 2, value: "Only the for-each loop can iterate through an array starting with the first element.", isCorrect: false },
+                { no: 3, value: "Only the traditional for loop can iterate through an array starting with the first element.", isCorrect: false },
+                { no: 4, value: "Both can iterate through an array starting from the end.", isCorrect: false },
+                { no: 5, value: "Only the for-each loop can iterate through an array starting from the end.", isCorrect: false },
+                { no: 6, value: "Only the traditional for loop can iterate through an array starting from the end.", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4840"),
+                question: "What is true about switch expressions and switch statements?",
+                answers: [
+                { no: 1, value: "Both allow assigning the result to a variable.", isCorrect: false },
+                { no: 2, value: "Both allow multiple values in the same case.", isCorrect: true },
+                { no: 3, value: "Only a switch expression supports break.", isCorrect: false },
+                { no: 4, value: "Only a switch statement supports break.", isCorrect: true },
+                { no: 5, value: "A switch expression is more compact.", isCorrect: true },
+                { no: 6, value: "A switch statement is more compact.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4841"),
+                question: "What about loops are correct?",
+                answers: [
+                { no: 1, value: "A do/while loop requires a body.", isCorrect: true },
+                { no: 2, value: "A while loop cannot be exited early with a return statement.", isCorrect: false },
+                { no: 3, value: "A while loop requires a conditional expression.", isCorrect: true },
+                { no: 4, value: "A do/while loop executes the body (if present) at least once.", isCorrect: true },
+                { no: 5, value: "A do/while loop cannot be exited early with a return statement.", isCorrect: false },
+                { no: 6, value: "A while loop executes the body (if present) at least once.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4842"),
+                question: "What modifiers can be applied to a sealed subclass?",
+                answers: [
+                { no: 1, value: "nonsealed", isCorrect: false },
+                { no: 2, value: "default", isCorrect: false },
+                { no: 3, value: "sealed", isCorrect: true },
+                { no: 4, value: "unsealed", isCorrect: false },
+                { no: 5, value: "non-sealed", isCorrect: true },
+                { no: 6, value: "closed", isCorrect: false },
+                { no: 7, value: "final", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4843"),
+                question: "What about static interface methods is true?",
+                answers: [
+                { no: 1, value: "can be final", isCorrect: false },
+                { no: 2, value: "can be declared private", isCorrect: true },
+                { no: 3, value: "can be declared with package access", isCorrect: false },
+                { no: 4, value: "can be declared public", isCorrect: true },
+                { no: 5, value: "can be declared protected", isCorrect: false },
+                { no: 6, value: "can be declared without an access modifier", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4844"),
+                question: "Which statement best describes the concept of 'effectively final' in Java?",
+                answers: [
+                { no: 1, value: "A local variable that is marked final.", isCorrect: false },
+                { no: 2, value: "A static variable that is marked final.", isCorrect: false },
+                { no: 3, value: "A local variable whose primitive value or object reference does not change after it is initialized.", isCorrect: true },
+                { no: 4, value: "A local variable whose primitive value or object reference does not change after a certain point in the method.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4845"),
+                question: "Which statements about instance keywords are correct?",
+                answers: [
+                { no: 1, value: "`that` keyword can be used to read public members in the direct parent class.", isCorrect: false },
+                { no: 2, value: "`this` keyword can be used to read all members declared within the class.", isCorrect: true },
+                { no: 3, value: "`super` keyword can be used to read all members declared in a parent class.", isCorrect: false },
+                { no: 4, value: "`that` keyword can be used to read members of another class.", isCorrect: false },
+                { no: 5, value: "`this` keyword can be used to read public members in the direct parent class.", isCorrect: true },
+                { no: 6, value: "`super` keyword can be used in static methods.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4846"),
+                question: "Which modifier can be applied to an abstract interface method?",
+                answers: [
+                { no: 1, value: "final", isCorrect: false },
+                { no: 2, value: "interface", isCorrect: false },
+                { no: 3, value: "protected", isCorrect: false },
+                { no: 4, value: "volatile", isCorrect: false },
+                { no: 5, value: "sealed", isCorrect: false },
+                { no: 6, value: "public", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4847"),
+                question: "Which of the following class types cannot be marked as abstract?",
+                answers: [
+                { no: 1, value: "static nested class", isCorrect: false },
+                { no: 2, value: "Local class", isCorrect: false },
+                { no: 3, value: "Anonymous class", isCorrect: true },
+                { no: 4, value: "Member inner class", isCorrect: false },
+                { no: 5, value: "Sealed class", isCorrect: false }                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4848"),
+                question: "What is true about records?",
+                answers: [
+                { no: 1, value: "is implicitly final", isCorrect: true },
+                { no: 2, value: "can extend other classes", isCorrect: false },
+                { no: 3, value: "can implement interfaces", isCorrect: true },
+                { no: 4, value: "can contain multiple regular constructors", isCorrect: true },
+                { no: 5, value: "can contain multiple compact constructors", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                "_id": { "$oid": "679b5c8ff26c6778aeea4849" },
+                "question": "Which of the following statements are correct?",
+                "answers": [
+                { "no": 1, "value": "Java allows multiple inheritance using two classes.", "isCorrect": false },
+                { "no": 2, "value": "Java allows multiple inheritance using two interfaces.", "isCorrect": true },
+                { "no": 3, "value": "In Java, an abstract class can implement multiple interfaces.", "isCorrect": true },
+                { "no": 4, "value": "An interface can extend another interface.", "isCorrect": true },
+                { "no": 5, "value": "An interface can extend a record.", "isCorrect": false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4850"),
+                question: "Which of the following pairs of modifiers can both be applied to a method?",
+                answers: [
+                { no: 1, value: "private and final", isCorrect: true },
+                { no: 2, value: "abstract and final", isCorrect: false },
+                { no: 3, value: "static and private", isCorrect: true },
+                { no: 4, value: "private and abstract", isCorrect: false },
+                { no: 5, value: "abstract and static", isCorrect: false },
+                { no: 6, value: "static and protected", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4851"),
+                question: "Which of the following statements about method overriding are true?",
+                answers: [
+                { no: 1, value: "An overriding method can have a broader access modifier than the method it overrides.", isCorrect: true },
+                { no: 2, value: "An overriding method can throw broader exceptions than the method it overrides.", isCorrect: false },
+                { no: 3, value: "The type returned by the parent method does not have to be exactly the same, but must be covariant.", isCorrect: true },
+                { no: 4, value: "Overriding methods do not have to have exactly the same name.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4852"),
+                question: "Which of the following is true regarding static method hiding in Java?",
+                answers: [
+                { no: 1, value: "A static method can be hidden by another static method in a subclass.", isCorrect: true },
+                { no: 2, value: "Accessing a hidden static method must be done through a reference of the appropriate type.", isCorrect: true },
+                { no: 3, value: "A non-static method can hide a static method.", isCorrect: false },
+                { no: 4, value: "When you hide a static method, it is overridden and there is no longer access to the hidden method.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4855"),
+                question: "Which statements about final methods are true?",
+                answers: [
+                { no: 1, value: "A final method in a superclass can be overridden in a subclass.", isCorrect: false },
+                { no: 2, value: "A final method is inherited in subclasses just like non-final methods.", isCorrect: true },
+                { no: 3, value: "A final method can be hidden if it is marked as `private`.", isCorrect: true },
+                { no: 4, value: "Final methods cannot be overridden.", isCorrect: true },
+                { no: 5, value: "If there is a private final method in the parent class, you cannot declare the same method in the child class.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4856"),
+                question: "Which of the following characteristics are true about immutable objects in Java?",
+                answers: [
+                { no: 1, value: "Immutable objects should have private and final fields.", isCorrect: true },
+                { no: 2, value: "They must not have setters for their fields.", isCorrect: true },
+                { no: 3, value: "They always have only private constructors.", isCorrect: false },
+                { no: 4, value: "Extending a class that has all fields final cannot make an object of that class mutable.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4857"),
+                question: "Which of the following statements about interfaces are correct?",
+                answers: [
+                { no: 1, value: "Interface methods are implicitly `public`.", isCorrect: true },
+                { no: 2, value: "Interface static method can be `final` or `abstract`.", isCorrect: false },
+                { no: 3, value: "You can declare `default` methods in an interface.", isCorrect: true },
+                { no: 4, value: "An interface can have a private non-static method.", isCorrect: true },
+                { no: 5, value: "In interface default and private non-static method cannot access abstract method.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4858"),
+                question: "Which of the following statements about enums in Java are correct?",
+                answers: [
+                { no: 1, value: "An enum can extend another class.", isCorrect: false },
+                { no: 2, value: "Enum constructors are implicitly private.", isCorrect: true },
+                { no: 3, value: "Enums can implement interfaces.", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4859"),
+                question: "Which of the following statements about sealed classes are true?",
+                answers: [
+                { no: 1, value: "Sealed classes can allow only certain subclasses to extend them.", isCorrect: true },
+                { no: 2, value: "You can't use Sealed class with switch expression.", isCorrect: false },
+                { no: 3, value: "Sealing applies only to classes, not interfaces.", isCorrect: false },
+                { no: 4, value: "Sealed class must always explicitly specify all classes that may extend it .", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4860"),
+                question: "Which of the following are primitive data types in Java?",
+                answers: [
+                { no: 1, value: "int", isCorrect: true },
+                { no: 2, value: "String", isCorrect: false },
+                { no: 3, value: "double", isCorrect: true },
+                { no: 4, value: "ArrayList", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4861"),
+                question: "What is the correct way to declare an integer variable named `count` in Java?",
+                answers: [
+                { no: 1, value: "int count;", isCorrect: true },
+                { no: 2, value: "int count = 0;", isCorrect: true },
+                { no: 3, value: "count int;", isCorrect: false },
+                { no: 4, value: "int; count", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4862"),
+                question: "What will happen if you try to assign a double value = 3.14 to an integer variable without explicit casting?",
+                answers: [
+                { no: 1, value: "The code will compile successfully.", isCorrect: false },
+                { no: 2, value: "The code will throw a compilation error.", isCorrect: true },
+                { no: 3, value: "The value of `myInt` will be `3`.", isCorrect: false },
+                { no: 4, value: "The value of `myInt` will be `3.14`.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4863"),
+                question: "Which statements about variable scope in Java are true?",
+                answers: [
+                { no: 1, value: "A variable declared inside a method is accessible from outside the method.", isCorrect: false },
+                { no: 2, value: "Instance variables have a wider scope than local variables.", isCorrect: true },
+                { no: 3, value: "Static variables belong to the class rather than instances.", isCorrect: true },
+                { no: 4, value: "Local variables must be initialized before they are used.", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4864"),
+                question: "Which of the following statements regarding `String` in Java are true?",
+                answers: [
+                { no: 1, value: "Strings are mutable data types.", isCorrect: false },
+                { no: 2, value: "Strings can be concatenated using the `+` operator.", isCorrect: true },
+                { no: 3, value: "The `String` class is part of the `java.lang` package.", isCorrect: true },
+                { no: 4, value: "Strings should be compared using the `==` operator.", isCorrect: false }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4865"),
+                question: "What is the correct way to create an array of integers in Java?",
+                answers: [
+                { no: 1, value: "int[] myArray = new int[10];", isCorrect: true },
+                { no: 2, value: "int myArray[] = new int(10);", isCorrect: false },
+                { no: 3, value: "int myArray[10];", isCorrect: false },
+                { no: 4, value: "int[] myArray = {1, 2, 3, 4, 5};", isCorrect: true }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+
+        <mongodb:insertOne collectionName="question">
+            <mongodb:document>
+                {
+                _id: ObjectId("679b5c8ff26c6778aeea4866"),
+                question: "What happens when you declare a variable with the `final` keyword?",
+                answers: [
+                { no: 1, value: "The variable can be reassigned a new value later.", isCorrect: false },
+                { no: 2, value: "The final local variable must be initialized when it is declared.", isCorrect: true },
+                { no: 3, value: "The variable value cannot change after it has been assigned once.", isCorrect: true },
+                { no: 4, value: "`final` can only be applied to primitive types.", isCorrect: false },
+                { no: 5, value: "A final instance variable can be initialized at the latest until the constructor completes.", isCorrect: true }
+                ]
                 }
             </mongodb:document>
         </mongodb:insertOne>
@@ -68,21 +530,121 @@
         <mongodb:insertOne collectionName="quiz">
             <mongodb:document>
                 {
-                    title: "Sample Quiz",
-                    userId: 1,
-                    approved: true,
-                    questions: [
-                        {
-                            "$ref": "question",
-                            "$id": ObjectId("679b5c8ff26c6778aeea483a"),
-                            "$db": ""
-                        },
-                        {
-                            "$ref": "question",
-                            "$id": ObjectId("679b5c8ff26c6778aeea483b"),
-                            "$db": ""
-                        },
-                    ]
+                title: "Java general quiz",
+                userId: 1,
+                approved: true,
+                questions: [
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea483a"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea483b"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea483c"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea483d"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea483e"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea483f"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4840"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4841"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4842"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4843"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4844"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4845"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4846"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4847"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4848"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4849"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4850"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4851"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4832"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4852"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4855"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4856"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4857"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4858"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4859"), "$db": ""
+                }
+                ]
+                }
+            </mongodb:document>
+        </mongodb:insertOne>
+        <mongodb:insertOne collectionName="quiz">
+            <mongodb:document>
+                {
+                title: "Java: data types and variables quiz",
+                userId: 1,
+                approved: true,
+                questions: [
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4832"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4860"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4861"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4862"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4863"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4864"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4865"), "$db": ""
+                },
+                {
+                "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4866"), "$db": ""
+                }
+                ]
                 }
             </mongodb:document>
         </mongodb:insertOne>

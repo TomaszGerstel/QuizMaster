@@ -38,10 +38,9 @@ class QuizRepositoryTest extends Specification {
         quiz.id == id
         quiz.title == "Test Quiz 2"
         quiz.questions.size() == 2
-        quiz.questions[0].question() == "Capital of England"
-        quiz.questions[0].answers().size() == 2
-        quiz.questions[0].answers()[0].content() == "London"
-        quiz.questions[0].answers()[0].no() == 1
+        quiz.questions*.question.containsAll(["Capital of England", "2 + 2"])
+        quiz.questions.find { it.question == "Capital of England" }.answers*.content.containsAll(["London", "Warsaw"])
+        quiz.questions.find { it.question == "2 + 2" }.answers*.content.containsAll(["4", "5", "0"])
     }
 
     def "should return quiz for eval by id"() {

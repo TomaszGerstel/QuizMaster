@@ -1,3 +1,11 @@
 div {
   margin-bottom: 20px;
 }
+
+.text-success {
+  color: green;
+}
+
+.text-danger {
+  color: red;
+}

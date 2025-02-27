@@ -1,5 +1,9 @@
 # Quizmaster
 
+Create .env file in the root directory of the project and add the following properties:
+
+- MONGO_USER=
+- MONGO_PASS=
 
 
 ## Quizmaster - Frontend

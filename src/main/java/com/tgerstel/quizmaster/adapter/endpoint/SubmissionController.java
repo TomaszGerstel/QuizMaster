@@ -5,7 +5,7 @@ import com.tgerstel.quizmaster.domain.port.QuizEvaluator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/submission")
 public class SubmissionController {
