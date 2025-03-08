@@ -33,7 +33,7 @@ public class QuizControllerIT {
         QuizTestUtils.createAndSaveQuizDocument(quizRepository, "2", "Quiz 2");
         given()
                 .when()
-                .get(baseURI + ":" + port + "/quiz")
+                .get(baseURI + ":" + port + "/api/quiz")
                 .then()
                 .statusCode(200)
                 .body("size()", is(2))
@@ -52,7 +52,7 @@ public class QuizControllerIT {
         given()
                 .pathParam("id", "2")
                 .when()
-                .get(baseURI + ":" + port + "/quiz/{id}")
+                .get(baseURI + ":" + port + "/api/quiz/{id}")
                 .then()
                 .statusCode(200)
                 .body("id", equalTo("2"))
@@ -72,7 +72,7 @@ public class QuizControllerIT {
         given()
                 .pathParam("id", notExistingId)
                 .when()
-                .get(baseURI + ":" + port + "/quiz/{id}")
+                .get(baseURI + ":" + port + "/api/quiz/{id}")
                 .then()
                 .statusCode(404)
                 .body("reason", equalTo("Quiz with id " + notExistingId + " not found"));

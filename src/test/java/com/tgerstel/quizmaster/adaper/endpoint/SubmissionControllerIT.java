@@ -49,7 +49,7 @@ public class SubmissionControllerIT {
                 .body(requestBody)
                 .header("Content-Type", "application/json")
                 .when()
-                .post(baseURI + ":" + port + "/submission")
+                .post(baseURI + ":" + port + "/api/submission")
                 .then()
                 .statusCode(202)
                 .body("quizId", equalTo("1"))
@@ -80,7 +80,7 @@ public class SubmissionControllerIT {
                 .body(requestBody)
                 .header("Content-Type", "application/json")
                 .when()
-                .post(baseURI + ":" + port + "/submission")
+                .post(baseURI + ":" + port + "/api/submission")
                 .then()
                 .statusCode(400)
                 .body("reason", equalTo("Question with id: %s not related to the quiz"
@@ -109,7 +109,7 @@ public class SubmissionControllerIT {
                 .body(requestBody)
                 .header("Content-Type", "application/json")
                 .when()
-                .post(baseURI + ":" + port + "/submission")
+                .post(baseURI + ":" + port + "/api/submission")
                 .then()
                 .statusCode(404)
                 .body("reason", equalTo("Quiz with id %s not found".formatted(notExistingQuizId)));
