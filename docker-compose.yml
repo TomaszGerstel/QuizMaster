@@ -2,26 +2,31 @@ version: '3.8'
 
 services:
   backend:
+    container_name: backend
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "8088:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     depends_on:
       - mongodb
     volumes:
       - ./.env:/app/.env:r
+    networks:
+      - quizmaster-network
 
   frontend:
+    container_name: frontend
     build:
       context: ./src/main/resources/frontend/quizmaster
       dockerfile: Dockerfile
-    ports:
-      - "4200:4200"
+#    ports:
+#      - "4200:80"
     depends_on:
       - backend
+    networks:
+      - nginx-network
+      - quizmaster-network
 
   mongodb:
     image: mongo:latest
@@ -34,6 +39,13 @@ services:
       - mongo-data:/data/db
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./.env:/docker-entrypoint-initdb.d/.env:r
+    networks:
+      - quizmaster-network
 
 volumes:
   mongo-data:
+
+networks:
+  quizmaster-network:
+  nginx-network:
+    external: true

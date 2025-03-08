@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/submission")
+@RequestMapping("api/submission")
 public class SubmissionController {
 
     private final QuizEvaluator quizEvaluator;
