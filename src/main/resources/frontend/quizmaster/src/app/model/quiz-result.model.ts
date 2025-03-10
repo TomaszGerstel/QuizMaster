@@ -3,4 +3,5 @@ export interface QuizResult {
   isPositive: boolean;
   quizScore: number;
   questionsCount: number;
+  answersReport: { questionId: string, expectedAnswers: number[], positive: boolean }[];
 }

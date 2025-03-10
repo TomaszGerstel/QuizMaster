@@ -54,7 +54,17 @@ public class SubmissionControllerIT {
                 .statusCode(202)
                 .body("quizId", equalTo("1"))
                 .body("quizScore", equalTo(2))
-                .body("isPositive", equalTo(true));
+                .body("isPositive", equalTo(true))
+                .body("questionsCount", equalTo(2))
+                .body("answersReport.size()", equalTo(2))
+                .body("answersReport[0].questionId", equalTo("1"))
+                .body("answersReport[0].expectedAnswers", hasSize(1))
+                .body("answersReport[0].expectedAnswers[0]", equalTo(2))
+                .body("answersReport[0].positive", equalTo(true))
+                .body("answersReport[1].questionId", equalTo("2"))
+                .body("answersReport[1].expectedAnswers", hasSize(1))
+                .body("answersReport[1].expectedAnswers[0]", equalTo(2))
+                .body("answersReport[1].positive", equalTo(true));
     }
 
     @Test

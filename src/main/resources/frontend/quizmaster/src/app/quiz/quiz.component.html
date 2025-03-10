@@ -1,5 +1,6 @@
 <div class="container">
-  <h2>All Quizzes</h2>
+  <h2>Quizmaster</h2>
+  <h4>Quizzes list (click to start):</h4>
   <div class="list-group">
     <a class="list-group-item list-group-item-action fw-bolder" title="click to start"
        *ngFor="let quiz of quizzes" (click)="selectQuiz(quiz.id)">
@@ -10,10 +11,12 @@
   <div *ngIf="selectedQuiz" class="mt-4">
     <h3 *ngIf="selectedQuiz.title != null">{{ selectedQuiz.title }}</h3>
     <ul class="list-group">
-      <li class="list-group-item" *ngFor="let question of selectedQuiz.questions">
+      <li class="list-group-item" *ngFor="let question of selectedQuiz.questions"
+          [ngClass]="{'bg-danger': question.status == 'Failed', 'bg-success': question.status == 'Passed' }">
         <h4>{{ question.question }}</h4>
         <ul class="list-group">
-          <li class="list-group-item" *ngFor="let answer of question.answers">
+          <li class="list-group-item" *ngFor="let answer of question.answers"
+              [ngClass]="{'text-success': answer.status == 'Correct', 'text-danger': answer.status == 'Wrong'}">
             <label>
               <input type="checkbox" (change)="toggleAnswer(question.id, answer.no)"
                      [disabled]="isFormDisabled"> {{ answer.content }}
@@ -25,7 +28,7 @@
     <div class="">
       <button class="btn btn-primary mt-3 me-2" (click)="submitAnswers()" [disabled]="isSubmitDisabled">Submit Answers
       </button>
-      <button class="btn btn-secondary mt-3" (click)="resetForm()">Refresh</button>
+      <button class="btn btn-secondary mt-3" (click)="resetQuiz()">Refresh</button>
     </div>
   </div>
 
