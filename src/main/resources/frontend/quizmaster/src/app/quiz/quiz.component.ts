@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { QuizmasterService } from '../quizmaster.service';
-import { QuizInfo } from '../model/quiz-info.model';
-import { Quiz } from '../model/quiz.model';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
+import {QuizmasterService} from '../quizmaster.service';
+import {QuizInfo} from '../model/quiz-info.model';
+import {Quiz} from '../model/quiz.model';
 import {QuizResult} from '../model/quiz-result.model';
+import {AnswerStatus} from '../model/answer.model';
+import {QuestionStatus} from '../model/question.model';
 
 @Component({
   selector: 'app-quiz',
@@ -20,7 +22,8 @@ export class QuizComponent implements OnInit {
 
   @ViewChild('resultSection') resultSection!: ElementRef;
 
-  constructor(private quizService: QuizmasterService) { }
+  constructor(private quizService: QuizmasterService) {
+  }
 
   ngOnInit(): void {
     this.quizService.getQuizzesList().subscribe(data => {
@@ -57,24 +60,42 @@ export class QuizComponent implements OnInit {
       this.isFormDisabled = true;
       this.quizService.submitAnswers(this.selectedQuiz.id, this.selectedAnswers).subscribe(response => {
         this.quizResult = response;
+        this.markAnswers();
         console.log('Answers submitted successfully', response);
         this.scrollToResult();
       });
     }
   }
 
-  resetForm(): void {
-    this.selectedAnswers = {};
-    this.quizResult = null;
-    this.isSubmitDisabled = false;
-    this.isFormDisabled = false;
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(checkbox => (checkbox as HTMLInputElement).checked = false);
+  markAnswers(): void {
+    if (this.selectedQuiz && this.quizResult) {
+      this.selectedQuiz.questions.forEach(question => {
+        const reportForQuestion = this.quizResult ?
+          this.quizResult.answersReport.find(expectedAnswers => expectedAnswers.questionId === question.id) : null;
+
+        reportForQuestion ?
+          (question.status = reportForQuestion.positive ? QuestionStatus.Passed : QuestionStatus.Failed)
+          : QuestionStatus.Initial;
+
+        question.answers.forEach(answer => {
+          if (reportForQuestion?.expectedAnswers.includes(answer.no)) {
+            answer.status = AnswerStatus.Correct;
+          } else {
+            answer.status = AnswerStatus.Wrong;
+          }
+        });
+      });
+    }
+  }
+
+  resetQuiz(): void {
+    this.selectQuiz(this.selectedQuiz? this.selectedQuiz.id : '0');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   scrollToResult(): void {
     setTimeout(() => {
-      this.resultSection.nativeElement.scrollIntoView({ behavior: 'smooth' });
+      this.resultSection.nativeElement.scrollIntoView({behavior: 'smooth'});
     }, 0);
   }
 }

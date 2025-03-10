@@ -3,6 +3,7 @@ package com.tgerstel.quizmaster.domain
 import com.tgerstel.quizmaster.domain.command.SubmitQuizCommand
 import com.tgerstel.quizmaster.domain.dto.QuizEvalDTO
 import com.tgerstel.quizmaster.domain.exception.QuizNotFoundException
+import com.tgerstel.quizmaster.domain.model.AnswerReportEntry
 import com.tgerstel.quizmaster.domain.model.EvalAnswer
 import com.tgerstel.quizmaster.domain.model.EvalQuestion
 import com.tgerstel.quizmaster.domain.model.QuestionSolution
@@ -47,16 +48,17 @@ class QuizEvaluationServiceTest extends Specification {
         result.positive == expPositive
         result.quizScore() == expScore
         result.questionsCount() == expQCount
+        result.answersReport() == expAnswerReport
 
         where:
-        quizData | questionSolutions                                                                                          | expPositive | expScore | expQCount | description
-        quiz1    | List.of(solution("q01Id", List.of(2)), solution("q02Id", List.of(1)))                                      | true        | 2        | 2         | "2/2 correct answers"
-        quiz1    | List.of(solution("q01Id", List.of(1)), solution("q02Id", List.of(1)))                                      | false       | 1        | 2         | "1/2 correct answers"
-        quiz1    | List.of(solution("q01Id", List.of(1)), solution("q02Id", List.of(3)))                                      | false       | 0        | 2         | "0/2 correct answers"
-        quiz2    | List.of(solution("q03Id", List.of(1, 3)), solution("q04Id", List.of(2)), solution("q05Id", List.of(1)))    | true        | 3        | 3         | "3/3 with multi answer question"
-        quiz2    | List.of(solution("q03Id", List.of(1)), solution("q04Id", List.of(2)), solution("q05Id", List.of(1)))       | true        | 2        | 3         | "2/3 with wrong answer for multi answer question"
-        quiz2    | List.of(solution("q04Id", List.of(2)), solution("q05Id", List.of(1)))                                      | true        | 2        | 3         | "2/3 as positive even with missing one answer"
-        quiz2    | List.of(solution("q03Id", List.of(1, 3)), solution("q04Id", List.of(2, 3)), solution("q05Id", List.of(6))) | false       | 1        | 3         | "1/3 as negative"
+        quizData | questionSolutions                                                                                          | expPositive | expScore | expQCount | expAnswerReport                                                                                             | description
+        quiz1    | List.of(solution("q01Id", List.of(2)), solution("q02Id", List.of(1)))                                      | true        | 2        | 2         | [answerReport("q01Id", [2], true), answerReport("q02Id", [1], true)]                                        | "2/2 correct answers"
+        quiz1    | List.of(solution("q01Id", List.of(1)), solution("q02Id", List.of(1)))                                      | false       | 1        | 2         | [answerReport("q01Id", [2], false), answerReport("q02Id", [1], true)]                                       | "1/2 correct answers"
+        quiz1    | List.of(solution("q01Id", List.of(1)), solution("q02Id", List.of(3)))                                      | false       | 0        | 2         | [answerReport("q01Id", [2], false), answerReport("q02Id", [1], false)]                                      | "0/2 correct answers"
+        quiz2    | List.of(solution("q03Id", List.of(1, 3)), solution("q04Id", List.of(2)), solution("q05Id", List.of(1)))    | true        | 3        | 3         | [answerReport("q03Id", [1, 3], true), answerReport("q04Id", [2], true), answerReport("q05Id", [1], true)]   | "3/3 with multi answer question"
+        quiz2    | List.of(solution("q03Id", List.of(1)), solution("q04Id", List.of(2)), solution("q05Id", List.of(1)))       | true        | 2        | 3         | [answerReport("q03Id", [1, 3], false), answerReport("q04Id", [2], true), answerReport("q05Id", [1], true)]  | "2/3 with wrong answer for multi answer question"
+        quiz2    | List.of(solution("q04Id", List.of(2)), solution("q05Id", List.of(1)))                                      | true        | 2        | 3         | [answerReport("q03Id", [1, 3], false), answerReport("q04Id", [2], true), answerReport("q05Id", [1], true)]  | "2/3 as positive even with missing one answer"
+        quiz2    | List.of(solution("q03Id", List.of(1, 3)), solution("q04Id", List.of(2, 3)), solution("q05Id", List.of(6))) | false       | 1        | 3         | [answerReport("q03Id", [1, 3], true), answerReport("q04Id", [2], false), answerReport("q05Id", [1], false)] | "1/3 as negative"
     }
 
     def "should throw exception for not existing quiz"() {
@@ -90,6 +92,10 @@ class QuizEvaluationServiceTest extends Specification {
 
     private static QuestionSolution solution(String questionId, List<Integer> answerIds) {
         return new QuestionSolution(questionId, answerIds)
+    }
+
+    private static AnswerReportEntry answerReport(String questionId, List<Integer> expectedAnswers, boolean positive) {
+        return new AnswerReportEntry(questionId, expectedAnswers as Set, positive)
     }
 
 }
