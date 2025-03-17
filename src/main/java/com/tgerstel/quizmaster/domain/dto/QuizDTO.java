@@ -11,5 +11,6 @@ import java.util.List;
 public class QuizDTO {
     private String id;
     private String title;
+    private String sessionId;
     private List<Question> questions;
 }

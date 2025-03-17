@@ -4,17 +4,19 @@ import { AppComponent } from './app.compnent';
 import { QuizComponent } from './quiz/quiz.component';
 import { AppRoutingModule } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
+import {DurationFormatPipe} from "./pipe/duration-format-pipe";
 
 @NgModule({
   declarations: [
     AppComponent,
     QuizComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        DurationFormatPipe
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

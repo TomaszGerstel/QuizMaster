@@ -33,7 +33,7 @@ public class QuizDocument {
         var mappedQuestions = questions.stream().map(QuestionDocument::toQuestion).toList();
         var shuffledQuestions = new ArrayList<>(mappedQuestions);
         Collections.shuffle(shuffledQuestions);
-        return new QuizDTO(id, title, shuffledQuestions);
+        return new QuizDTO(id, title, null, shuffledQuestions);
     }
 
     public QuizEvalDTO toEvalDTO() {

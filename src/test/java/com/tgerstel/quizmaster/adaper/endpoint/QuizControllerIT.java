@@ -22,9 +22,14 @@ public class QuizControllerIT {
     @Autowired
     private InMemoryQuizRepositoryImpl quizRepository;
 
+    @Autowired
+    private InMemoryQuizRepositoryImpl attemptRepository;
+
+
     @AfterEach
     public void setUp() {
         quizRepository.clear();
+        attemptRepository.clear();
     }
 
     @Test
@@ -57,7 +62,7 @@ public class QuizControllerIT {
                 .statusCode(200)
                 .body("id", equalTo("2"))
                 .body("title", equalTo("Quiz 2"))
-
+                .body("sessionId", notNullValue())
                 .body("questions.size()", is(2))
                 .body("questions.question", hasItems("What is the capital of France?", "What is the capital of Germany?"))
                 .body("questions.find { it.question == 'What is the capital of France?' }.answers.content", hasItems("London", "Paris", "Madrid"))

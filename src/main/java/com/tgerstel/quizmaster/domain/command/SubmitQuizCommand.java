@@ -4,6 +4,6 @@ import com.tgerstel.quizmaster.domain.model.QuestionSolution;
 
 import java.util.List;
 
-public record SubmitQuizCommand(String quizId, List<QuestionSolution> solution) {
+public record SubmitQuizCommand(String quizId, List<QuestionSolution> solution, String sessionId) {
 
 }

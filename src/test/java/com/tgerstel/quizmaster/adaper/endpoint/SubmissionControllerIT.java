@@ -1,5 +1,6 @@
 package com.tgerstel.quizmaster.adaper.endpoint;
 
+import com.tgerstel.quizmaster.helper.InMemoryQuizAttemptRepository;
 import com.tgerstel.quizmaster.helper.InMemoryQuizRepositoryImpl;
 import com.tgerstel.quizmaster.helper.QuizTestUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -22,17 +24,25 @@ public class SubmissionControllerIT {
     @Autowired
     private InMemoryQuizRepositoryImpl quizRepository;
 
+    @Autowired
+    private InMemoryQuizAttemptRepository attemptRepository;
+
     @AfterEach
     public void setUp() {
         quizRepository.clear();
+        attemptRepository.clear();
     }
 
     @Test
     public void testSubmitQuiz() {
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository, "1", "Quiz 1");
+        var sessionId = "session997";
+        var quizId = "1";
+        QuizTestUtils.createAndSaveQuizDocument(quizRepository, quizId, "Quiz 1");
+        QuizTestUtils.createAndSaveQuizAttempt(attemptRepository, quizId, sessionId);
         var requestBody = """
                 {
                     "quizId": "1",
+                    "sessionId": "%s",
                     "solutions": [
                         {
                             "questionId": "1",
@@ -44,7 +54,7 @@ public class SubmissionControllerIT {
                         }
                     ]
                 }
-                """;
+                """.formatted(sessionId);
         given()
                 .body(requestBody)
                 .header("Content-Type", "application/json")
@@ -56,6 +66,7 @@ public class SubmissionControllerIT {
                 .body("quizScore", equalTo(2))
                 .body("isPositive", equalTo(true))
                 .body("questionsCount", equalTo(2))
+                .body("attemptTimeInSeconds", notNullValue())
                 .body("answersReport.size()", equalTo(2))
                 .body("answersReport[0].questionId", equalTo("1"))
                 .body("answersReport[0].expectedAnswers", hasSize(1))

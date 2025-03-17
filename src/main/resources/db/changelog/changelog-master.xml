@@ -11,6 +11,7 @@
         <comment>create_collection</comment>
         <mongodb:createCollection collectionName="quiz"/>
         <mongodb:createCollection collectionName="question"/>
+        <mongodb:createCollection collectionName="quiz_attempt"/>
     </changeSet>
 
     <changeSet id="2" author="tgerstel">
