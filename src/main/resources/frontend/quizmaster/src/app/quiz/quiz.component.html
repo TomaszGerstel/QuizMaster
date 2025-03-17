@@ -41,6 +41,9 @@
       {{ quizResult.isPositive ? 'POSITIVE' : 'NEGATIVE' }}</span>
       </li>
       <li>
+        Quiz duration: {{ quizResult.attemptTimeInSeconds | durationFormat }}
+      </li>
+      <li>
         Quiz Score: {{ quizResult.quizScore + '/' + quizResult.questionsCount }}
       </li>
     </ul>

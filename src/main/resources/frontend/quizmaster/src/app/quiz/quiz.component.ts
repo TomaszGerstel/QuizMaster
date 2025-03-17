@@ -58,7 +58,8 @@ export class QuizComponent implements OnInit {
     if (this.selectedQuiz) {
       this.isSubmitDisabled = true;
       this.isFormDisabled = true;
-      this.quizService.submitAnswers(this.selectedQuiz.id, this.selectedAnswers).subscribe(response => {
+      this.quizService.submitAnswers(this.selectedQuiz.id, this.selectedQuiz.sessionId, this.selectedAnswers)
+          .subscribe(response => {
         this.quizResult = response;
         this.markAnswers();
         console.log('Answers submitted successfully', response);

@@ -16,12 +16,10 @@ services:
       - quizmaster-network
 
   frontend:
-    container_name: frontend
+    container_name: quizmaster-frontend
     build:
       context: ./src/main/resources/frontend/quizmaster
       dockerfile: Dockerfile
-#    ports:
-#      - "4200:80"
     depends_on:
       - backend
     networks:

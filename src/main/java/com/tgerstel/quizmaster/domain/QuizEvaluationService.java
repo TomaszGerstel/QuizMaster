@@ -1,13 +1,17 @@
 package com.tgerstel.quizmaster.domain;
 
 import com.tgerstel.quizmaster.domain.command.SubmitQuizCommand;
+import com.tgerstel.quizmaster.domain.dto.QuizAttemptDTO;
 import com.tgerstel.quizmaster.domain.dto.QuizEvalDTO;
 import com.tgerstel.quizmaster.domain.exception.QuizNotFoundException;
 import com.tgerstel.quizmaster.domain.model.*;
+import com.tgerstel.quizmaster.domain.port.QuizAttemptRepository;
 import com.tgerstel.quizmaster.domain.port.QuizEvaluator;
 import com.tgerstel.quizmaster.domain.port.QuizRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,33 +19,38 @@ import java.util.stream.Collectors;
 public class QuizEvaluationService implements QuizEvaluator {
 
     private final QuizRepository quizRepository;
+    private final QuizAttemptRepository attemptRepository;
 
     private static final int QUIZ_PASS_RATE = 65;
 
-    public QuizEvaluationService(QuizRepository quizRepository) {
+    public QuizEvaluationService(QuizRepository quizRepository, QuizAttemptRepository attemptRepository) {
         this.quizRepository = quizRepository;
+        this.attemptRepository = attemptRepository;
     }
 
     @Override
-    public QuizResult submitQuiz(SubmitQuizCommand command) {
-        QuizEvalDTO quiz = quizRepository.getEvalById(command.quizId())
+    public QuizResult submitQuiz(final SubmitQuizCommand command) {
+        final Duration attemptTime = finishQuiz(command.sessionId());
+
+        final QuizEvalDTO quiz = quizRepository.getEvalById(command.quizId())
                 .orElseThrow(() -> new QuizNotFoundException(command.quizId()));
 
-        List<EvalQuestion> questions = quiz.questions();
-        List<QuestionSolution> solutions = command.solution();
+        final List<EvalQuestion> questions = quiz.questions();
+        final List<QuestionSolution> solutions = command.solution();
 
         solutions.forEach(s -> validateQuestionId(questions, s.questionId()));
 
-        int questionCount = questions.size();
-        List<AnswerReportEntry> answersReport = evaluateAnswers(questions, solutions);
-        int correctSolutionsCount = answersReport.stream()
+        final int questionCount = questions.size();
+        final List<AnswerReportEntry> answersReport = evaluateAnswers(questions, solutions);
+        final int correctSolutionsCount = answersReport.stream()
                 .filter(AnswerReportEntry::positive)
                 .toList()
                 .size();
 
         final boolean evaluation = isQuizPassed(correctSolutionsCount, questionCount);
 
-        return new QuizResult(quiz.id(), evaluation, correctSolutionsCount, questionCount, answersReport);
+        return new QuizResult(quiz.id(), evaluation, correctSolutionsCount, questionCount, answersReport,
+                attemptTime.toSeconds());
     }
 
     private List<AnswerReportEntry> evaluateAnswers(List<EvalQuestion> questions, List<QuestionSolution> solutions) {
@@ -60,10 +69,16 @@ public class QuizEvaluationService implements QuizEvaluator {
         return report;
     }
 
+    private Duration finishQuiz(String sessionId) {
+        var endTime = Instant.now();
+        return attemptRepository.getAndEnd(sessionId, endTime)
+                .map(QuizAttemptDTO::getQuizTime)
+                .orElse(Duration.ZERO);
+    }
+
     private boolean isCorrectAnswer(Set<Integer> expectedAnswers, Set<Integer> actualAnswers) {
         return !actualAnswers.isEmpty() && expectedAnswers.equals(actualAnswers);
     }
-
 
     private void validateQuestionId(List<EvalQuestion> questions, String questionId) {
         questions.stream()

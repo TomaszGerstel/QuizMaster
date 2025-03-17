@@ -11,10 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 public class QuizSubmissionRequest {
     private String quizId;
+    private String sessionId;
     private List<QuestionSolution> solutions;
 
     public SubmitQuizCommand toCommand() {
-        return new SubmitQuizCommand(quizId, solutions);
+        return new SubmitQuizCommand(quizId, solutions, sessionId);
     }
 
 }

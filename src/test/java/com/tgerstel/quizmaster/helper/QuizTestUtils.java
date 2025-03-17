@@ -4,7 +4,9 @@ package com.tgerstel.quizmaster.helper;
 import com.tgerstel.quizmaster.adapter.persistence.BaseAnswer;
 import com.tgerstel.quizmaster.adapter.persistence.QuestionDocument;
 import com.tgerstel.quizmaster.adapter.persistence.QuizDocument;
+import com.tgerstel.quizmaster.domain.dto.QuizAttemptDTO;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +49,10 @@ public class QuizTestUtils {
         baseAnswer.setValue(value);
         baseAnswer.setCorrect(correct);
         return baseAnswer;
+    }
+
+    public static void createAndSaveQuizAttempt(InMemoryQuizAttemptRepository repository, String quizId, String sessionId) {
+        QuizAttemptDTO attempt = new QuizAttemptDTO(sessionId, quizId, Instant.now().minusSeconds(90), null);
+        repository.create(attempt);
     }
 }
