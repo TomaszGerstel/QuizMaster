@@ -1,5 +1,14 @@
-<nav>
-<!--  <a routerLink="/">Home</a>-->
-<!--  <a routerLink="/quiz">Quiz</a>-->
-</nav>
-<router-outlet></router-outlet>
+<header class="bg-primary text-white p-3">
+  <h1 class="text-center">Quiz Master</h1>
+</header>
+<div class="d-flex w-100">
+  <aside class="bg-light border-end min-vh-100 w-25">
+    <nav class="nav flex-column p-3">
+      <a class="nav-link" routerLink="/">Quizzes</a>
+      <a class="nav-link" routerLink="/about">About</a>
+    </nav>
+  </aside>
+  <main class="flex-grow-1 p-4 w-100">
+    <router-outlet></router-outlet>
+  </main>
+</div>

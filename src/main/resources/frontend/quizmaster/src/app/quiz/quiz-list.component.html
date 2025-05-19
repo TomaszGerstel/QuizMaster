@@ -1,0 +1,13 @@
+<div class="container">
+  <h4>Quizzes list (click to expand):</h4>
+  <div class="list-group">
+    <a class="list-group-item list-group-item-action fw-bolder mb-2 border-1"
+       *ngFor="let quiz of quizzes" (click)="expandedQuizId = quiz.id">
+      {{ quiz.title + " (" + quiz.questionsQuantity + " questions)" }}
+      <div *ngIf="expandedQuizId === quiz.id" class="p-3">
+        <p><strong>Details:</strong> {{ quiz.title }}</p>
+        <button class="btn btn-primary" title="start quiz" (click)="startQuiz(quiz.id)">Start Quiz</button>
+      </div>
+    </a>
+  </div>
+</div>
