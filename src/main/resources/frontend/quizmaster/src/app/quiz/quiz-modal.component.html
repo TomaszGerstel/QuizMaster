@@ -1,17 +1,13 @@
-<div class="container">
-  <h2>Quizmaster</h2>
-  <h4>Quizzes list (click to start):</h4>
-  <div class="list-group">
-    <a class="list-group-item list-group-item-action fw-bolder" title="click to start"
-       *ngFor="let quiz of quizzes" (click)="selectQuiz(quiz.id)">
-      {{ quiz.title + " (" + quiz.questionsQuantity + " questions)" }}
-    </a>
-  </div>
+<div class="modal-header">
+  <h4 class="modal-title">Quiz attempt</h4>
+  <button type="button" class="btn-close" (click)="bsModalRef.hide()"></button>
+</div>
 
-  <div *ngIf="selectedQuiz" class="mt-4">
-    <h3 *ngIf="selectedQuiz.title != null">{{ selectedQuiz.title }}</h3>
+<div class="modal-body">
+  <div *ngIf="quiz" class="">
+    <h3 *ngIf="quiz.title != null">{{ quiz.title }}</h3>
     <ul class="list-group">
-      <li class="list-group-item" *ngFor="let question of selectedQuiz.questions"
+      <li class="list-group-item" *ngFor="let question of quiz.questions"
           [ngClass]="{'bg-danger': question.status == 'Failed', 'bg-success': question.status == 'Passed' }">
         <h4>{{ question.question }}</h4>
         <ul class="list-group">
@@ -26,7 +22,8 @@
       </li>
     </ul>
     <div class="">
-      <button class="btn btn-primary mt-3 me-2" (click)="submitAnswers()" [disabled]="isSubmitDisabled">Submit Answers
+      <button class="btn btn-primary mt-3 me-2" (click)="submitAnswers()" [disabled]="isSubmitDisabled">Submit
+        Answers
       </button>
       <button class="btn btn-secondary mt-3" (click)="resetQuiz()">Refresh</button>
     </div>
@@ -48,4 +45,8 @@
       </li>
     </ul>
   </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
 </div>

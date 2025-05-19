@@ -1,20 +1,19 @@
 import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 import {QuizmasterService} from '../quizmaster.service';
-import {QuizInfo} from '../model/quiz-info.model';
 import {Quiz} from '../model/quiz.model';
 import {QuizResult} from '../model/quiz-result.model';
 import {AnswerStatus} from '../model/answer.model';
 import {QuestionStatus} from '../model/question.model';
+import {BsModalRef} from 'ngx-bootstrap/modal';
 
 @Component({
-  selector: 'app-quiz',
-  templateUrl: './quiz.component.html',
-  styleUrls: ['./quiz.component.css'],
+  templateUrl: './quiz-modal.component.html',
+  styleUrls: ['./quiz-modal.component.css'],
   standalone: false
 })
-export class QuizComponent implements OnInit {
-  quizzes: QuizInfo[] = [];
-  selectedQuiz: Quiz | null = null;
+export class QuizModalComponent implements OnInit {
+  quizId?: string;
+  quiz: Quiz | null = null;
   selectedAnswers: { [questionId: string]: number[] } = {};
   quizResult: QuizResult | null = null;
   isSubmitDisabled: boolean = false;
@@ -22,18 +21,20 @@ export class QuizComponent implements OnInit {
 
   @ViewChild('resultSection') resultSection!: ElementRef;
 
-  constructor(private quizService: QuizmasterService) {
+  constructor(
+    public bsModalRef: BsModalRef,
+    private quizService: QuizmasterService) {
   }
 
   ngOnInit(): void {
-    this.quizService.getQuizzesList().subscribe(data => {
-      this.quizzes = data;
-    });
+    if (this.quizId) {
+      this.getQuiz(this.quizId);
+    }
   }
 
-  selectQuiz(id: string): void {
+  getQuiz(id: string): void {
     this.quizService.getQuiz(id).subscribe(data => {
-      this.selectedQuiz = data;
+      this.quiz = data;
       this.selectedAnswers = {};
       this.quizResult = null;
       this.isSubmitDisabled = false;
@@ -55,22 +56,22 @@ export class QuizComponent implements OnInit {
   }
 
   submitAnswers(): void {
-    if (this.selectedQuiz) {
+    if (this.quiz) {
       this.isSubmitDisabled = true;
       this.isFormDisabled = true;
-      this.quizService.submitAnswers(this.selectedQuiz.id, this.selectedQuiz.sessionId, this.selectedAnswers)
-          .subscribe(response => {
-        this.quizResult = response;
-        this.markAnswers();
-        console.log('Answers submitted successfully', response);
-        this.scrollToResult();
-      });
+      this.quizService.submitAnswers(this.quiz.id, this.quiz.sessionId, this.selectedAnswers)
+        .subscribe(response => {
+          this.quizResult = response;
+          this.markAnswers();
+          console.log('Answers submitted successfully', response);
+          this.scrollToResult();
+        });
     }
   }
 
   markAnswers(): void {
-    if (this.selectedQuiz && this.quizResult) {
-      this.selectedQuiz.questions.forEach(question => {
+    if (this.quiz && this.quizResult) {
+      this.quiz.questions.forEach(question => {
         const reportForQuestion = this.quizResult ?
           this.quizResult.answersReport.find(expectedAnswers => expectedAnswers.questionId === question.id) : null;
 
@@ -90,13 +91,20 @@ export class QuizComponent implements OnInit {
   }
 
   resetQuiz(): void {
-    this.selectQuiz(this.selectedQuiz? this.selectedQuiz.id : '0');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.getQuiz(this.quiz ? this.quiz.id : '0');
+    const modalBody = document.querySelector('.modal-dialog');
+    if (modalBody?.parentElement) {
+      modalBody.parentElement.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   scrollToResult(): void {
     setTimeout(() => {
       this.resultSection.nativeElement.scrollIntoView({behavior: 'smooth'});
     }, 0);
+  }
+
+  cancel(): void {
+    this.bsModalRef.hide();
   }
 }
