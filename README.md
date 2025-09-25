@@ -1,5 +1,22 @@
 # Quizmaster
 
+## Info
+
+Application that allows learning and testing by completing ‘quizzes’, e.g. related to learning Java programming or any other topic. 
+Currently, there are sample quizzes available related to learning Java, there is no possibility or need to log in to the service.
+
+### Working app
+
+https://quizmaster.tigerstel.xyz
+
+### Technologies
+- The ‘backend’ part of the application was written in Java using the Spring Framework;
+- The ‘frontend’ was created using the Angular framework (also using Bootstrap in view) - frontend app is located in 'src/app/resources/frontend/quizmaster' folder;
+- It uses the MongoDB non-relational database and the Liquibase tool for migration;
+- When writing tests, apart form Java and JUnit, the Groovy language and the Spock and RestAssured libraries were used;
+
+## Env variables
+
 Create .env file in the root directory of the project and add the following properties:
 
 - MONGO_USER=
