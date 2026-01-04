@@ -1,5 +1,6 @@
 package com.tgerstel.quizmaster.domain
 
+import com.tgerstel.quizmaster.domain.command.StartQuizCommand
 import com.tgerstel.quizmaster.domain.dto.QuizBasicDTO
 import com.tgerstel.quizmaster.domain.dto.QuizDTO
 import com.tgerstel.quizmaster.domain.exception.QuizNotFoundException
@@ -57,7 +58,7 @@ class QuizManagementServiceTest extends Specification {
         quizRepository.getById(quizId) >> Optional.of(quiz)
 
         when:
-        def result = quizManagementService.getQuiz(quizId)
+        def result = quizManagementService.startQuiz(new StartQuizCommand(quizId, "anyUser", "anyEmail"))
 
         then:
         result.id == quizId
@@ -79,7 +80,7 @@ class QuizManagementServiceTest extends Specification {
         quizRepository.getById(quizId) >> Optional.empty()
 
         when:
-        quizManagementService.getQuiz(quizId)
+        quizManagementService.startQuiz(new StartQuizCommand(quizId, "anyUser", "anyEmail"))
 
         then:
         1 * quizRepository.getById(quizId) >> Optional.empty()

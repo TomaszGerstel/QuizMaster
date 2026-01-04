@@ -54,10 +54,18 @@ public class QuizControllerIT {
     public void testGetQuizById() {
         QuizTestUtils.createAndSaveQuizDocument(quizRepository,"1", "Quiz 1");
         QuizTestUtils.createAndSaveQuizDocument(quizRepository,"2", "Quiz 2");
+        var requestBody = """
+                {
+                    "quizId": "2",
+                    "name": "John Doe",
+                    "email": "john.doe@email"
+                }
+                """;
         given()
-                .pathParam("id", "2")
+                .body(requestBody)
+                .header("Content-Type", "application/json")
                 .when()
-                .get(baseURI + ":" + port + "/api/quiz/{id}")
+                .post(baseURI + ":" + port + "/api/quiz/start")
                 .then()
                 .statusCode(200)
                 .body("id", equalTo("2"))
@@ -73,11 +81,19 @@ public class QuizControllerIT {
     public void testGetQuizByIdShouldReturnNotFoundCode() {
         QuizTestUtils.createAndSaveQuizDocument(quizRepository,"1", "Quiz 1");
         var notExistingId = "2";
+        var requestBody = """
+                {
+                    "quizId": "%s",
+                    "name": "John Doe",
+                    "email": "john.doe@email"
+                }
+                """.formatted(notExistingId);
 
         given()
-                .pathParam("id", notExistingId)
+                .body(requestBody)
+                .header("Content-Type", "application/json")
                 .when()
-                .get(baseURI + ":" + port + "/api/quiz/{id}")
+                .post(baseURI + ":" + port + "/api/quiz/start")
                 .then()
                 .statusCode(404)
                 .body("reason", equalTo("Quiz with id " + notExistingId + " not found"));

@@ -5,6 +5,7 @@ import {Quiz} from './model/quiz.model';
 import {Injectable} from '@angular/core';
 import {QuestionSolution} from './model/question-solution.model';
 import {QuizSubmissionRequest} from './model/submission-request';
+import {StartQuizRequest} from './model/start-quiz-request';
 import {QuizResult} from './model/quiz-result.model';
 import {environment} from '../environments/environment';
 
@@ -20,8 +21,9 @@ export class QuizmasterService {
     return this.http.get<QuizInfo[]>(`${this.baseUrl}/quiz`);
   }
 
-  getQuiz(id: string): Observable<Quiz> {
-    return this.http.get<Quiz>(`${this.baseUrl}/quiz/${id}`);
+  getQuiz(quizId: string, name: string, email: string): Observable<Quiz> {
+    const params: StartQuizRequest = {quizId, name, email};
+    return this.http.post<Quiz>(`${this.baseUrl}/quiz/start`, params);
   }
 
   submitAnswers(quizId: string, sessionId: string, answers: {

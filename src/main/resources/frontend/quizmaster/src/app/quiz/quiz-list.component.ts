@@ -14,6 +14,9 @@ export class QuizListComponent implements OnInit {
   quizzes: QuizInfo[] = [];
   expandedQuizId: string | null = null;
 
+  username?: string;
+  email?: string;
+
   constructor(
     private quizService: QuizmasterService,
     private modalService: BsModalService
@@ -28,7 +31,9 @@ export class QuizListComponent implements OnInit {
 
   startQuiz(id: string) {
     const initialState = {
-      quizId: id
+      quizId: id,
+      username: this.username,
+      email: this.email
     };
     this.modalService.show(QuizModalComponent, {initialState, class: 'custom-modal'})
   }

@@ -14,6 +14,9 @@ import java.util.List;
 public class QuestionDocument {
     private String id;
     private String question;
+    private String tags;
+    private String explanation;
+    private String author;
     private List<BaseAnswer> answers;
 
     public Question toQuestion() {
@@ -25,6 +28,6 @@ public class QuestionDocument {
 
     public EvalQuestion toEvalQuestion() {
         var mappedAnswers = answers.stream().map(BaseAnswer::toEvalAnswer).toList();
-        return new EvalQuestion(id, mappedAnswers);
+        return new EvalQuestion(id, explanation, mappedAnswers, author);
     }
 }

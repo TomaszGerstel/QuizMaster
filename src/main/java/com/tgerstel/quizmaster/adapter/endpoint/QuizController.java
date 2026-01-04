@@ -24,9 +24,9 @@ public class QuizController {
         return ResponseEntity.ok(quizService.getAllQuizzes());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<QuizDTO> getQuizById(@PathVariable String id) {
-        return ResponseEntity.ok(quizService.getQuiz(id));
+    @PostMapping("/start")
+    public ResponseEntity<QuizDTO> startQuiz(@RequestBody final StartQuizRequest request) {
+        return ResponseEntity.ok(quizService.startQuiz(request.toCommand()));
     }
 
 }

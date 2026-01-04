@@ -30,6 +30,7 @@ public class QuizTestUtils {
                 createAnswer("London", false, 1),
                 createAnswer("Paris", true, 2),
                 createAnswer("Madrid", false, 3)));
+        question1.setExplanation("Paris is the capital and most populous city of France.");
         questions.add(question1);
 
         QuestionDocument question2 = new QuestionDocument();
@@ -39,6 +40,7 @@ public class QuizTestUtils {
                 createAnswer("London", false, 1),
                 createAnswer("Berlin", true, 2),
                 createAnswer("Madrid", false, 3)));
+        question2.setExplanation("Berlin is the capital and largest city of Germany.");
         questions.add(question2);
         return questions;
     }
@@ -51,8 +53,10 @@ public class QuizTestUtils {
         return baseAnswer;
     }
 
-    public static void createAndSaveQuizAttempt(InMemoryQuizAttemptRepository repository, String quizId, String sessionId) {
-        QuizAttemptDTO attempt = new QuizAttemptDTO(sessionId, quizId, Instant.now().minusSeconds(90), null);
+    public static void createAndSaveQuizAttempt(InMemoryQuizAttemptRepository repository, String quizId, int questions,
+                                                String sessionId, String userName, String userEmail) {
+        QuizAttemptDTO attempt = new QuizAttemptDTO(sessionId, quizId, userName, userEmail,
+                Instant.now().minusSeconds(90), null, questions, 0);
         repository.create(attempt);
     }
 }

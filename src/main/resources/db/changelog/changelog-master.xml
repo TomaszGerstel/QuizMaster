@@ -19,7 +19,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea483a"),
-                question: "What describes overloading well?",
+                question: "What describes overloading well? (select two)",
+                tags: "java, methods, overloading",
+                explanation: "Method overloading in Java occurs when multiple methods in the same class share
+                the same name but have different parameter lists (different types, number, or both).
+                The return type and access modifiers can be the same or different,
+                but they do not contribute to method overloading.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "must have the same name", isCorrect: true },
                 { no: 2, value: "different argument list", isCorrect: true },
@@ -34,7 +40,10 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea483b"),
-                question: "What methods come from the java.lang.Object class?",
+                question: "What methods come from the java.lang.Object class? (select 5)",
+                tags: "java, object, methods",
+                explanation: "The java.lang.Object class is the root class of the Java class hierarchy.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "hashCode", isCorrect: true },
                 { no: 2, value: "toString", isCorrect: true },
@@ -51,7 +60,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea483c"),
-                question: "Differences in HashMap and Hashtable",
+                question: "Differences in HashMap and Hashtable (select 3)",
+                tags: "java, collections, hashmap, hashtable",
+                explanation: "HashMap and Hashtable are both implementations of the Map interface in Java,
+                but they have some key differences. Hashtable is synchronized, making it thread-safe,
+                while HashMap is not synchronized and is therefore not thread-safe. HashMap allows one null key
+                and multiple null values, whereas Hashtable does not allow any null keys or values.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "HashMap is synchronized and thread-safe.", isCorrect: false },
                 { no: 2, value: "Hashtable is synchronized.", isCorrect: true },
@@ -68,7 +83,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4832"),
-                question: "Select correct variable names",
+                question: "Select three correct variable names",
+                tags: "java, variables, naming",
+                explanation: "In Java, variable names must begin with a letter (A-Z or a-z),
+                underscore (_), or dollar sign ($). They cannot start with a digit and cannot contain special characters
+                like @, #, %, etc. Additionally, variable names cannot be the same as Java reserved keywords.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "int 1variable;", isCorrect: false },
                 { no: 2, value: "int variable1;", isCorrect: true },
@@ -86,7 +106,11 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea483d"),
-                question: "select methods from Thread class",
+                question: "select five methods from Thread class",
+                tags: "java, threads, methods",
+                explanation: "The Thread class in Java provides various methods to manage and control threads.
+                Some of the commonly used methods include start(), run(), sleep(), interrupt(), and wait().",
+                author: "TG",
                 answers: [
                 { no: 1, value: "start", isCorrect: true },
                 { no: 2, value: "run", isCorrect: true },
@@ -104,7 +128,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea483e"),
-                question: "What classes have the 'time zone' concept?",
+                question: "What classes have the 'time zone' concept? (select two)",
+                tags: "java, datetime, timezone",
+                explanation: "In Java, the ZonedDateTime and OffsetDateTime classes are used to represent date and time
+                with time zone information. ZonedDateTime includes the full time zone rules, while OffsetDateTime
+                represents a date-time with an offset from UTC/Greenwich.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "Duration", isCorrect: false },
                 { no: 2, value: "ZonedDateTime", isCorrect: true },
@@ -121,7 +150,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea483f"),
-                question: "Which statements are true when comparing for-each and traditional for loops?",
+                question: "Which statements are true when comparing for-each and traditional for loops? (select two)",
+                tags: "java, loops, for-each, for",
+                explanation: "Both for-each and traditional for loops can iterate through an array starting with the first element.
+                However, only the traditional for loop can iterate through an array starting from the end,
+                as it allows for more control over the index variable.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "Both can iterate through an array starting with the first element.", isCorrect: true },
                 { no: 2, value: "Only the for-each loop can iterate through an array starting with the first element.", isCorrect: false },
@@ -138,7 +172,14 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4840"),
-                question: "What is true about switch expressions and switch statements?",
+                question: "What is true about switch expressions and switch statements? (select three)",
+                tags: "java, switch, statements, expressions",
+                explanation: "Switch expressions and switch statements in Java have several differences.
+                Switch expressions can return a value and can be assigned to a variable,
+                while switch statements do not return a value. Both can have multiple values in the same case.
+                Switch statements require a break statement to prevent fall-through,
+                whereas switch expressions do not require break statements as they use the '->' syntax.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "Both allow assigning the result to a variable.", isCorrect: false },
                 { no: 2, value: "Both allow multiple values in the same case.", isCorrect: true },
@@ -155,7 +196,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4841"),
-                question: "What about loops are correct?",
+                question: "What about loops are correct? (select three)",
+                tags: "java, loops, while, do-while",
+                explanation: "Both while loops and do/while loops can be exited early using a return statement.
+                A while loop requires a conditional expression to determine whether to continue looping,
+                while a do/while loop executes the body at least once before checking the condition.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "A do/while loop requires a body.", isCorrect: true },
                 { no: 2, value: "A while loop cannot be exited early with a return statement.", isCorrect: false },
@@ -172,7 +218,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4842"),
-                question: "What modifiers can be applied to a sealed subclass?",
+                question: "What modifiers can be applied to a sealed subclass? (select three)",
+                tags: "java, sealed, subclasses, modifiers",
+                explanation: "In Java, a sealed subclass can be declared with the modifiers 'sealed',
+                'non-sealed', or 'final'. The 'sealed' modifier allows further subclassing,
+                'non-sealed' allows unrestricted subclassing, and 'final' prevents any further subclassing.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "nonsealed", isCorrect: false },
                 { no: 2, value: "default", isCorrect: false },
@@ -190,7 +241,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4843"),
-                question: "What about static interface methods is true?",
+                question: "What about static interface methods is true? (select three)",
+                tags: "java, interface, static, methods",
+                explanation: "Static methods in interfaces belong to the interface itself
+                and can be called without an instance of the interface.
+                They cannot be overridden by implementing classes, and they can have any access modifier,
+                including private, public, or package-private.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "can be final", isCorrect: false },
                 { no: 2, value: "can be declared private", isCorrect: true },
@@ -207,7 +264,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4844"),
-                question: "Which statement best describes the concept of 'effectively final' in Java?",
+                question: "Which statement best describes the concept of 'effectively final' in Java? (one correct answer)",
+                tags: "java, variables, effectively final",
+                explanation: "In Java, a local variable is considered 'effectively final' if its value
+                is not changed after it is initialized. This means that even if the variable is not explicitly
+                declared as final, it behaves as if it were final because it is not reassigned.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "A local variable that is marked final.", isCorrect: false },
                 { no: 2, value: "A static variable that is marked final.", isCorrect: false },
@@ -222,7 +284,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4845"),
-                question: "Which statements about instance keywords are correct?",
+                question: "Which statements about instance keywords are correct? (select two)",
+                tags: "java, this, super, keywords",
+                explanation: "In Java, the `this` keyword refers to the current instance of the class
+                and can be used to access all members declared within the class,
+                including inherited members. The `super` keyword is used to refer to the immediate parent class
+                and can be used to access its members, but it cannot be used in static methods.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "`that` keyword can be used to read public members in the direct parent class.", isCorrect: false },
                 { no: 2, value: "`this` keyword can be used to read all members declared within the class.", isCorrect: true },
@@ -239,7 +307,11 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4846"),
-                question: "Which modifier can be applied to an abstract interface method?",
+                question: "Which modifier can be applied to an abstract interface method? (one correct answer)",
+                tags: "java, interface, abstract, methods, modifiers",
+                explanation: "In Java, interface methods are implicitly abstract and public.
+                Therefore, the only modifier that can be explicitly applied to an abstract interface method is 'public'.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "final", isCorrect: false },
                 { no: 2, value: "interface", isCorrect: false },
@@ -256,7 +328,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4847"),
-                question: "Which of the following class types cannot be marked as abstract?",
+                question: "Which of the following class types cannot be marked as abstract? (one correct answer)",
+                tags: "java, classes, abstract",
+                explanation: "In Java, an anonymous class cannot be marked as abstract
+                because it is defined and instantiated in a single expression.
+                Anonymous classes are typically used for creating instances of classes with slight modifications
+                or for implementing interfaces on the fly.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "static nested class", isCorrect: false },
                 { no: 2, value: "Local class", isCorrect: false },
@@ -271,7 +349,11 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4848"),
-                question: "What is true about records?",
+                question: "What is true about records? (select three)",
+                tags: "java, records, classes",
+                explanation: "In Java, records are a special type of class that are designed to be immutable data carriers.
+                They are implicitly final, can implement interfaces, and can contain multiple regular constructors.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "is implicitly final", isCorrect: true },
                 { no: 2, value: "can extend other classes", isCorrect: false },
@@ -286,9 +368,14 @@
         <mongodb:insertOne collectionName="question">
             <mongodb:document>
                 {
-                "_id": { "$oid": "679b5c8ff26c6778aeea4849" },
-                "question": "Which of the following statements are correct?",
-                "answers": [
+                _id: { "$oid": "679b5c8ff26c6778aeea4849" },
+                question: "Which of the following statements are correct? (select three)",
+                tags: "java, inheritance, interfaces, abstract classes",
+                explanation: "In Java, multiple inheritance is achieved through interfaces,
+                allowing a class to implement multiple interfaces. An abstract class can implement multiple interfaces
+                as well. Additionally, an interface can extend another interface, but it cannot extend a record.",
+                author: "TG",
+                answers: [
                 { "no": 1, "value": "Java allows multiple inheritance using two classes.", "isCorrect": false },
                 { "no": 2, "value": "Java allows multiple inheritance using two interfaces.", "isCorrect": true },
                 { "no": 3, "value": "In Java, an abstract class can implement multiple interfaces.", "isCorrect": true },
@@ -303,7 +390,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4850"),
-                question: "Which of the following pairs of modifiers can both be applied to a method?",
+                question: "Which of the following pairs of modifiers can both be applied to a method? (select three)",
+                tags: "java, methods, modifiers",
+                explanation: "In Java, methods can be declared with various modifiers.
+                A method can be both private and final, static and private, or static and protected.
+                However, a method cannot be both abstract and final, private and abstract,
+                or abstract and static at the same time.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "private and final", isCorrect: true },
                 { no: 2, value: "abstract and final", isCorrect: false },
@@ -320,7 +413,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4851"),
-                question: "Which of the following statements about method overriding are true?",
+                question: "Which of the following statements about method overriding are true? (select two)",
+                tags: "java, methods, overriding",
+                explanation: "In Java, when a method is overridden in a subclass,
+                the access modifier of the overriding method can be broader than that of the overridden method.
+                Additionally, the return type of the overriding method can be covariant,
+                meaning it can be a subtype of the return type declared in the parent class method.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "An overriding method can have a broader access modifier than the method it overrides.", isCorrect: true },
                 { no: 2, value: "An overriding method can throw broader exceptions than the method it overrides.", isCorrect: false },
@@ -335,7 +434,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4852"),
-                question: "Which of the following is true regarding static method hiding in Java?",
+                question: "Which of the following is true regarding static method hiding in Java? (select two)",
+                tags: "java, methods, static, hiding",
+                explanation: "In Java, a static method can be hidden by another static method in a subclass.
+                When a static method is hidden, it is not overridden; instead, the method to be called
+                is determined by the reference type used to call the method. Therefore,
+                accessing a hidden static method must be done through a reference of the appropriate type.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "A static method can be hidden by another static method in a subclass.", isCorrect: true },
                 { no: 2, value: "Accessing a hidden static method must be done through a reference of the appropriate type.", isCorrect: true },
@@ -350,7 +455,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4855"),
-                question: "Which statements about final methods are true?",
+                question: "Which statements about final methods are true? (select three)",
+                tags: "java, methods, final",
+                explanation: "In Java, a final method cannot be overridden by subclasses,
+                but it is inherited just like non-final methods. A final method can be hidden
+                if it is marked as private, as private methods are not inherited by subclasses.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "A final method in a superclass can be overridden in a subclass.", isCorrect: false },
                 { no: 2, value: "A final method is inherited in subclasses just like non-final methods.", isCorrect: true },
@@ -366,7 +476,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4856"),
-                question: "Which of the following characteristics are true about immutable objects in Java?",
+                question: "Which of the following characteristics are true about immutable objects in Java? (select two)",
+                tags: "java, immutable, objects",
+                explanation: "In Java, immutable objects are those whose state cannot be changed after they are created.
+                To achieve immutability, the fields of the object should be declared as private and final,
+                and setters should not be provided for those fields.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "Immutable objects should have private and final fields.", isCorrect: true },
                 { no: 2, value: "They must not have setters for their fields.", isCorrect: true },
@@ -381,7 +496,14 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4857"),
-                question: "Which of the following statements about interfaces are correct?",
+                question: "Which three of the following statements about interfaces are correct?",
+                tags: "java, interfaces, methods",
+                explanation: "In Java, interface methods are implicitly public.
+                Interface static methods cannot be declared as final or abstract.
+                Default methods can be declared in an interface,
+                and an interface can have private non-static methods.
+                However, default and private non-static methods can access abstract methods declared in the same interface.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "Interface methods are implicitly `public`.", isCorrect: true },
                 { no: 2, value: "Interface static method can be `final` or `abstract`.", isCorrect: false },
@@ -397,7 +519,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4858"),
-                question: "Which of the following statements about enums in Java are correct?",
+                question: "Which two of the following statements about enums in Java are correct?",
+                tags: "java, enums, classes",
+                explanation: "In Java, enum constructors are implicitly private,
+                and enums can implement interfaces. However, enums cannot extend other classes
+                because they implicitly extend the java.lang.Enum class.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "An enum can extend another class.", isCorrect: false },
                 { no: 2, value: "Enum constructors are implicitly private.", isCorrect: true },
@@ -411,7 +538,11 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4859"),
-                question: "Which of the following statements about sealed classes are true?",
+                question: "Which of the following statements about sealed classes are true? (one correct answer)",
+                tags: "java, sealed, classes",
+                explanation: "In Java, sealed classes restrict which other classes can extend them.
+                This is achieved by specifying the permitted subclasses using the `permits` clause.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "Sealed classes can allow only certain subclasses to extend them.", isCorrect: true },
                 { no: 2, value: "You can't use Sealed class with switch expression.", isCorrect: false },
@@ -426,7 +557,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4860"),
-                question: "Which of the following are primitive data types in Java?",
+                question: "Which two of the following are primitive data types in Java?",
+                tags: "java, data types, primitive",
+                explanation: "In Java, `int` and `double` are primitive data types used to represent integer
+                and floating-point numbers, respectively. `String` is a reference data type used to represent sequences of characters,
+                and `ArrayList` is a part of the Java Collections Framework used to store dynamic arrays.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "int", isCorrect: true },
                 { no: 2, value: "String", isCorrect: false },
@@ -441,7 +577,11 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4861"),
-                question: "What is the correct way to declare an integer variable named `count` in Java?",
+                question: "What is the correct way to declare an integer variable named `count` in Java? (select two)",
+                tags: "java, variables, declaration",
+                explanation: "In Java, an integer variable can be declared using the syntax `int count;`
+                or `int count = 0;` to initialize it with a value.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "int count;", isCorrect: true },
                 { no: 2, value: "int count = 0;", isCorrect: true },
@@ -456,7 +596,11 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4862"),
-                question: "What will happen if you try to assign a double value = 3.14 to an integer variable without explicit casting?",
+                question: "What will happen if you try to assign a double value = 3.14 to an integer variable without explicit casting? (one correct answer)",
+                tags: "java, variables, data types, casting",
+                explanation: "In Java, assigning a double value to an integer variable without explicit casting
+                will result in a compilation error because it is a narrowing conversion that can lead to loss of data.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "The code will compile successfully.", isCorrect: false },
                 { no: 2, value: "The code will throw a compilation error.", isCorrect: true },
@@ -471,7 +615,12 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4863"),
-                question: "Which statements about variable scope in Java are true?",
+                question: "Which statements about variable scope in Java are true? (select three)",
+                tags: "java, variables, scope",
+                explanation: "In Java, a variable declared inside a method (local variable) is not accessible from outside the method.
+                Instance variables have a wider scope than local variables, as they can be accessed by all methods within the class.
+                Static variables belong to the class rather than instances, and local variables must be initialized before they are used.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "A variable declared inside a method is accessible from outside the method.", isCorrect: false },
                 { no: 2, value: "Instance variables have a wider scope than local variables.", isCorrect: true },
@@ -486,7 +635,11 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4864"),
-                question: "Which of the following statements regarding `String` in Java are true?",
+                question: "Which of the following statements regarding `String` in Java are true? (select two)",
+                tags: "java, strings, data types",
+                explanation: "In Java, strings are immutable, meaning their values cannot be changed after they are created.
+                Strings can be concatenated using the `+` operator, and the `String` class is part of the `java.lang` package.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "Strings are mutable data types.", isCorrect: false },
                 { no: 2, value: "Strings can be concatenated using the `+` operator.", isCorrect: true },
@@ -501,7 +654,11 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4865"),
-                question: "What is the correct way to create an array of integers in Java?",
+                question: "What is the correct way to create an array of integers in Java? (select two)",
+                tags: "java, arrays, data types",
+                explanation: "In Java, an array of integers can be created using the syntax `int[] myArray = new int[10];`
+                or by initializing it with specific values like `int[] myArray = {1, 2, 3, 4, 5};`.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "int[] myArray = new int[10];", isCorrect: true },
                 { no: 2, value: "int myArray[] = new int(10);", isCorrect: false },
@@ -516,7 +673,13 @@
             <mongodb:document>
                 {
                 _id: ObjectId("679b5c8ff26c6778aeea4866"),
-                question: "What happens when you declare a variable with the `final` keyword?",
+                question: "What happens when you declare a variable with the `final` keyword? (select three)",
+                tags: "java, variables, final",
+                explanation: "In Java, when a variable is declared with the `final` keyword,
+                it cannot be reassigned a new value after its initial assignment.
+                A final local variable must be initialized when it is declared,
+                and a final instance variable can be initialized in the constructor if not initialized at the point of declaration.",
+                author: "TG",
                 answers: [
                 { no: 1, value: "The variable can be reassigned a new value later.", isCorrect: false },
                 { no: 2, value: "The final local variable must be initialized when it is declared.", isCorrect: true },

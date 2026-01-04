@@ -18,14 +18,25 @@ public class QuizAttemptDocument {
     @Id
     private String sessionId;
     private String quizId;
+    private String userName;
+    private String userEmail;
     private Instant startTime;
     private Instant endTime;
+    private int questionCount;
+    private int correctAnswers;
 
     public QuizAttemptDTO toDTO() {
-        return new QuizAttemptDTO(sessionId, quizId, startTime, endTime);
+        return new QuizAttemptDTO(sessionId, quizId, userName, userEmail, startTime, endTime,
+                questionCount, correctAnswers);
     }
 
-    public static QuizAttemptDocument fromDTO(QuizAttemptDTO dto) {
-        return new QuizAttemptDocument(dto.getSessionId(), dto.getQuizId(), dto.getStartTime(), dto.getEndTime());
+    public static QuizAttemptDocument initAttempt(QuizAttemptDTO dto) {
+        return new QuizAttemptDocument(dto.getSessionId(), dto.getQuizId(), dto.getUserName(), dto.getUserEmail(),
+                dto.getStartTime(), null, dto.getQuestionsCount(), 0);
+    }
+
+    public void completeQuizAttempt(int score, Instant endTime) {
+        this.correctAnswers = score;
+        this.endTime = endTime;
     }
 }

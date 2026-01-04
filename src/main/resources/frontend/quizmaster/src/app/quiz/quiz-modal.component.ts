@@ -13,6 +13,9 @@ import {BsModalRef} from 'ngx-bootstrap/modal';
 })
 export class QuizModalComponent implements OnInit {
   quizId?: string;
+  username?: string;
+  email?: string;
+
   quiz: Quiz | null = null;
   selectedAnswers: { [questionId: string]: number[] } = {};
   quizResult: QuizResult | null = null;
@@ -28,12 +31,12 @@ export class QuizModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.quizId) {
-      this.getQuiz(this.quizId);
+      this.getQuiz(this.quizId, this.username ? this.username : 'anonymous', this.email ? this.email : '');
     }
   }
 
-  getQuiz(id: string): void {
-    this.quizService.getQuiz(id).subscribe(data => {
+  getQuiz(id: string, username: string, email: string): void {
+    this.quizService.getQuiz(id, username, email).subscribe(data => {
       this.quiz = data;
       this.selectedAnswers = {};
       this.quizResult = null;
@@ -79,6 +82,8 @@ export class QuizModalComponent implements OnInit {
           (question.status = reportForQuestion.positive ? QuestionStatus.Passed : QuestionStatus.Failed)
           : QuestionStatus.Initial;
 
+        question.explanation = reportForQuestion ? reportForQuestion.explanation : '';
+
         question.answers.forEach(answer => {
           if (reportForQuestion?.expectedAnswers.includes(answer.no)) {
             answer.status = AnswerStatus.Correct;
@@ -87,14 +92,6 @@ export class QuizModalComponent implements OnInit {
           }
         });
       });
-    }
-  }
-
-  resetQuiz(): void {
-    this.getQuiz(this.quiz ? this.quiz.id : '0');
-    const modalBody = document.querySelector('.modal-dialog');
-    if (modalBody?.parentElement) {
-      modalBody.parentElement.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
