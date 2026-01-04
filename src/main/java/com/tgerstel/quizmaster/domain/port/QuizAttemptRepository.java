@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface QuizAttemptRepository {
     void create(QuizAttemptDTO attempt);
-    Optional<QuizAttemptDTO> getAndEnd(String sessionId, Instant endTime);
+    Optional<QuizAttemptDTO> getAndEnd(String sessionId, Instant endTime, int score);
 }

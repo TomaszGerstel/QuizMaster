@@ -16,14 +16,14 @@ public class QuizAttemptRepositoryImpl implements QuizAttemptRepository {
 
     @Override
     public void create(QuizAttemptDTO attempt) {
-       mongoRepository.save(QuizAttemptDocument.fromDTO(attempt));
+       mongoRepository.save(QuizAttemptDocument.initAttempt(attempt));
     }
 
     @Override
-    public Optional<QuizAttemptDTO> getAndEnd(String sessionId, Instant endTime) {
+    public Optional<QuizAttemptDTO> getAndEnd(String sessionId, Instant endTime, int score) {
         return mongoRepository.findBySessionId(sessionId)
                 .map(attempt -> {
-                    attempt.setEndTime(endTime);
+                    attempt.completeQuizAttempt(score, endTime);
                     mongoRepository.save(attempt);
                     return attempt.toDTO();
                 });

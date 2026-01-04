@@ -22,15 +22,15 @@ public class InMemoryQuizAttemptRepository implements QuizAttemptRepository {
 
     @Override
     public void create(QuizAttemptDTO attempt) {
-        attemptDocuments.add(QuizAttemptDocument.fromDTO(attempt));
+        attemptDocuments.add(QuizAttemptDocument.initAttempt(attempt));
     }
 
     @Override
-    public Optional<QuizAttemptDTO> getAndEnd(String sessionId, Instant endTime) {
+    public Optional<QuizAttemptDTO> getAndEnd(String sessionId, Instant endTime, int score) {
         Optional<QuizAttemptDocument> attempt = attemptDocuments.stream()
                 .filter(a -> Objects.equals(a.getSessionId(), sessionId))
                 .findFirst();
-        attempt.ifPresent(a -> a.setEndTime(endTime));
+        attempt.ifPresent(a -> a.completeQuizAttempt(score, endTime));
         return attempt.map(QuizAttemptDocument::toDTO);
     }
 

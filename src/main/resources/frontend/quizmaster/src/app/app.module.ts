@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
 import {DurationFormatPipe} from "./pipe/duration-format-pipe";
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { ModalModule } from 'ngx-bootstrap/modal';
         BrowserModule,
         AppRoutingModule,
         HttpClientModule,
+        FormsModule,
         DurationFormatPipe,
         ModalModule.forRoot(),
     ],

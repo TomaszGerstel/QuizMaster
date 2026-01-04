@@ -30,7 +30,7 @@ public class QuizEvaluationService implements QuizEvaluator {
 
     @Override
     public QuizResult submitQuiz(final SubmitQuizCommand command) {
-        final Duration attemptTime = finishQuiz(command.sessionId());
+        var endTime = Instant.now();
 
         final QuizEvalDTO quiz = quizRepository.getEvalById(command.quizId())
                 .orElseThrow(() -> new QuizNotFoundException(command.quizId()));
@@ -46,11 +46,14 @@ public class QuizEvaluationService implements QuizEvaluator {
                 .filter(AnswerReportEntry::positive)
                 .toList()
                 .size();
+        final int percentageScore = questionCount == 0 ? 0 : correctSolutionsCount * 100 / questionCount;
 
         final boolean evaluation = isQuizPassed(correctSolutionsCount, questionCount);
 
-        return new QuizResult(quiz.id(), evaluation, correctSolutionsCount, questionCount, answersReport,
-                attemptTime.toSeconds());
+        final Duration attemptTime = finishQuiz(command.sessionId(), endTime, correctSolutionsCount);
+
+        return new QuizResult(quiz.id(), evaluation, correctSolutionsCount, percentageScore, questionCount,
+                answersReport, attemptTime.toSeconds());
     }
 
     private List<AnswerReportEntry> evaluateAnswers(List<EvalQuestion> questions, List<QuestionSolution> solutions) {
@@ -63,15 +66,14 @@ public class QuizEvaluationService implements QuizEvaluator {
                     .findFirst()
                     .orElse(Collections.emptySet());
 
-            report.add(new AnswerReportEntry(question.id(), expectedAnswers,
+            report.add(new AnswerReportEntry(question.id(), expectedAnswers, question.explanation(),
                     isCorrectAnswer(expectedAnswers, actualAnswers)));
         }
         return report;
     }
 
-    private Duration finishQuiz(String sessionId) {
-        var endTime = Instant.now();
-        return attemptRepository.getAndEnd(sessionId, endTime)
+    private Duration finishQuiz(String sessionId, Instant endTime, int score) {
+        return attemptRepository.getAndEnd(sessionId, endTime, score)
                 .map(QuizAttemptDTO::getQuizTime)
                 .orElse(Duration.ZERO);
     }

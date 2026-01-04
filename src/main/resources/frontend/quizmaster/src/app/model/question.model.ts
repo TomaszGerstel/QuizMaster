@@ -5,6 +5,7 @@ export interface Question {
   question: string;
   answers: Answer[];
   status?: QuestionStatus | QuestionStatus.Initial;
+  explanation?: string;
 }
 
 export enum QuestionStatus {

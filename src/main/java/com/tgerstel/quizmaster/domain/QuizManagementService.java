@@ -1,5 +1,6 @@
 package com.tgerstel.quizmaster.domain;
 
+import com.tgerstel.quizmaster.domain.command.StartQuizCommand;
 import com.tgerstel.quizmaster.domain.dto.QuizAttemptDTO;
 import com.tgerstel.quizmaster.domain.dto.QuizBasicDTO;
 import com.tgerstel.quizmaster.domain.dto.QuizDTO;
@@ -27,11 +28,13 @@ public class QuizManagementService implements QuizManager {
         return quizRepository.getAll();
     }
 
-    public QuizDTO getQuiz(String id) {
+    public QuizDTO startQuiz(StartQuizCommand command) {
+        var id = command.quizId();
         var quiz = quizRepository.getById(id).orElseThrow(() -> new QuizNotFoundException(id));
         var sessionId = UUID.randomUUID().toString();
-        attemptRepository.create(QuizAttemptDTO.startAttempt(sessionId, id));
         quiz.setSessionId(sessionId);
+        attemptRepository.create(QuizAttemptDTO.startAttempt(sessionId, id, quiz.getQuestions().size(), command.name(),
+                command.email()));
         return quiz;
     }
 

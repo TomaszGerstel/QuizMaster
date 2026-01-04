@@ -37,8 +37,10 @@ public class SubmissionControllerIT {
     public void testSubmitQuiz() {
         var sessionId = "session997";
         var quizId = "1";
+        var userName = "John Doe";
+        var email = "john1@email";
         QuizTestUtils.createAndSaveQuizDocument(quizRepository, quizId, "Quiz 1");
-        QuizTestUtils.createAndSaveQuizAttempt(attemptRepository, quizId, sessionId);
+        QuizTestUtils.createAndSaveQuizAttempt(attemptRepository, quizId, 8, sessionId, userName, email);
         var requestBody = """
                 {
                     "quizId": "1",
@@ -64,6 +66,7 @@ public class SubmissionControllerIT {
                 .statusCode(202)
                 .body("quizId", equalTo("1"))
                 .body("quizScore", equalTo(2))
+                .body("percentageScore", equalTo(100))
                 .body("isPositive", equalTo(true))
                 .body("questionsCount", equalTo(2))
                 .body("attemptTimeInSeconds", notNullValue())
@@ -72,10 +75,12 @@ public class SubmissionControllerIT {
                 .body("answersReport[0].expectedAnswers", hasSize(1))
                 .body("answersReport[0].expectedAnswers[0]", equalTo(2))
                 .body("answersReport[0].positive", equalTo(true))
+                .body("answersReport[0].explanation", notNullValue())
                 .body("answersReport[1].questionId", equalTo("2"))
                 .body("answersReport[1].expectedAnswers", hasSize(1))
                 .body("answersReport[1].expectedAnswers[0]", equalTo(2))
-                .body("answersReport[1].positive", equalTo(true));
+                .body("answersReport[1].positive", equalTo(true))
+                .body("answersReport[1].explanation", notNullValue());
     }
 
     @Test
