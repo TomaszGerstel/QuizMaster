@@ -95,6 +95,20 @@ export class QuizModalComponent implements OnInit {
     }
   }
 
+  get answeredQuestionsCount(): number {
+    if (!this.quiz) return 0;
+    return this.quiz.questions.filter(q =>
+      this.selectedAnswers[q.id]?.length > 0
+    ).length;
+  }
+
+  get progressPercent(): number {
+    if (!this.quiz) return 0;
+    return Math.round(
+      (this.answeredQuestionsCount / this.quiz.questions.length) * 100
+    );
+  }
+
   scrollToResult(): void {
     setTimeout(() => {
       this.resultSection.nativeElement.scrollIntoView({behavior: 'smooth'});

@@ -9,3 +9,30 @@ div {
 .text-danger {
   color: red;
 }
+
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.card {
+  transition: border-color 0.2s ease;
+}
+
+.progress-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1050;
+  background: white;
+  padding-bottom: 0.5rem;
+  margin-right: 2rem;
+  margin-left: 2rem;
+  margin-bottom: 0rem;
+}
+
+.progress-bar {
+  height: 16px;
+  background-color: #007bff;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}

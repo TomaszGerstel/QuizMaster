@@ -1,18 +1,52 @@
 <div class="container">
-  <h4>Quizzes list (click to expand):</h4>
-  <div class="list-group">
-    <a class="list-group-item list-group-item-action fw-bolder mb-2 border-1"
-       *ngFor="let quiz of quizzes" (click)="expandedQuizId = quiz.id">
-      {{ quiz.title + " (" + quiz.questionsQuantity + " questions)" }}
-      <div *ngIf="expandedQuizId === quiz.id" class="p-3">
-        <div class="mb-3 d-flex align-items-center">
-          <label for="nameInput" class="form-label me-2">Name:</label>
-          <input type="text" id="nameInput" class="form-control me-3" [(ngModel)]="username" placeholder="Enter your name">
-          <label for="emailInput" class="form-label me-2">Email:</label>
-          <input type="email" id="emailInput" class="form-control" [(ngModel)]="email" placeholder="Enter your email">
+  <h4>Available Quizzes to take:</h4>
+  <span class="text-muted">Click on a quiz to expand and take the quiz.</span>
+
+  <div class="row mt-4 g-3">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3"
+         *ngFor="let quiz of quizzes">
+
+      <div class="card quiz-card"
+           (click)="expandedQuizId = quiz.id">
+
+        <div class="card-body">
+          <div class="text-center mb-2">
+            <i class="bi bi-patch-question-fill fs-1 text-primary"></i>
+          </div>
+
+          <h5 class="card-title text-center">
+            {{ quiz.title }}
+          </h5>
+
+          <p class="text-muted text-center small">
+            <i class="bi bi-list-check me-1"></i>
+            {{ quiz.questionsQuantity }} questions
+          </p>
+
+          <div *ngIf="expandedQuizId === quiz.id" class="mt-3">
+            <div class="mb-2">
+              <label class="form-label small">Name</label>
+              <input type="text"
+                     class="form-control form-control-sm"
+                     [(ngModel)]="username">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small">Email</label>
+              <input type="email"
+                     class="form-control form-control-sm"
+                     [(ngModel)]="email">
+            </div>
+
+            <button class="btn btn-primary w-100"
+                    (click)="startQuiz(quiz.id); $event.stopPropagation()">
+              <i class="bi bi-play-fill me-1"></i>
+              Start Quiz
+            </button>
+          </div>
         </div>
-        <button class="btn btn-primary" title="start quiz" (click)="startQuiz(quiz.id)">Start Quiz</button>
       </div>
-    </a>
+    </div>
+
   </div>
 </div>
