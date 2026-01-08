@@ -4,8 +4,26 @@
 <div class="d-flex w-100">
   <aside class="bg-light border-end min-vh-100 w-25">
     <nav class="nav flex-column p-3">
-      <a class="nav-link" routerLink="/">Quizzes</a>
-      <a class="nav-link" routerLink="/about">About</a>
+      <a class="nav-link" routerLink="/">
+        <i class="bi bi-list-check me-2"></i>Quizzes to take</a>
+      <a class="nav-link disabled" routerLink="/statistics">
+        <i class="bi bi-bar-chart-fill me-2"></i>
+        Quiz Statistics
+      </a>
+      <div class="text-uppercase text-muted small fw-bold mt-3 mb-2">
+        Administration
+      </div>
+      <a class="nav-link" routerLink="/manage-quizzes">
+        <i class="bi bi-gear me-2"></i>Manage Quizzes</a>
+      <a class="nav-link disabled" routerLink="/manage-questions">
+        <i class="bi bi-question-circle me-2"></i>
+        Manage Questions
+      </a>
+      <div class="text-uppercase text-muted small fw-bold mt-3 mb-2">
+        Info
+      </div>
+      <a class="nav-link" routerLink="/about">
+        <i class="bi bi-info-circle me-2"></i>About</a>
     </nav>
   </aside>
   <main class="flex-grow-1 p-4 w-100">
