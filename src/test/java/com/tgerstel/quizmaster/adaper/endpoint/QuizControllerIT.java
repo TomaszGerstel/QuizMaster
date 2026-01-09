@@ -2,6 +2,7 @@ package com.tgerstel.quizmaster.adaper.endpoint;
 
 import com.tgerstel.quizmaster.helper.InMemoryQuizRepositoryImpl;
 import com.tgerstel.quizmaster.helper.QuizTestUtils;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,29 +35,29 @@ public class QuizControllerIT {
 
     @Test
     public void testGetAllQuizzes() {
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository, "1", "Quiz 1");
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository, "2", "Quiz 2");
+        QuizTestUtils.createAndSaveQuizDocument(quizRepository, new ObjectId("507f1f77bcf86cd799439011"), "Quiz 1");
+        QuizTestUtils.createAndSaveQuizDocument(quizRepository, new ObjectId("507f1f77bcf86cd799439012"), "Quiz 2");
         given()
                 .when()
                 .get(baseURI + ":" + port + "/api/quiz")
                 .then()
                 .statusCode(200)
                 .body("size()", is(2))
-                .body("[0].id", equalTo("1"))
+                .body("[0].id", equalTo("507f1f77bcf86cd799439011"))
                 .body("[0].title", equalTo("Quiz 1"))
                 .body("[0].questionsQuantity", equalTo(2))
-                .body("[1].id", equalTo("2"))
+                .body("[1].id", equalTo("507f1f77bcf86cd799439012"))
                 .body("[1].title", equalTo("Quiz 2"))
                 .body("[1].questionsQuantity", equalTo(2));
     }
 
     @Test
     public void testGetQuizById() {
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository,"1", "Quiz 1");
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository,"2", "Quiz 2");
+        QuizTestUtils.createAndSaveQuizDocument(quizRepository,new ObjectId("507f1f77bcf86cd799439011"), "Quiz 1");
+        QuizTestUtils.createAndSaveQuizDocument(quizRepository,new ObjectId("507f1f77bcf86cd799439012"), "Quiz 2");
         var requestBody = """
                 {
-                    "quizId": "2",
+                    "quizId": "507f1f77bcf86cd799439012",
                     "name": "John Doe",
                     "email": "john.doe@email"
                 }
@@ -68,7 +69,7 @@ public class QuizControllerIT {
                 .post(baseURI + ":" + port + "/api/quiz/start")
                 .then()
                 .statusCode(200)
-                .body("id", equalTo("2"))
+                .body("id", equalTo("507f1f77bcf86cd799439012"))
                 .body("title", equalTo("Quiz 2"))
                 .body("sessionId", notNullValue())
                 .body("questions.size()", is(2))
@@ -79,8 +80,8 @@ public class QuizControllerIT {
 
     @Test
     public void testGetQuizByIdShouldReturnNotFoundCode() {
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository,"1", "Quiz 1");
-        var notExistingId = "2";
+        QuizTestUtils.createAndSaveQuizDocument(quizRepository,new ObjectId("507f1f77bcf86cd799439011"), "Quiz 1");
+        var notExistingId = "507f1f77bcf86cd799439099";
         var requestBody = """
                 {
                     "quizId": "%s",
@@ -96,7 +97,7 @@ public class QuizControllerIT {
                 .post(baseURI + ":" + port + "/api/quiz/start")
                 .then()
                 .statusCode(404)
-                .body("reason", equalTo("Quiz with id " + notExistingId + " not found"));
+                .body("reason", equalTo("Quiz with ID " + notExistingId + " not found"));
     }
 
 }

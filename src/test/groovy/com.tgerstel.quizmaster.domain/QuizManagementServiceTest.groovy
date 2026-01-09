@@ -2,20 +2,24 @@ package com.tgerstel.quizmaster.domain
 
 import com.tgerstel.quizmaster.domain.command.StartQuizCommand
 import com.tgerstel.quizmaster.domain.dto.QuizBasicDTO
-import com.tgerstel.quizmaster.domain.dto.QuizDTO
+import com.tgerstel.quizmaster.domain.dto.QuizToSolveDTO
 import com.tgerstel.quizmaster.domain.exception.QuizNotFoundException
 import com.tgerstel.quizmaster.domain.model.Answer
 import com.tgerstel.quizmaster.domain.model.Question
+import com.tgerstel.quizmaster.domain.port.QuestionRepository
 import com.tgerstel.quizmaster.domain.port.QuizAttemptRepository
 import com.tgerstel.quizmaster.domain.port.QuizManager
 import com.tgerstel.quizmaster.domain.port.QuizRepository
+import org.bson.types.ObjectId
 import spock.lang.Specification
 
 class QuizManagementServiceTest extends Specification {
 
     private QuizRepository quizRepository = Mock()
     private QuizAttemptRepository attemptRepository = Mock()
-    private QuizManager quizManagementService = new QuizManagementService(quizRepository, attemptRepository)
+    private QuestionRepository questionRepository = Mock()
+    private QuizManager quizManagementService = new QuizManagementService(quizRepository, attemptRepository,
+            questionRepository)
 
     def "should return all quizzes"() {
         given:
@@ -38,10 +42,10 @@ class QuizManagementServiceTest extends Specification {
 
     def "should return quiz by id"() {
         given:
-        def quizId = "quiz11"
+        def quizId = new ObjectId("deadbeefcafebabe12345601")
 
-        def quiz = new QuizDTO(
-                quizId, "someTitle",
+        def quiz = new QuizToSolveDTO(
+                quizId.toString(), "someTitle",
                 null,
                 [
                         new Question("qId1", "Some question",
@@ -61,7 +65,7 @@ class QuizManagementServiceTest extends Specification {
         def result = quizManagementService.startQuiz(new StartQuizCommand(quizId, "anyUser", "anyEmail"))
 
         then:
-        result.id == quizId
+        result.id == quizId.toString()
         result.title == "someTitle"
         result.sessionId != null
         result.questions.size() == 2
@@ -76,7 +80,7 @@ class QuizManagementServiceTest extends Specification {
 
     def "should throw exception when quiz not found"() {
         given:
-        def quizId = "nonExistingQuiz"
+        def quizId = new ObjectId("deadbeefcafebabe12999601")
         quizRepository.getById(quizId) >> Optional.empty()
 
         when:

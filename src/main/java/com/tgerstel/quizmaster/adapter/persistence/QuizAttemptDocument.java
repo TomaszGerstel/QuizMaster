@@ -4,6 +4,7 @@ import com.tgerstel.quizmaster.domain.dto.QuizAttemptDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,7 +18,7 @@ public class QuizAttemptDocument {
 
     @Id
     private String sessionId;
-    private String quizId;
+    private ObjectId quizId;
     private String userName;
     private String userEmail;
     private Instant startTime;
@@ -26,12 +27,12 @@ public class QuizAttemptDocument {
     private int correctAnswers;
 
     public QuizAttemptDTO toDTO() {
-        return new QuizAttemptDTO(sessionId, quizId, userName, userEmail, startTime, endTime,
+        return new QuizAttemptDTO(sessionId, quizId.toString(), userName, userEmail, startTime, endTime,
                 questionCount, correctAnswers);
     }
 
     public static QuizAttemptDocument initAttempt(QuizAttemptDTO dto) {
-        return new QuizAttemptDocument(dto.getSessionId(), dto.getQuizId(), dto.getUserName(), dto.getUserEmail(),
+        return new QuizAttemptDocument(dto.getSessionId(), new ObjectId(dto.getQuizId()), dto.getUserName(), dto.getUserEmail(),
                 dto.getStartTime(), null, dto.getQuestionsCount(), 0);
     }
 

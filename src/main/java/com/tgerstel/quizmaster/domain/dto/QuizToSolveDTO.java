@@ -1,0 +1,16 @@
+package com.tgerstel.quizmaster.domain.dto;
+
+import com.tgerstel.quizmaster.domain.model.Question;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+public class QuizToSolveDTO {
+    private String id;
+    private String title;
+    private String sessionId;
+    private List<Question> questions;
+}

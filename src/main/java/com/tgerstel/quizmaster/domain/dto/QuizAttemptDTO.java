@@ -2,6 +2,7 @@ package com.tgerstel.quizmaster.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.bson.types.ObjectId;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,10 +19,10 @@ public class QuizAttemptDTO {
     private int questionsCount;
     private int correctAnswers;
 
-    public static QuizAttemptDTO startAttempt(String sessionId, String quizId, int questions, String userName,
+    public static QuizAttemptDTO startAttempt(String sessionId, ObjectId quizId, int questions, String userName,
                                               String userEmail) {
         Instant start = Instant.now();
-        return new QuizAttemptDTO(sessionId, quizId, userName, userEmail, start, null, questions, 0);
+        return new QuizAttemptDTO(sessionId, quizId.toString(), userName, userEmail, start, null, questions, 0);
     }
 
     public Duration getQuizTime() {

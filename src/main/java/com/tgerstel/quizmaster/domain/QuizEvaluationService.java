@@ -8,6 +8,7 @@ import com.tgerstel.quizmaster.domain.model.*;
 import com.tgerstel.quizmaster.domain.port.QuizAttemptRepository;
 import com.tgerstel.quizmaster.domain.port.QuizEvaluator;
 import com.tgerstel.quizmaster.domain.port.QuizRepository;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -33,7 +34,7 @@ public class QuizEvaluationService implements QuizEvaluator {
         var endTime = Instant.now();
 
         final QuizEvalDTO quiz = quizRepository.getEvalById(command.quizId())
-                .orElseThrow(() -> new QuizNotFoundException(command.quizId()));
+                .orElseThrow(() -> new QuizNotFoundException(command.quizId().toString()));
 
         final List<EvalQuestion> questions = quiz.questions();
         final List<QuestionSolution> solutions = command.solution();
@@ -61,7 +62,7 @@ public class QuizEvaluationService implements QuizEvaluator {
         for (EvalQuestion question : questions) {
             var expectedAnswers = getExpectedAnswers(question);
             var actualAnswers = solutions.stream()
-                    .filter(s -> s.questionId().equals(question.id()))
+                    .filter(s -> s.questionId().toString().equals(question.id()))
                     .map(this::getActualAnswers)
                     .findFirst()
                     .orElse(Collections.emptySet());
@@ -82,9 +83,9 @@ public class QuizEvaluationService implements QuizEvaluator {
         return !actualAnswers.isEmpty() && expectedAnswers.equals(actualAnswers);
     }
 
-    private void validateQuestionId(List<EvalQuestion> questions, String questionId) {
+    private void validateQuestionId(List<EvalQuestion> questions, ObjectId questionId) {
         questions.stream()
-                .filter(q -> q.id().equals(questionId))
+                .filter(q -> q.id().equals(questionId.toString()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Question with id: " + questionId + " not related to the quiz"));
     }

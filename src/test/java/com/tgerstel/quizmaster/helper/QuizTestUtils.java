@@ -5,14 +5,16 @@ import com.tgerstel.quizmaster.adapter.persistence.BaseAnswer;
 import com.tgerstel.quizmaster.adapter.persistence.QuestionDocument;
 import com.tgerstel.quizmaster.adapter.persistence.QuizDocument;
 import com.tgerstel.quizmaster.domain.dto.QuizAttemptDTO;
+import org.bson.types.ObjectId;
 
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class QuizTestUtils {
 
-    public static void createAndSaveQuizDocument(InMemoryQuizRepositoryImpl quizRepository, String id, String title) {
+    public static void createAndSaveQuizDocument(InMemoryQuizRepositoryImpl quizRepository, ObjectId id, String title) {
         QuizDocument quiz = new QuizDocument();
         quiz.setId(id);
         quiz.setTitle(title);
@@ -20,11 +22,11 @@ public class QuizTestUtils {
         quizRepository.save(quiz);
     }
 
-    public static List<QuestionDocument> createQuestions() {
-        List<QuestionDocument> questions = new ArrayList<>();
+    public static Set<QuestionDocument> createQuestions() {
+        Set<QuestionDocument> questions = new HashSet<>();
 
         QuestionDocument question1 = new QuestionDocument();
-        question1.setId("1");
+        question1.setId(new ObjectId("507f1f77bcf86cd799439011"));
         question1.setQuestion("What is the capital of France?");
         question1.setAnswers(List.of(
                 createAnswer("London", false, 1),
@@ -34,7 +36,7 @@ public class QuizTestUtils {
         questions.add(question1);
 
         QuestionDocument question2 = new QuestionDocument();
-        question2.setId("2");
+        question2.setId(new ObjectId("507f1f77bcf86cd799439012"));
         question2.setQuestion("What is the capital of Germany?");
         question2.setAnswers(List.of(
                 createAnswer("London", false, 1),
@@ -53,9 +55,9 @@ public class QuizTestUtils {
         return baseAnswer;
     }
 
-    public static void createAndSaveQuizAttempt(InMemoryQuizAttemptRepository repository, String quizId, int questions,
+    public static void createAndSaveQuizAttempt(InMemoryQuizAttemptRepository repository, ObjectId quizId, int questions,
                                                 String sessionId, String userName, String userEmail) {
-        QuizAttemptDTO attempt = new QuizAttemptDTO(sessionId, quizId, userName, userEmail,
+        QuizAttemptDTO attempt = new QuizAttemptDTO(sessionId, quizId.toString(), userName, userEmail,
                 Instant.now().minusSeconds(90), null, questions, 0);
         repository.create(attempt);
     }

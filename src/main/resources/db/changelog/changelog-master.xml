@@ -697,6 +697,8 @@
                 title: "Java general quiz",
                 userId: 1,
                 approved: true,
+                editable: false,
+                version: 1,
                 questions: [
                 {
                 "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea483a"), "$db": ""
@@ -783,6 +785,8 @@
                 title: "Java: data types and variables quiz",
                 userId: 1,
                 approved: true,
+                editable: false,
+                version: 1,
                 questions: [
                 {
                 "$ref": "question", "$id": ObjectId("679b5c8ff26c6778aeea4832"), "$db": ""
