@@ -8,6 +8,8 @@ import {QuizSubmissionRequest} from './model/submission-request';
 import {StartQuizRequest} from './model/start-quiz-request';
 import {QuizResult} from './model/quiz-result.model';
 import {environment} from '../environments/environment';
+import {QuestionDTO} from "./model/question-dto.model";
+import {QuizDTO} from "./model/quiz-dto.model";
 
 @Injectable({providedIn: 'root'})
 export class QuizmasterService {
@@ -36,4 +38,24 @@ export class QuizmasterService {
     const request: QuizSubmissionRequest = {quizId, sessionId, solutions};
     return this.http.post<QuizResult>(`${this.baseUrl}/submission`, request);
   }
+
+  getQuizzesForManagement(): Observable<QuizDTO[]> {
+    return this.http.get<QuizDTO[]>(`${this.baseUrl}/quiz/manage`);
+  }
+
+  getQuestions(): Observable<QuestionDTO[]> {
+    return this.http.get<QuestionDTO[]>(`${this.baseUrl}/question`);
+  }
+
+  assignQuestionsToQuiz(quizId: string, questionIds: string[]): Observable<void> {
+    const request = {quizId, questionIds};
+    return this.http.post<void>(`${this.baseUrl}/quiz/assign-questions`, request);
+  }
+
+  createQuiz(quizName: string, author: string): Observable<{quizId: string}> {
+    const request = {name: quizName, author: author, questionIds: []};
+    return this.http.post<{quizId: string}>(`${this.baseUrl}/quiz/manage/new`, request);
+  }
+
+
 }

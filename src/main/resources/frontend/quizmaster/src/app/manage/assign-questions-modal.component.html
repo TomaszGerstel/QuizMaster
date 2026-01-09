@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <h4 class="modal-title">Adding questions to quiz</h4>
+  <button type="button" class="btn-close" (click)="bsModalRef.hide()"></button>
+</div>
+<div class="modal-body">
+  <div>
+    Quiz name: <strong>{{ quizName }}</strong><br>
+    Quiz id: <strong>{{ quizId }}</strong>
+  </div><br>
+  <span class="text-muted">Select items from existing questions and assign to quiz</span><br><br>
+  <div  class="sticky w-100 text-center" >
+    <button type="button" class="btn btn-primary m-2" (click)="assignSelectedQuestions()">Assign Selected Questions</button>
+  </div>
+  <hr>
+  <div *ngFor="let question of questions">
+    <div class="form-check mt-3">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        [id]="'question-' + question.id!"
+        [value]="question.id"
+        (change)="toggleQuestionSelection(question.id!, $event)">
+      <label class="form-check-label" [for]="'question-' + question.id">
+        <u>Q: {{ question.question }}</u>
+      </label>
+      <div *ngFor="let answer of question.answers" class="ms-3">
+        <strong [ngClass]="{'text-success': answer.isCorrect, 'text-danger': !answer.isCorrect}">
+          {{ answer.value }} {{ answer.isCorrect ? '(correct)' : '(wrong)' }}
+        </strong>
+      </div>
+      <div *ngIf="question.explanation != null" class="mt-2">
+        <strong>Explanation:</strong> {{ question.explanation }}
+        <br>
+        <strong>Question id:</strong> {{ question.id }}
+      </div>
+    </div>
+    <hr>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Exit</button>
+</div>
