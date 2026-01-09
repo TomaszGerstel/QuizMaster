@@ -1,0 +1,25 @@
+<div class="modal-header">
+  <h4 class="modal-title">Create new quiz</h4>
+  <button type="button" class="btn-close" (click)="bsModalRef.hide()"></button>
+</div>
+<div class="modal-body">
+  <span class="text-muted">Insert quiz name and author name. After that you can add questions to quiz from existing.</span><br><br>
+  <hr>
+  <div>
+
+    <div class="mb-3">
+      <label for="quizName" class="form-label">Quiz Name:</label>
+      <input type="text" id="quizName" class="form-control" [(ngModel)]="quizName" placeholder="Enter quiz name">
+    </div>
+    <div class="mb-3">
+      <label for="authorName" class="form-label">Author Name:</label>
+      <input type="text" id="authorName" class="form-control" [(ngModel)]="authorName" placeholder="Enter author name">
+    </div>
+    <button type="button" class="btn btn-primary" (click)="createQuiz()">Create Quiz</button>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Exit</button>
+</div>

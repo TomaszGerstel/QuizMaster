@@ -1,0 +1,36 @@
+<div class="container">
+  <h4>Quizzes management:</h4>
+  <span class="text-muted">Add new quiz or manage existing quizzes</span>
+  <div class="d-flex mb-3 mt-3">
+    <button class="btn btn-primary" (click)="createNewQuiz()">Create new quiz</button>
+  </div>
+  <span class="text-muted">Click on a quiz to expand and see its details like questions and all answers or add questions to quiz</span>
+  <div class="list-group mt-2">
+    <a class="list-group-item list-group-item-action fw-bolder mb-2 border-1"
+       *ngFor="let quiz of quizzes" (click)="expandedQuizId = quiz.id">
+      <h5>{{ quiz.name + " (" + quiz.questions.length + " questions)" }}</h5>
+      <div *ngIf="expandedQuizId === quiz.id" class="">
+        <hr>
+        <span><strong>quiz id: </strong>{{ quiz.id }}</span>
+        <button class="btn btn-secondary btn-sm float-end" (click)="assignQuestions(quiz.id, quiz.name)">Add questions to quiz</button>
+        <hr>
+        <div *ngFor="let question of quiz.questions">
+          <div class="mt-3">
+            <span><u>Q: {{ question.question }}</u></span>
+            <div *ngFor="let answer of question.answers" class="ms-3">
+              <strong [ngClass]="{'text-success': answer.isCorrect, 'text-danger': !answer.isCorrect}">
+               {{ answer.value }} {{ answer.isCorrect ? '(correct)' : '(wrong)' }}
+              </strong>
+            </div>
+            <div *ngIf="question.explanation != null" class="mt-2">
+              <strong>Explanation:</strong> {{ question.explanation }}
+              <br>
+              <strong>Question id:</strong> {{ question.id }}
+            </div>
+          </div>
+          <hr>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

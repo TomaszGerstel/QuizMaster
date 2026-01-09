@@ -3,10 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.compnent';
 import { QuizListComponent } from './quiz/quiz-list.component';
 import { QuizModalComponent } from './quiz/quiz-modal.component';
+import { QuizManagementComponent } from './manage/quiz-management.component';
+import { AssignQuestionsModalComponent } from './manage/assign-questions-modal.component';
+import { NewQuizModalComponent } from './manage/new-quiz-modal.component';
 import { AboutComponent } from './about/about.component';
 import { AppRoutingModule } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
-import {DurationFormatPipe} from "./pipe/duration-format-pipe";
+import { DurationFormatPipe } from "./pipe/duration-format-pipe";
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { FormsModule } from '@angular/forms';
 
@@ -15,6 +18,9 @@ import { FormsModule } from '@angular/forms';
     AppComponent,
     QuizListComponent,
     QuizModalComponent,
+    QuizManagementComponent,
+    AssignQuestionsModalComponent,
+    NewQuizModalComponent,
     AboutComponent
   ],
     imports: [
