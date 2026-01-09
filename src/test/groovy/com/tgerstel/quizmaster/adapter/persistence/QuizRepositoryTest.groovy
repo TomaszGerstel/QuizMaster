@@ -1,41 +1,44 @@
 package com.tgerstel.quizmaster.adapter.persistence
 
+import org.bson.types.ObjectId
 import spock.lang.Specification
 
 class QuizRepositoryTest extends Specification {
 
-    private MongoQuizRepository mongoRepository = Mock()
-    private QuizRepositoryImpl repository = new QuizRepositoryImpl(mongoRepository)
+    private MongoQuizRepository mongoQuizRepository = Mock()
+    private MongoQuestionRepository mongoQuestionRepository = Mock()
+
+    private QuizRepositoryImpl repository = new QuizRepositoryImpl(mongoQuizRepository, mongoQuestionRepository)
 
     def "should return all quizzes info"() {
         given:
-        def q1Id = "q2025012"
-        def quizDocument1 = createDefaultQuizDocument("Test Quiz 1", q1Id)
+        def objId = new ObjectId("ef77bcf86cd7990000000111")
+        def quizDocument1 = createDefaultQuizDocument("Test Quiz 1", objId)
         def quizDocument2 = createDefaultQuizDocument()
 
         when:
         def quizzes = repository.getAll()
 
         then:
-        1 * mongoRepository.findAll() >> [quizDocument1, quizDocument2]
+        1 * mongoQuizRepository.findAll() >> [quizDocument1, quizDocument2]
         quizzes.size() == 2
         quizzes[0].title == "Test Quiz 1"
         quizzes[0].questionsQuantity == 2
-        quizzes[0].id == q1Id
+        quizzes[0].id == objId.toString()
     }
 
     def "should get quiz DTO by id"() {
         given:
-        def id = "q2025015"
+        def id = new ObjectId("ef77bcf86cd7990000000222")
         def quizDocument = createDefaultQuizDocument("Test Quiz 2", id)
-        mongoRepository.findById(id) >> Optional.of(quizDocument)
+        mongoQuizRepository.findById(id) >> Optional.of(quizDocument)
 
         when:
         def quiz = repository.getById(id).get()
 
         then:
-        1 * mongoRepository.findById(id) >> Optional.of(quizDocument)
-        quiz.id == id
+        1 * mongoQuizRepository.findById(id) >> Optional.of(quizDocument)
+        quiz.id == id.toString()
         quiz.title == "Test Quiz 2"
         quiz.questions.size() == 2
         quiz.questions*.question.containsAll(["Capital of England", "2 + 2"])
@@ -45,18 +48,18 @@ class QuizRepositoryTest extends Specification {
 
     def "should return quiz for eval by id"() {
         given:
-        def id = "q2025066"
+        def id = new ObjectId("ef77bcf86cd7990000000333")
         def quizDocument = createDefaultQuizDocument("Test Quiz", id)
-        mongoRepository.findById(id) >> Optional.of(quizDocument)
+        mongoQuizRepository.findById(id) >> Optional.of(quizDocument)
 
         when:
         def quiz = repository.getEvalById(id).get()
 
         then:
-        1 * mongoRepository.findById(id) >> Optional.of(quizDocument)
-        quiz.id() == id
+        1 * mongoQuizRepository.findById(id) >> Optional.of(quizDocument)
+        quiz.id() == id.toString()
         quiz.questions().size() == 2
-        !quiz.questions()[0].id().isEmpty()
+        !quiz.questions()[0].id().toString().isEmpty()
         quiz.questions()[0].answers()[0].no() == 1
         quiz.questions()[0].answers()[0].correct
         quiz.questions()[0].answers()[1].no() == 2
@@ -64,7 +67,7 @@ class QuizRepositoryTest extends Specification {
 
     }
 
-    private static QuizDocument createDefaultQuizDocument(String title = "Default Title", String id = "Default ID") {
+    private static QuizDocument createDefaultQuizDocument(String title = "Default Title", ObjectId id = new ObjectId()) {
         return createQuizDocument(title, id,
                 createQuestion("Capital of England",
                         createAnswer("London", true, 1),
@@ -75,7 +78,7 @@ class QuizRepositoryTest extends Specification {
                         createAnswer("0", false, 3)))
     }
 
-    private static QuizDocument createQuizDocument(String title, String id, QuestionDocument... questions) {
+    private static QuizDocument createQuizDocument(String title, ObjectId id, QuestionDocument... questions) {
         def quizDocument = new QuizDocument()
         quizDocument.title = title
         quizDocument.id = id
@@ -85,7 +88,7 @@ class QuizRepositoryTest extends Specification {
 
     private static QuestionDocument createQuestion(String question, BaseAnswer... answers) {
         def questionDocument = new QuestionDocument()
-        questionDocument.id = new Random().nextInt().toString()
+        questionDocument.id = new ObjectId()
         questionDocument.question = question
         questionDocument.answers = answers.toList()
         return questionDocument

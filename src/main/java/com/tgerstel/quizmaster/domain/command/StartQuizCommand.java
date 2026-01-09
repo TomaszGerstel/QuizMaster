@@ -1,4 +1,6 @@
 package com.tgerstel.quizmaster.domain.command;
 
-public record StartQuizCommand(String quizId, String name, String email) {
+import org.bson.types.ObjectId;
+
+public record StartQuizCommand(ObjectId quizId, String name, String email) {
 }

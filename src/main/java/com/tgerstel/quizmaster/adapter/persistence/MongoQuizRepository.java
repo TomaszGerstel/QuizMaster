@@ -1,6 +1,11 @@
 package com.tgerstel.quizmaster.adapter.persistence;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface MongoQuizRepository extends MongoRepository<QuizDocument, String> {
+import java.util.List;
+
+public interface MongoQuizRepository extends MongoRepository<QuizDocument, ObjectId> {
+    boolean existsByTitle(String name);
+    List<QuizDocument> findAllByEditable(boolean editable);
 }

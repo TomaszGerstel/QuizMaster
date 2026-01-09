@@ -1,5 +1,6 @@
 package com.tgerstel.quizmaster.adapter.persistence;
 
+import com.tgerstel.quizmaster.domain.dto.AnswerDTO;
 import com.tgerstel.quizmaster.domain.model.Answer;
 import com.tgerstel.quizmaster.domain.model.EvalAnswer;
 import lombok.Data;
@@ -16,5 +17,9 @@ public class BaseAnswer {
 
     public EvalAnswer toEvalAnswer() {
         return new EvalAnswer(no, isCorrect);
+    }
+
+    public AnswerDTO toAnswerDTO() {
+        return new AnswerDTO(value, isCorrect);
     }
 }
