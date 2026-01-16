@@ -8,6 +8,7 @@ import com.tgerstel.quizmaster.domain.model.*;
 import com.tgerstel.quizmaster.domain.port.QuizAttemptRepository;
 import com.tgerstel.quizmaster.domain.port.QuizEvaluator;
 import com.tgerstel.quizmaster.domain.port.QuizRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class QuizEvaluationService implements QuizEvaluator {
 
@@ -31,6 +33,7 @@ public class QuizEvaluationService implements QuizEvaluator {
 
     @Override
     public QuizResult submitQuiz(final SubmitQuizCommand command) {
+        log.info("Submitting quiz with ID: {} for session: {}", command.quizId(), command.sessionId());
         var endTime = Instant.now();
 
         final QuizEvalDTO quiz = quizRepository.getEvalById(command.quizId())
@@ -53,8 +56,13 @@ public class QuizEvaluationService implements QuizEvaluator {
 
         final Duration attemptTime = finishQuiz(command.sessionId(), endTime, correctSolutionsCount);
 
-        return new QuizResult(quiz.id(), evaluation, correctSolutionsCount, percentageScore, questionCount,
+        var result = new QuizResult(quiz.id(), evaluation, correctSolutionsCount, percentageScore, questionCount,
                 answersReport, attemptTime.toSeconds());
+
+        log.info("Quiz submission completed for session: {}. Passed: {}, Score: {}/{} ({}%) in {} seconds.",
+                command.sessionId(), evaluation, correctSolutionsCount, questionCount, percentageScore,
+                attemptTime.toSeconds());
+        return result;
     }
 
     private List<AnswerReportEntry> evaluateAnswers(List<EvalQuestion> questions, List<QuestionSolution> solutions) {

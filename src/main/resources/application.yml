@@ -3,3 +3,12 @@ spring:
     name: QuizMaster
   config:
     import: optional:file:.env[.properties]
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
