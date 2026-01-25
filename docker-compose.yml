@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     container_name: backend
@@ -19,6 +17,8 @@ services:
       prometheus: "true"
       metrics_port: "8080"
       metrics_path: "/actuator/prometheus"
+    mem_limit: 512m
+    cpus: 1
 
   frontend:
     container_name: quizmaster-frontend
