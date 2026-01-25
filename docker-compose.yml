@@ -18,6 +18,7 @@ services:
     labels:
       prometheus: "true"
       metrics_port: "8080"
+      metrics_path: "/actuator/prometheus"
 
   frontend:
     container_name: quizmaster-frontend
