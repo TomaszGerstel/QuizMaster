@@ -24,7 +24,7 @@ public class QuestionController {
         return ResponseEntity.ok(quizService.getAllQuestions());
     }
 
-    @GetMapping("/{tag}")
+    @GetMapping("/tag/{tag}")
     public ResponseEntity<List<QuestionDTO>> getQuestionsByTag(@PathVariable String tag) {
         return ResponseEntity.ok(quizService.getQuestionsForTag(tag));
     }

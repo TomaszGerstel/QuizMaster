@@ -29,16 +29,17 @@ class QuizRepositoryTest extends Specification {
 
     def "should get quiz DTO by id"() {
         given:
-        def id = new ObjectId("ef77bcf86cd7990000000222")
-        def quizDocument = createDefaultQuizDocument("Test Quiz 2", id)
-        mongoQuizRepository.findById(id) >> Optional.of(quizDocument)
+        def id = "ef77bcf86cd7990000000222"
+        def objId = new ObjectId(id)
+        def quizDocument = createDefaultQuizDocument("Test Quiz 2", objId)
+        mongoQuizRepository.findById(objId) >> Optional.of(quizDocument)
 
         when:
         def quiz = repository.getById(id).get()
 
         then:
-        1 * mongoQuizRepository.findById(id) >> Optional.of(quizDocument)
-        quiz.id == id.toString()
+        1 * mongoQuizRepository.findById(objId) >> Optional.of(quizDocument)
+        quiz.id == id
         quiz.title == "Test Quiz 2"
         quiz.questions.size() == 2
         quiz.questions*.question.containsAll(["Capital of England", "2 + 2"])
@@ -48,15 +49,16 @@ class QuizRepositoryTest extends Specification {
 
     def "should return quiz for eval by id"() {
         given:
-        def id = new ObjectId("ef77bcf86cd7990000000333")
-        def quizDocument = createDefaultQuizDocument("Test Quiz", id)
-        mongoQuizRepository.findById(id) >> Optional.of(quizDocument)
+        def id = "ef77bcf86cd7990000000333"
+        def objId = new ObjectId(id)
+        def quizDocument = createDefaultQuizDocument("Test Quiz", objId)
+        mongoQuizRepository.findById(objId) >> Optional.of(quizDocument)
 
         when:
         def quiz = repository.getEvalById(id).get()
 
         then:
-        1 * mongoQuizRepository.findById(id) >> Optional.of(quizDocument)
+        1 * mongoQuizRepository.findById(objId) >> Optional.of(quizDocument)
         quiz.id() == id.toString()
         quiz.questions().size() == 2
         !quiz.questions()[0].id().toString().isEmpty()
@@ -64,8 +66,70 @@ class QuizRepositoryTest extends Specification {
         quiz.questions()[0].answers()[0].correct
         quiz.questions()[0].answers()[1].no() == 2
         !quiz.questions()[0].answers()[1].correct
+    }
+
+    def "should add questions to quiz"() {
+        given:
+        def quizId = "ef77bcf86cd7990000000444"
+        def questionId = "ef77bcf86cd7990000000555"
+        def objQuizId = new ObjectId(quizId)
+        def objQuestionId = new ObjectId(questionId)
+
+        def quizDocument = createDefaultQuizDocument("Test Quiz", objQuizId)
+        mongoQuizRepository.findById(objQuizId) >> Optional.of(quizDocument)
+        mongoQuestionRepository.findById(objQuestionId)
+                >> Optional.of(createQuestion("Sample Question", createAnswer("Answer 1", true, 1)))
+
+        when:
+        repository.addQuestionsToQuiz(quizId, List.of(questionId))
+
+        then:
+        1 * mongoQuizRepository.findById(objQuizId) >> Optional.of(quizDocument)
+        1 * mongoQuestionRepository.findById(objQuestionId)
+                >> Optional.of(createQuestion("Sample Question", createAnswer("Answer 1", true, 1)))
 
     }
+
+    def "should remove questions from quiz"() {
+        given:
+        def quizId = "ef77bcf86cd7990000000444"
+        def questionId = "ef77bcf86cd7990000000555"
+        def objQuizId = new ObjectId(quizId)
+        def objQuestionId = new ObjectId(questionId)
+
+        def questionDocument = createQuestion("Sample Question", createAnswer("Answer 1", true, 1))
+        questionDocument.id = objQuestionId
+
+        def quizDocument = createDefaultQuizDocument("Test Quiz", objQuizId)
+        quizDocument.questions.add(questionDocument)
+
+        mongoQuizRepository.findById(objQuizId) >> Optional.of(quizDocument)
+
+        when:
+        repository.removeQuestionsFromQuiz(quizId, List.of(questionId))
+
+        then:
+        1 * mongoQuizRepository.findById(objQuizId) >> Optional.of(quizDocument)
+        1 * mongoQuizRepository.save(_) >> { QuizDocument savedQuiz ->
+            assert savedQuiz.questions.size() == 2 // Original 2 questions + 1 added - 1 removed
+            assert savedQuiz.questions.find { it.id == objQuestionId } == null // Ensure the question was removed
+        }
+        1 * mongoQuestionRepository.findById(objQuestionId) >> Optional.of(questionDocument)
+
+    }
+
+//    def "should delete quiz by id"() {
+//        given:
+//        def quizId = "ef77bcf86cd7990000000666"
+//        def objQuizId = new ObjectId(quizId)
+//
+//        when:
+//        repository.deleteById(quizId)
+//
+//        then:
+//        1 * mongoQuizRepository.deleteById(objQuizId)
+//    }
+
 
     private static QuizDocument createDefaultQuizDocument(String title = "Default Title", ObjectId id = new ObjectId()) {
         return createQuizDocument(title, id,

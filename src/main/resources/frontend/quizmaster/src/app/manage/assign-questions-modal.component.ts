@@ -2,6 +2,7 @@ import {Component, OnInit, EventEmitter, Output} from '@angular/core';
 import {QuizmasterService} from '../quizmaster.service';
 import {BsModalRef} from 'ngx-bootstrap/modal';
 import {QuestionDTO} from "../model/question-dto.model";
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   templateUrl: './assign-questions-modal.component.html',
@@ -17,6 +18,10 @@ export class AssignQuestionsModalComponent implements OnInit {
   questions: QuestionDTO[] = [];
   selectedQuestionIds: Set<string> = new Set<string>();
 
+  expandedQuestionId: string | null = null;
+
+  tagSearch = '';
+
   constructor(
     public bsModalRef: BsModalRef,
     private quizService: QuizmasterService) {
@@ -24,10 +29,33 @@ export class AssignQuestionsModalComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.quizId) {
-      this.quizService.getQuestions().subscribe(data => {
-        this.questions = data;
-      });
+      this.loadAllQuestions();
     }
+  }
+
+  loadAllQuestions(): void {
+    this.quizService.getAllQuestions().subscribe({
+        next: (questions: QuestionDTO[]) => {
+          this.questions = questions;
+        }
+      });
+  }
+
+  searchQuestionsByTag(): void {
+    if (!this.tagSearch.trim()) {
+      this.loadAllQuestions();
+      return;
+    }
+    this.quizService
+      .findQuestions(this.tagSearch)
+      .subscribe({
+        next: (questions: QuestionDTO[]) => {
+          this.questions = questions;
+        },
+        error: (err: HttpErrorResponse) => {
+          console.error(err);
+        }
+      });
   }
 
   toggleQuestionSelection(questionId: string, event: Event): void {

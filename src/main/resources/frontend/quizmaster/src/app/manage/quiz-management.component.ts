@@ -13,7 +13,13 @@ import {NewQuizModalComponent} from './new-quiz-modal.component';
 })
 export class QuizManagementComponent implements OnInit {
   quizzes: QuizDTO[] = [];
+
   expandedQuizId: string | null = null;
+  expandedQuestionId: string | null = null;
+  selectedQuestions: {
+    [quizId: string]: string[]
+  } = {};
+
   modalRef!: BsModalRef;
 
   username?: string;
@@ -63,4 +69,49 @@ export class QuizManagementComponent implements OnInit {
      console.error('Modal content is undefined');
    }
  }
+
+ removeQuestionsFromQuiz(quizId: string, questionIds: string[]): void {
+    if (questionIds.length === 0) {
+      alert('Please select at least one question to remove.');
+      return;
+    }
+
+    if (confirm('Are you sure you want to remove the selected questions from the quiz?')) {
+      this.quizService.removeQuestionsFromQuiz(quizId, questionIds).subscribe({
+        next: () => {
+          alert('Selected questions removed from the quiz successfully!');
+          this.loadQuizzes(); // Reload quizzes after modification
+        },
+        error: (err) => {
+          console.error('Remove questions error:', err);
+          const message = err?.error?.reason || err?.error?.message || 'Unexpected error while removing questions';
+          alert(message);
+        }
+      });
+    }
+  }
+
+ toggleQuestionSelection(
+   quizId: string,
+   questionId: string,
+   event: any
+ ): void {
+
+   if (!this.selectedQuestions[quizId]) {
+     this.selectedQuestions[quizId] = [];
+   }
+
+   if (event.target.checked) {
+
+     this.selectedQuestions[quizId].push(questionId);
+
+   } else {
+
+     this.selectedQuestions[quizId] =
+       this.selectedQuestions[quizId]
+         .filter(id => id !== questionId);
+   }
+ }
+
+
 }

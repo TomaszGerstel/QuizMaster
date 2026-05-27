@@ -44,41 +44,41 @@ public class InMemoryQuizRepositoryImpl implements QuizRepository {
     }
 
     @Override
-    public Optional<QuizToSolveDTO> getById(ObjectId id) {
+    public Optional<QuizToSolveDTO> getById(String id) {
         return quizDocuments.stream()
-                .filter(quiz -> quiz.getId().equals(id))
+                .filter(quiz -> quiz.getId().toString().equals(id))
                 .findFirst()
                 .map(QuizDocument::toSolveDTO);
     }
 
     @Override
-    public Optional<QuizEvalDTO> getEvalById(ObjectId id) {
+    public Optional<QuizEvalDTO> getEvalById(String id) {
         return quizDocuments.stream()
-                .filter(quiz -> quiz.getId().equals(id))
+                .filter(quiz -> quiz.getId().toString().equals(id))
                 .findFirst()
                 .map(QuizDocument::toEvalDTO);
     }
 
     @Override
-    public ObjectId createQuiz(CreateQuizCommand command) {
+    public String createQuiz(CreateQuizCommand command) {
         var quizDocument = new QuizDocument();
         ObjectId id = new ObjectId();
         quizDocument.setId(id);
         quizDocument.setTitle(command.name());
         quizDocument.setEditable(true);
         quizDocuments.add(quizDocument);
-        return id;
+        return id.toString();
     }
 
     @Override
-    public void addQuestionsToQuiz(ObjectId quizId, List<ObjectId> ids) {
+    public void addQuestionsToQuiz(String quizId, List<String> ids) {
         QuizDocument quiz = quizDocuments.stream()
-                .filter(q -> q.getId().equals(quizId))
+                .filter(q -> q.getId().toString().equals(quizId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Quiz with id '" + quizId + "' not found."));
 
         var questions = new ArrayList<QuestionDTO>();
-        for (ObjectId questionId : ids) {
+        for (String questionId : ids) {
             var question = inMemoryQuestionRepository.findById(questionId)
                     .orElseThrow(() -> new IllegalArgumentException("Question with id '" + questionId + "' not found."));
             questions.add(question);
@@ -108,6 +108,18 @@ public class InMemoryQuizRepositoryImpl implements QuizRepository {
             quiz.setQuestions(questionDocuments);
         } else {
             quiz.getQuestions().addAll(questionDocuments);
+        }
+    }
+
+    @Override
+    public void removeQuestionsFromQuiz(String quizId, List<String> ids) {
+        QuizDocument quiz = quizDocuments.stream()
+                .filter(q -> q.getId().toString().equals(quizId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Quiz with id '" + quizId + "' not found."));
+
+        if (quiz.getQuestions() != null) {
+            quiz.getQuestions().removeIf(question -> ids.contains(question.getId().toString()));
         }
     }
 

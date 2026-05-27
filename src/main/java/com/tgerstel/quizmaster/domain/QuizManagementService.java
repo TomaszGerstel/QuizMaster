@@ -11,7 +11,6 @@ import com.tgerstel.quizmaster.domain.port.QuizRepository;
 import com.tgerstel.quizmaster.domain.port.QuizManager;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -41,7 +40,7 @@ public class QuizManagementService implements QuizManager {
     @Override
     public QuizToSolveDTO startQuiz(StartQuizCommand command) {
         var id = command.quizId();
-        var quiz = quizRepository.getById(id).orElseThrow(() -> new QuizNotFoundException(id.toString()));
+        var quiz = quizRepository.getById(id).orElseThrow(() -> new QuizNotFoundException(id));
         var sessionId = UUID.randomUUID().toString();
         quiz.setSessionId(sessionId);
         attemptRepository.create(QuizAttemptDTO.startAttempt(sessionId, id, quiz.getQuestions().size(), command.name(),
@@ -59,7 +58,7 @@ public class QuizManagementService implements QuizManager {
         }
         var created = quizRepository.createQuiz(command);
         log.info("Quiz created with ID: {}", created);
-        return created.toString();
+        return created;
     }
 
     @Override
@@ -84,10 +83,16 @@ public class QuizManagementService implements QuizManager {
     }
 
     @Override
-    public void assignQuestionsToQuiz(ObjectId quizId, List<ObjectId> ids) {
+    public void assignQuestionsToQuiz(String quizId, List<String> ids) {
         log.info("Assigning questions to quiz with ID: {}", quizId);
         quizRepository.addQuestionsToQuiz(quizId, ids);
 
+    }
+
+    @Override
+    public void removeQuestionsFromQuiz(String quizId, List<String> ids) {
+        log.info("Removing questions from quiz with ID: {}", quizId);
+        quizRepository.removeQuestionsFromQuiz(quizId, ids);
     }
 
 }

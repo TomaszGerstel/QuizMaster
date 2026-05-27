@@ -55,14 +55,14 @@ class QuizEvaluationServiceTest extends Specification {
     def "should eval properly quiz solution"() {
         given:
         def sessionId = "session123"
-        def command = new SubmitQuizCommand(new ObjectId(quizData.id()), questionSolutions, sessionId)
+        def command = new SubmitQuizCommand(quizData.id(), questionSolutions, sessionId)
         def quiz = Optional.of(quizData)
 
         when:
         def result = service.submitQuiz(command)
 
         then:
-        1 * quizRepository.getEvalById(new ObjectId(quizData.id())) >> quiz
+        1 * quizRepository.getEvalById(quizData.id()) >> quiz
         1 * attemptRepository.getAndEnd(sessionId, _ as Instant, _ as int) >> Optional.of(attemptDTO)
         result.quizId() == quizData.id()
         result.positive == expPositive
@@ -84,7 +84,7 @@ class QuizEvaluationServiceTest extends Specification {
 
     def "should throw exception for not existing quiz"() {
         given:
-        def quizId = new ObjectId(quiz2id)
+        def quizId = quiz2id
         def sessionId = "session123"
         def command = new SubmitQuizCommand(quizId, List.of(solution("deadbeefcafebabe12345901", "exp", List.of(2))), sessionId)
         def quiz = Optional.empty()
@@ -101,13 +101,13 @@ class QuizEvaluationServiceTest extends Specification {
         def wrongQuestionId = "deadbeefcafebabe12345999"
         def sessionId = "session123"
         def solutions = List.of(solution("cafebeefdeadbead12345001", "exc", List.of(2)), solution(wrongQuestionId, "", List.of(2)))
-        def command = new SubmitQuizCommand(new ObjectId(quiz1.id()), solutions, sessionId)
+        def command = new SubmitQuizCommand(quiz1.id(), solutions, sessionId)
 
         when:
         service.submitQuiz(command)
 
         then:
-        1 * quizRepository.getEvalById(new ObjectId(quiz1.id())) >> Optional.of(quiz1)
+        1 * quizRepository.getEvalById(quiz1.id()) >> Optional.of(quiz1)
         def exception = thrown(IllegalArgumentException)
         exception.message == "Question with id: $wrongQuestionId not related to the quiz"
 

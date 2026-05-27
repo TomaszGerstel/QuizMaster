@@ -52,4 +52,17 @@ public class QuizController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<?> removeQuiz(@PathVariable String id) {
+        // This is a placeholder implementation.
+        return ResponseEntity.ok("Quiz removed");
+    }
+
+    @PostMapping("/remove-questions")
+    public ResponseEntity<?> removeQuestionsFromQuiz(@RequestBody final RemoveQuestionsRequest request) {
+        quizService.removeQuestionsFromQuiz(request.quizId(), request.questionIds());
+        return ResponseEntity.ok(
+                Map.of("message", "Questions removed from quiz")
+        );
+    }
 }

@@ -37,7 +37,7 @@ public class QuizEvaluationService implements QuizEvaluator {
         var endTime = Instant.now();
 
         final QuizEvalDTO quiz = quizRepository.getEvalById(command.quizId())
-                .orElseThrow(() -> new QuizNotFoundException(command.quizId().toString()));
+                .orElseThrow(() -> new QuizNotFoundException(command.quizId()));
 
         final List<EvalQuestion> questions = quiz.questions();
         final List<QuestionSolution> solutions = command.solution();

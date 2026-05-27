@@ -32,8 +32,8 @@ public class QuizAttemptDocument {
     }
 
     public static QuizAttemptDocument initAttempt(QuizAttemptDTO dto) {
-        return new QuizAttemptDocument(dto.getSessionId(), new ObjectId(dto.getQuizId()), dto.getUserName(), dto.getUserEmail(),
-                dto.getStartTime(), null, dto.getQuestionsCount(), 0);
+        return new QuizAttemptDocument(dto.getSessionId(), new ObjectId(dto.getQuizId()), dto.getUserName(),
+                dto.getUserEmail(), dto.getStartTime(), null, dto.getQuestionsCount(), 0);
     }
 
     public void completeQuizAttempt(int score, Instant endTime) {

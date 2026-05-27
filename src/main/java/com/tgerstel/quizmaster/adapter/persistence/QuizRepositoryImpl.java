@@ -34,31 +34,51 @@ public class QuizRepositoryImpl implements QuizRepository {
                 .collect(Collectors.toList());
     }
 
-    public Optional<QuizToSolveDTO> getById(final ObjectId id) {
-        var found = mongoQuizRepository.findById(id);
+    @Override
+    public Optional<QuizToSolveDTO> getById(final String id) {
+        var found = mongoQuizRepository.findById(new ObjectId(id));
         return found.map(QuizDocument::toSolveDTO);
     }
 
     @Override
-    public Optional<QuizEvalDTO> getEvalById(ObjectId id) {
-        var found = mongoQuizRepository.findById(id);
+    public Optional<QuizEvalDTO> getEvalById(String id) {
+        var found = mongoQuizRepository.findById(new ObjectId(id));
         return found.map(QuizDocument::toEvalDTO);
     }
 
     @Override
-    public ObjectId createQuiz(CreateQuizCommand command) {
+    public String createQuiz(CreateQuizCommand command) {
         var quizDocument = new QuizDocument();
         quizDocument.setTitle(command.name());
         quizDocument.setEditable(true);
         addQuestionsToQuiz(quizDocument, command.questionIds());
-        return mongoQuizRepository.save(quizDocument).getId();
+        return mongoQuizRepository.save(quizDocument).getId().toString();
     }
 
     @Override
-    public void addQuestionsToQuiz(ObjectId quizId, List<ObjectId> ids) {
-        QuizDocument quiz = mongoQuizRepository.findById(quizId)
-                .orElseThrow(() -> new QuizNotFoundException(quizId.toString()));
-        addQuestionsToQuiz(quiz, ids);
+    public void addQuestionsToQuiz(String quizId, List<String> ids) {
+        QuizDocument quiz = mongoQuizRepository.findById(new ObjectId(quizId))
+                .orElseThrow(() -> new QuizNotFoundException(quizId));
+        var objectIds = ids.stream().map(ObjectId::new).toList();
+        addQuestionsToQuiz(quiz, objectIds);
+    }
+
+    @Override
+    public void removeQuestionsFromQuiz(String quizId, List<String> ids) {
+        QuizDocument quiz = mongoQuizRepository.findById(new ObjectId(quizId))
+                .orElseThrow(() -> new QuizNotFoundException(quizId));
+        var objectIds = ids.stream().map(ObjectId::new).toList();
+        Set<QuestionDocument> questionsToRemove = new HashSet<>();
+        for (ObjectId questionId : objectIds) {
+            QuestionDocument question = questionRepository.findById(questionId)
+                    .orElseThrow(() -> new QuestionNotFoundException(questionId.toString()));
+            questionsToRemove.add(question);
+        }
+
+        if (quiz.getQuestions() != null) {
+            quiz.getQuestions().removeAll(questionsToRemove);
+            mongoQuizRepository.save(quiz);
+        }
     }
 
     private void addQuestionsToQuiz(QuizDocument quiz, List<ObjectId> ids) {
