@@ -18,8 +18,8 @@ public class QuestionRepositoryImpl implements QuestionRepository {
 
 
     @Override
-    public Optional<QuestionDTO> findById(ObjectId id) {
-        return mongoQuestionRepository.findById(id).map(QuestionDocument::toDTO);
+    public Optional<QuestionDTO> findById(String id) {
+        return mongoQuestionRepository.findById(new ObjectId(id)).map(QuestionDocument::toDTO);
     }
 
     @Override
@@ -30,8 +30,9 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     // not used currently
-    public List<QuestionDTO> getAllForIds(List<ObjectId> ids) {
-        return mongoQuestionRepository.findAllById(ids).stream()
+    public List<QuestionDTO> getAllForIds(List<String> ids) {
+        var objectIds = ids.stream().map(ObjectId::new).toList();
+        return mongoQuestionRepository.findAllById(objectIds).stream()
                 .map(QuestionDocument::toDTO)
                 .toList();
     }

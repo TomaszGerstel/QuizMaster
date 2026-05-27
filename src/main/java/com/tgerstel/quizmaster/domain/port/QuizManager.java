@@ -19,5 +19,6 @@ public interface QuizManager {
     List<QuestionDTO> getAllQuestions();
     List<QuestionDTO> getQuestionsForTag(String tag);
     String createQuestion(CreateQuestionCommand command);
-    void assignQuestionsToQuiz(ObjectId quizId, List<ObjectId> ids);
+    void assignQuestionsToQuiz(String quizId, List<String> ids);
+    void removeQuestionsFromQuiz(String quizId, List<String> ids);
 }
