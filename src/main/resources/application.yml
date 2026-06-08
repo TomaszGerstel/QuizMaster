@@ -1,9 +1,6 @@
 spring:
   application:
     name: QuizMaster
-  config:
-    import: optional:file:.env[.properties]
-
 management:
   endpoints:
     web:

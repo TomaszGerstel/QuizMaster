@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN gradle build --no-daemon
 
-FROM openjdk:27-ea
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 EXPOSE 8080

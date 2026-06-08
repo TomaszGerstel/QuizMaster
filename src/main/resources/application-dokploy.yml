@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/quizmaster?authSource=admin
+      authentication-database: admin
+
+  liquibase:
+    enabled: true
+    url: mongodb://${MONGO_USER}:${MONGO_PASS}@mongodb:27017/quizmaster?authSource=admin
+    change-log: db/changelog/changelog-master.xml
