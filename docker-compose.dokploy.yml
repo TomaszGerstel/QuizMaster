@@ -1,5 +1,5 @@
 services:
-  backend:
+  quizmaster-backend:
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,7 +8,7 @@ services:
       MONGO_USER: ${MONGO_USER}
       MONGO_PASS: ${MONGO_PASS}
     depends_on:
-      - mongodb
+      - quizmaster-mongodb
     networks:
       - dokploy-network
     labels:
@@ -18,16 +18,16 @@ services:
     mem_limit: 512m
     cpus: 1
 
-  frontend:
+  quizmaster-frontend:
     build:
       context: ./src/main/resources/frontend/quizmaster
       dockerfile: Dockerfile
     depends_on:
-      - backend
+      - quizmaster-backend
     networks:
       - dokploy-network
 
-  mongodb:
+  quizmaster-mongodb:
     image: mongo:latest
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
