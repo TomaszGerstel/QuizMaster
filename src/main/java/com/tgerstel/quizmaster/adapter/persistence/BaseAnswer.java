@@ -12,7 +12,7 @@ public class BaseAnswer {
     private boolean isCorrect;
 
     public Answer toAnswer() {
-        return new Answer(no, value);
+        return new Answer(no, value, isCorrect);
     }
 
     public EvalAnswer toEvalAnswer() {

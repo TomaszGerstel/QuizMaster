@@ -1,64 +1,75 @@
 package com.tgerstel.quizmaster.helper;
 
 
-import com.tgerstel.quizmaster.adapter.persistence.BaseAnswer;
-import com.tgerstel.quizmaster.adapter.persistence.QuestionDocument;
-import com.tgerstel.quizmaster.adapter.persistence.QuizDocument;
-import com.tgerstel.quizmaster.domain.dto.QuizAttemptDTO;
-import org.bson.types.ObjectId;
+import com.tgerstel.quizmaster.domain.model.Answer;
+import com.tgerstel.quizmaster.domain.model.Question;
+import com.tgerstel.quizmaster.domain.model.Quiz;
+import com.tgerstel.quizmaster.domain.model.QuizAttempt;
 
-import java.time.Instant;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class QuizTestUtils {
 
-    public static void createAndSaveQuizDocument(InMemoryQuizRepositoryImpl quizRepository, ObjectId id, String title) {
-        QuizDocument quiz = new QuizDocument();
-        quiz.setId(id);
-        quiz.setTitle(title);
-        quiz.setQuestions(createQuestions());
+    public static void createAndSaveQuiz(InMemoryQuizRepositoryImpl quizRepository, String id, String title) {
+        Quiz quiz = new Quiz(
+           id, title, "description", "test_author", "", 1L,
+           createQuestions(), Quiz.Type.EXAM, Quiz.Status.PUBLISHED, Quiz.Visibility.PUBLIC, 70,
+                true, null, null, null
+        );
         quizRepository.save(quiz);
     }
 
-    public static Set<QuestionDocument> createQuestions() {
-        Set<QuestionDocument> questions = new HashSet<>();
+    public static List<Question> createQuestions() {
+        List<Question> questions = new ArrayList<>();
 
-        QuestionDocument question1 = new QuestionDocument();
-        question1.setId(new ObjectId("507f1f77bcf86cd799439011"));
-        question1.setQuestion("What is the capital of France?");
-        question1.setAnswers(List.of(
-                createAnswer("London", false, 1),
-                createAnswer("Paris", true, 2),
-                createAnswer("Madrid", false, 3)));
-        question1.setExplanation("Paris is the capital and most populous city of France.");
+        Question question1 = new Question(
+                "some_id_1", "507f1f77bcf86cd799439011", "What is the capital of France?",
+                "Paris is the capital and most populous city of France.", "capitals", "author_1",
+                Question.Type.MULTIPLE_CHOICE, Question.ScoringStrategyType.ALL_OR_NOTHING,
+                Question.Status.PUBLISHED, Question.Visibility.PUBLIC,
+                List.of(new Answer(1, "London", false),
+                        new Answer(2, "Paris", true),
+                        new Answer(3, "Madrid", false)),
+                1L);
+
+        Question question2 = new Question(
+                "some_id_2", "507f1f77bcf86cd799439012", "What is the capital of Germany?",
+                "Berlin is the capital and largest city of Germany.", "capitals", "author_1",
+                Question.Type.MULTIPLE_CHOICE, Question.ScoringStrategyType.ALL_OR_NOTHING,
+                Question.Status.PUBLISHED, Question.Visibility.PUBLIC,
+                List.of(new Answer(1, "London", false),
+                        new Answer(2, "Berlin", true),
+                        new Answer(3, "Madrid", false)),
+                        1L);
+
         questions.add(question1);
-
-        QuestionDocument question2 = new QuestionDocument();
-        question2.setId(new ObjectId("507f1f77bcf86cd799439012"));
-        question2.setQuestion("What is the capital of Germany?");
-        question2.setAnswers(List.of(
-                createAnswer("London", false, 1),
-                createAnswer("Berlin", true, 2),
-                createAnswer("Madrid", false, 3)));
-        question2.setExplanation("Berlin is the capital and largest city of Germany.");
         questions.add(question2);
         return questions;
     }
 
-    public static BaseAnswer createAnswer(String value, boolean correct, Integer no) {
-        var baseAnswer = new BaseAnswer();
-        baseAnswer.setNo(no);
-        baseAnswer.setValue(value);
-        baseAnswer.setCorrect(correct);
-        return baseAnswer;
-    }
+    public static void createAndSaveQuizAttempt(
+            InMemoryQuizAttemptRepository repository,
+            String quizId,
+            Long quizVersion,
+            String name,
+            String description,
+            String sessionId,
+            String userName,
+            String userEmail) {
 
-    public static void createAndSaveQuizAttempt(InMemoryQuizAttemptRepository repository, ObjectId quizId, int questions,
-                                                String sessionId, String userName, String userEmail) {
-        QuizAttemptDTO attempt = new QuizAttemptDTO(sessionId, quizId.toString(), userName, userEmail,
-                Instant.now().minusSeconds(90), null, questions, 0);
+        QuizAttempt attempt = QuizAttempt.startAttempt(
+                sessionId,
+                quizId,
+                name,
+                description,
+                quizVersion,
+                70,
+                createQuestions(),
+                userName,
+                userEmail
+        );
+
         repository.create(attempt);
     }
 }

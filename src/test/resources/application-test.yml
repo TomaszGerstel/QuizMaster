@@ -3,3 +3,12 @@ spring:
     enabled: false
     url: ${spring.data.mongodb.uri}
     change-log: db/changelog/changelog-master.xml
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration
+
+mongo:
+  enabled: false

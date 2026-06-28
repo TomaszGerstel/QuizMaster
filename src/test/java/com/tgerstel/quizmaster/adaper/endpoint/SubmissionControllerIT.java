@@ -3,13 +3,14 @@ package com.tgerstel.quizmaster.adaper.endpoint;
 import com.tgerstel.quizmaster.helper.InMemoryQuizAttemptRepository;
 import com.tgerstel.quizmaster.helper.InMemoryQuizRepositoryImpl;
 import com.tgerstel.quizmaster.helper.QuizTestUtils;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -37,22 +38,23 @@ public class SubmissionControllerIT {
     @Test
     public void testSubmitQuiz() {
         var sessionId = "session997";
-        var quizId = new ObjectId("deadbeefcafebabe12345601");
+        var quizId = "deadbeefcafebabe12345601";
+        var quizVersion = 1L;
         var userName = "John Doe";
         var email = "john1@email";
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository, quizId, "Quiz 1");
-        QuizTestUtils.createAndSaveQuizAttempt(attemptRepository, quizId, 8, sessionId, userName, email);
+        QuizTestUtils.createAndSaveQuiz(quizRepository, quizId, "Quiz 1");
+        QuizTestUtils.createAndSaveQuizAttempt(attemptRepository, quizId, quizVersion,"Quiz 1",
+                "test quiz", sessionId, userName, email);
         var requestBody = """
                 {
-                    "quizId": "deadbeefcafebabe12345601",
                     "sessionId": "%s",
                     "solutions": [
                         {
-                            "questionId": "507f1f77bcf86cd799439012",
+                            "questionId": "some_id_1",
                             "answers": [ 2 ]
                         },
                         {
-                            "questionId": "507f1f77bcf86cd799439011",
+                            "questionId": "some_id_2",
                             "answers": [ 2 ]
                         }
                     ]
@@ -72,12 +74,12 @@ public class SubmissionControllerIT {
                 .body("questionsCount", equalTo(2))
                 .body("attemptTimeInSeconds", notNullValue())
                 .body("answersReport.size()", equalTo(2))
-                .body("answersReport[0].questionId", equalTo("507f1f77bcf86cd799439012"))
+                .body("answersReport[0].questionId", equalTo("some_id_1"))
                 .body("answersReport[0].expectedAnswers", hasSize(1))
                 .body("answersReport[0].expectedAnswers[0]", equalTo(2))
                 .body("answersReport[0].positive", equalTo(true))
                 .body("answersReport[0].explanation", notNullValue())
-                .body("answersReport[1].questionId", equalTo("507f1f77bcf86cd799439011"))
+                .body("answersReport[1].questionId", equalTo("some_id_2"))
                 .body("answersReport[1].expectedAnswers", hasSize(1))
                 .body("answersReport[1].expectedAnswers[0]", equalTo(2))
                 .body("answersReport[1].positive", equalTo(true))
@@ -86,14 +88,17 @@ public class SubmissionControllerIT {
 
     @Test
     public void testSubmitQuizShouldReturnBadRequest() {
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository, new ObjectId("deadbeefcafebabe12345601"), "Quiz 1");
-        var notExistingQuestionIdInQuiz = "507f1f77bcf86cd799439333";
+        var sessionId = "507f1f77bcf86cd799439333";
+        QuizTestUtils.createAndSaveQuiz(quizRepository, "deadbeefcafebabe12345601", "Quiz 1");
+        QuizTestUtils.createAndSaveQuizAttempt(attemptRepository, "deadbeefcafebabe12345601",
+                1L,"Quiz 1","test quiz", sessionId, "user2", "email@mail");
+        var notExistingQuestionIdInQuiz = "some_id_333";
         var requestBody = """
                 {
-                    "quizId": "deadbeefcafebabe12345601",
+                    "sessionId": "%s",
                     "solutions": [
                         {
-                            "questionId": "507f1f77bcf86cd799439012",
+                            "questionId": "some_id_1",
                             "answers": [ 2 ]
                         },
                         {
@@ -102,7 +107,7 @@ public class SubmissionControllerIT {
                         }
                     ]
                 }
-                """.formatted(notExistingQuestionIdInQuiz);
+                """.formatted(sessionId, notExistingQuestionIdInQuiz);
         given()
                 .body(requestBody)
                 .header("Content-Type", "application/json")
@@ -116,10 +121,10 @@ public class SubmissionControllerIT {
 
     @Test
     public void testSubmitQuizShouldReturnNotFound() {
-        var notExistingQuizId = "deadbeefcafebabe12347777";
+        var notExistingSessionId = "deadbeefcafebabe12347777";
         var requestBody = """
                 {
-                    "quizId": "%s",
+                    "sessionId": "%s",
                     "solutions": [
                         {
                             "questionId": "507f1f77bcf86cd799439012",
@@ -131,7 +136,7 @@ public class SubmissionControllerIT {
                         }
                     ]
                 }
-                """.formatted(notExistingQuizId);
+                """.formatted(notExistingSessionId);
         given()
                 .body(requestBody)
                 .header("Content-Type", "application/json")
@@ -139,6 +144,6 @@ public class SubmissionControllerIT {
                 .post(baseURI + ":" + port + "/api/submission")
                 .then()
                 .statusCode(404)
-                .body("reason", equalTo("Quiz with ID %s not found".formatted(notExistingQuizId)));
+                .body("reason", equalTo("Attempt with ID %s not found".formatted(notExistingSessionId)));
     }
 }

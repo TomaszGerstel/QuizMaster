@@ -2,51 +2,85 @@ package com.tgerstel.quizmaster.adapter.persistence;
 
 import com.tgerstel.quizmaster.domain.command.CreateQuestionCommand;
 import com.tgerstel.quizmaster.domain.dto.QuestionDTO;
+import com.tgerstel.quizmaster.domain.model.Question;
 import com.tgerstel.quizmaster.domain.port.QuestionRepository;
 import lombok.AllArgsConstructor;
-import org.bson.types.ObjectId;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
+@Profile({"prod", "dev", "dokploy"})
 public class QuestionRepositoryImpl implements QuestionRepository {
 
     private final MongoQuestionRepository mongoQuestionRepository;
 
 
     @Override
-    public Optional<QuestionDTO> findById(String id) {
-        return mongoQuestionRepository.findById(new ObjectId(id)).map(QuestionDocument::toDTO);
+    public Optional<QuestionDTO> findByIdStatusAndVisibility(
+            String id,
+            EnumSet<Question.Status> status,
+            EnumSet<Question.Visibility> visibility) {
+        return mongoQuestionRepository.findTopByQuestionIdOrderByVersionDesc(id)
+                .filter(q -> status.contains(q.getStatus()) && visibility.contains(q.getVisibility()))
+                .map(QuestionDocument::toDTO);
     }
 
     @Override
-    public List<QuestionDTO> getAll() {
+    public List<QuestionDTO> getAllInLatestVersions(
+            EnumSet<Question.Status> status,
+            EnumSet<Question.Visibility> visibility
+    ) {
         return mongoQuestionRepository.findAll().stream()
-                .map(QuestionDocument::toDTO)
-                .toList();
-    }
-
-    // not used currently
-    public List<QuestionDTO> getAllForIds(List<String> ids) {
-        var objectIds = ids.stream().map(ObjectId::new).toList();
-        return mongoQuestionRepository.findAllById(objectIds).stream()
-                .map(QuestionDocument::toDTO)
-                .toList();
-    }
-
-    @Override
-    public List<QuestionDTO> getForTag(String tag) {
-        return mongoQuestionRepository.findByTagsContaining(tag).stream()
+                .collect(Collectors.groupingBy(QuestionDocument::getQuestionId))
+                .values().stream()
+                .map(list -> list.stream()
+                .max(Comparator.comparing(QuestionDocument::getVersion))
+                .orElseThrow())
+                .filter(q ->
+                        status.contains(q.getStatus()) &&  visibility.contains(q.getVisibility()))
                 .map(QuestionDocument::toDTO)
                 .toList();
     }
 
     @Override
-    public void createQuestion(CreateQuestionCommand command, String id) {
-        var questionDocument = QuestionDocument.create(command, id);
-        mongoQuestionRepository.save(questionDocument);
+    public List<QuestionDTO> getAllForIds(Set<String> ids) {
+        return mongoQuestionRepository.findByQuestionIdIn(ids).stream()
+                .map(QuestionDocument::toDTO).toList();
     }
+
+    @Override
+    public List<QuestionDTO> getForTagInLatestVersions(
+            String tag,
+            EnumSet<Question.Status> status,
+            EnumSet<Question.Visibility> visibility
+    ) {
+        return mongoQuestionRepository.findByTagsContaining(tag)
+                .stream().collect(Collectors.groupingBy(QuestionDocument::getQuestionId))
+                .values().stream()
+                .map(list -> list.stream()
+                .max(Comparator.comparing(QuestionDocument::getVersion))
+                .orElseThrow())
+                .filter(q ->
+                        status.contains(q.getStatus()) &&  visibility.contains(q.getVisibility()))
+                .map(QuestionDocument::toDTO).toList();
+    }
+
+    @Override
+    public String createQuestion(CreateQuestionCommand command, String questionId, Long version) {
+        var questionDocument = QuestionDocument.create(command, version);
+        questionDocument.setQuestionId(questionId);
+        return mongoQuestionRepository.save(questionDocument).getId().toString();
+    }
+
+//    @Override
+//    public String updateQuestion(CreateQuestionCommand command, String questionId) {
+//        return mongoQuestionRepository.findLatestVersionByQuestionId(questionId).map(doc -> {
+//            doc.update(command);
+//            return mongoQuestionRepository.save(doc).getId().toString();
+//        }).orElseThrow(() -> new RuntimeException("Question not found"));
+//    }
 }

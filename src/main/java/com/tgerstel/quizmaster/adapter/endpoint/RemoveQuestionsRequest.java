@@ -1,11 +1,10 @@
 package com.tgerstel.quizmaster.adapter.endpoint;
 
-
-import java.util.List;
+import java.util.Set;
 
 public record RemoveQuestionsRequest(
         String quizId,
-        List<String> questionIds
+        Set<String> questionIds
 ) {
 
 }

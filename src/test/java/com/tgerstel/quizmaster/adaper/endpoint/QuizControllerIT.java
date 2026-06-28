@@ -2,7 +2,6 @@ package com.tgerstel.quizmaster.adaper.endpoint;
 
 import com.tgerstel.quizmaster.helper.InMemoryQuizRepositoryImpl;
 import com.tgerstel.quizmaster.helper.QuizTestUtils;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,8 @@ public class QuizControllerIT {
 
     @Test
     public void testGetAllQuizzes() {
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository, new ObjectId("507f1f77bcf86cd799439011"), "Quiz 1");
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository, new ObjectId("507f1f77bcf86cd799439012"), "Quiz 2");
+        QuizTestUtils.createAndSaveQuiz(quizRepository, "507f1f77bcf86cd799439011", "Quiz 1");
+        QuizTestUtils.createAndSaveQuiz(quizRepository, "507f1f77bcf86cd799439012", "Quiz 2");
         given()
                 .when()
                 .get(baseURI + ":" + port + "/api/quiz")
@@ -53,8 +52,8 @@ public class QuizControllerIT {
 
     @Test
     public void testGetQuizById() {
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository,new ObjectId("507f1f77bcf86cd799439011"), "Quiz 1");
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository,new ObjectId("507f1f77bcf86cd799439012"), "Quiz 2");
+        QuizTestUtils.createAndSaveQuiz(quizRepository,"507f1f77bcf86cd799439011", "Quiz 1");
+        QuizTestUtils.createAndSaveQuiz(quizRepository, "507f1f77bcf86cd799439012", "Quiz 2");
         var requestBody = """
                 {
                     "quizId": "507f1f77bcf86cd799439012",
@@ -80,7 +79,7 @@ public class QuizControllerIT {
 
     @Test
     public void testGetQuizByIdShouldReturnNotFoundCode() {
-        QuizTestUtils.createAndSaveQuizDocument(quizRepository,new ObjectId("507f1f77bcf86cd799439011"), "Quiz 1");
+        QuizTestUtils.createAndSaveQuiz(quizRepository,"507f1f77bcf86cd799439011", "Quiz 1");
         var notExistingId = "507f1f77bcf86cd799439099";
         var requestBody = """
                 {

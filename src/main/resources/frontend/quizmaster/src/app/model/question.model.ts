@@ -1,7 +1,7 @@
 import {Answer} from './answer.model';
 
 export interface Question {
-  id: string;
+  questionId: string;
   question: string;
   answers: Answer[];
   status?: QuestionStatus | QuestionStatus.Initial;

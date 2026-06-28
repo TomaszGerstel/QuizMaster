@@ -1,5 +1,7 @@
 package com.tgerstel.quizmaster.adapter.persistence
 
+import com.tgerstel.quizmaster.domain.model.Quiz
+import com.tgerstel.quizmaster.domain.model.Question
 import org.bson.types.ObjectId
 import spock.lang.Specification
 
@@ -15,15 +17,17 @@ class QuizRepositoryTest extends Specification {
         def objId = new ObjectId("ef77bcf86cd7990000000111")
         def quizDocument1 = createDefaultQuizDocument("Test Quiz 1", objId)
         def quizDocument2 = createDefaultQuizDocument()
+        def visibility = EnumSet.of(Quiz.Visibility.PUBLIC)
+        def status = EnumSet.of(Quiz.Status.PUBLISHED)
 
         when:
-        def quizzes = repository.getAll()
+        def quizzes = repository.getAllQuizzesForVisibilityAndStatus(visibility, status)
 
         then:
-        1 * mongoQuizRepository.findAll() >> [quizDocument1, quizDocument2]
+        1 * mongoQuizRepository.findAllByVisibilityInAndStatusIn(visibility, status) >> [quizDocument1, quizDocument2]
         quizzes.size() == 2
         quizzes[0].title == "Test Quiz 1"
-        quizzes[0].questionsQuantity == 2
+        quizzes[0].questionsQuantity == 3
         quizzes[0].id == objId.toString()
     }
 
@@ -31,90 +35,76 @@ class QuizRepositoryTest extends Specification {
         given:
         def id = "ef77bcf86cd7990000000222"
         def objId = new ObjectId(id)
-        def quizDocument = createDefaultQuizDocument("Test Quiz 2", objId)
+        def questionIds = Set.of("question0011", "question0012")
+        def quizDocument = createDefaultQuizDocument("Test Quiz 2", objId, questionIds)
         mongoQuizRepository.findById(objId) >> Optional.of(quizDocument)
+        def visibility = EnumSet.of(Quiz.Visibility.PUBLIC)
+        def status = EnumSet.of(Quiz.Status.PUBLISHED)
 
         when:
-        def quiz = repository.getById(id).get()
+        def quiz = repository.getById(id, visibility, status).get()
 
         then:
         1 * mongoQuizRepository.findById(objId) >> Optional.of(quizDocument)
+        1 * mongoQuestionRepository.findByQuestionIdIn(questionIds) >> Set.of(
+                createQuestion("Sample Question 11", "question0011",
+                        createAnswer("Answer 111", true, 1),
+                        createAnswer("Answer 112", true, 1)
+                ),
+                createQuestion("Sample Question 12", "question0012",
+                        createAnswer("Answer 121", true, 1),
+                        createAnswer("Answer 122", true, 1)
+                )
+        )
         quiz.id == id
         quiz.title == "Test Quiz 2"
         quiz.questions.size() == 2
-        quiz.questions*.question.containsAll(["Capital of England", "2 + 2"])
-        quiz.questions.find { it.question == "Capital of England" }.answers*.content.containsAll(["London", "Warsaw"])
-        quiz.questions.find { it.question == "2 + 2" }.answers*.content.containsAll(["4", "5", "0"])
-    }
-
-    def "should return quiz for eval by id"() {
-        given:
-        def id = "ef77bcf86cd7990000000333"
-        def objId = new ObjectId(id)
-        def quizDocument = createDefaultQuizDocument("Test Quiz", objId)
-        mongoQuizRepository.findById(objId) >> Optional.of(quizDocument)
-
-        when:
-        def quiz = repository.getEvalById(id).get()
-
-        then:
-        1 * mongoQuizRepository.findById(objId) >> Optional.of(quizDocument)
-        quiz.id() == id.toString()
-        quiz.questions().size() == 2
-        !quiz.questions()[0].id().toString().isEmpty()
-        quiz.questions()[0].answers()[0].no() == 1
-        quiz.questions()[0].answers()[0].correct
-        quiz.questions()[0].answers()[1].no() == 2
-        !quiz.questions()[0].answers()[1].correct
+        quiz.questions*.question.containsAll(["Sample Question 11", "Sample Question 12"])
+        quiz.questions.find { it.question == "Sample Question 11" }.answers*.content.containsAll(["Answer 111", "Answer 112"])
+        quiz.questions.find { it.question == "Sample Question 12" }.answers*.content.containsAll(["Answer 121", "Answer 122"])
     }
 
     def "should add questions to quiz"() {
         given:
         def quizId = "ef77bcf86cd7990000000444"
-        def questionId = "ef77bcf86cd7990000000555"
+        def questionIds = Set.of("ef77bcf86cd7990000000555")
         def objQuizId = new ObjectId(quizId)
-        def objQuestionId = new ObjectId(questionId)
+        def visibility = EnumSet.of(Question.Visibility.PUBLIC)
+        def status = EnumSet.of(Question.Status.PUBLISHED)
 
-        def quizDocument = createDefaultQuizDocument("Test Quiz", objQuizId)
-        mongoQuizRepository.findById(objQuizId) >> Optional.of(quizDocument)
-        mongoQuestionRepository.findById(objQuestionId)
-                >> Optional.of(createQuestion("Sample Question", createAnswer("Answer 1", true, 1)))
+        def quizDocument = createDefaultQuizDocument("Test Quiz", objQuizId, new HashSet<String>())
 
         when:
-        repository.addQuestionsToQuiz(quizId, List.of(questionId))
+        repository.addQuestionsToQuiz(quizId, questionIds, status, visibility)
 
         then:
         1 * mongoQuizRepository.findById(objQuizId) >> Optional.of(quizDocument)
-        1 * mongoQuestionRepository.findById(objQuestionId)
-                >> Optional.of(createQuestion("Sample Question", createAnswer("Answer 1", true, 1)))
-
+        1 * mongoQuestionRepository.findByQuestionIdIn(questionIds)
+                >> Set.of(createQuestion("Sample Question", "ef77bcf86cd7990000000555", createAnswer("Answer 1", true, 1)))
     }
 
     def "should remove questions from quiz"() {
         given:
         def quizId = "ef77bcf86cd7990000000444"
-        def questionId = "ef77bcf86cd7990000000555"
+        def questionToRemoveId = "ef77bcf86cd7990000000555"
         def objQuizId = new ObjectId(quizId)
-        def objQuestionId = new ObjectId(questionId)
+        def questionIds = new HashSet<String>()
+        questionIds.add("another0003")
+        questionIds.add("moreQuestions004")
 
-        def questionDocument = createQuestion("Sample Question", createAnswer("Answer 1", true, 1))
-        questionDocument.id = objQuestionId
+        questionIds.add(questionToRemoveId)
 
-        def quizDocument = createDefaultQuizDocument("Test Quiz", objQuizId)
-        quizDocument.questions.add(questionDocument)
-
-        mongoQuizRepository.findById(objQuizId) >> Optional.of(quizDocument)
+        def quizDocument = createDefaultQuizDocument("Test Quiz", objQuizId, questionIds)
 
         when:
-        repository.removeQuestionsFromQuiz(quizId, List.of(questionId))
+        repository.removeQuestionsFromQuiz(quizId, Set.of(questionToRemoveId))
 
         then:
         1 * mongoQuizRepository.findById(objQuizId) >> Optional.of(quizDocument)
         1 * mongoQuizRepository.save(_) >> { QuizDocument savedQuiz ->
-            assert savedQuiz.questions.size() == 2 // Original 2 questions + 1 added - 1 removed
-            assert savedQuiz.questions.find { it.id == objQuestionId } == null // Ensure the question was removed
+            assert savedQuiz.questionIds.size() == 2 // Original 2 questions + 1 added - 1 removed
+            assert savedQuiz.questionIds.find { it == questionToRemoveId } == null // Ensure the question was removed
         }
-        1 * mongoQuestionRepository.findById(objQuestionId) >> Optional.of(questionDocument)
 
     }
 
@@ -131,30 +121,30 @@ class QuizRepositoryTest extends Specification {
 //    }
 
 
-    private static QuizDocument createDefaultQuizDocument(String title = "Default Title", ObjectId id = new ObjectId()) {
-        return createQuizDocument(title, id,
-                createQuestion("Capital of England",
-                        createAnswer("London", true, 1),
-                        createAnswer("Warsaw", false, 2)),
-                createQuestion("2 + 2",
-                        createAnswer("4", true, 1),
-                        createAnswer("5", false, 2),
-                        createAnswer("0", false, 3)))
+    private static QuizDocument createDefaultQuizDocument(
+            String title = "Default Title",
+            ObjectId id = new ObjectId(),
+            Set<String> qIds = Set.of("question001", "question002", "question003")
+    ) {
+        return createQuizDocument(title, id, qIds)
     }
 
-    private static QuizDocument createQuizDocument(String title, ObjectId id, QuestionDocument... questions) {
+    private static QuizDocument createQuizDocument(String title, ObjectId id, Set<String> qIds) {
         def quizDocument = new QuizDocument()
         quizDocument.title = title
         quizDocument.id = id
-        quizDocument.questions = questions.toList()
+        quizDocument.questionIds = qIds
         return quizDocument
     }
 
-    private static QuestionDocument createQuestion(String question, BaseAnswer... answers) {
+    private static QuestionDocument createQuestion(String question, String questionId, BaseAnswer... answers) {
         def questionDocument = new QuestionDocument()
         questionDocument.id = new ObjectId()
+        questionDocument.questionId = questionId
         questionDocument.question = question
         questionDocument.answers = answers.toList()
+        questionDocument.status = Question.Status.PUBLISHED
+        questionDocument.visibility = Question.Visibility.PUBLIC
         return questionDocument
     }
 

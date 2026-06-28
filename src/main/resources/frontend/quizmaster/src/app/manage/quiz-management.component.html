@@ -85,7 +85,7 @@
 
             <!-- CLICKABLE TITLE -->
             <div class="flex-grow-1" style="cursor: pointer;"
-              (click)="expandedQuestionId = expandedQuestionId === question.id ? null : question.id">
+              (click)="expandedQuestionId = expandedQuestionId === question.id ? null : question.id!">
 
               <div class="d-flex justify-content-between align-items-center">
                 <strong>
