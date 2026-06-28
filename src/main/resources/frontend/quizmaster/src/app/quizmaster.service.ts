@@ -43,12 +43,11 @@ export class QuizmasterService {
     return this.http.get<QuizDTO[]>(`${this.baseUrl}/quiz/manage`);
   }
 
-  getAllQuestions(): Observable<QuestionDTO[]> {
-    return this.http.get<QuestionDTO[]>(`${this.baseUrl}/question`);
-  }
-
-  findQuestions(tag: string): Observable<QuestionDTO[]> {
-    return this.http.get<QuestionDTO[]>(`${this.baseUrl}/question/tag/${tag}`);
+  getQuestions(tag?: string, mode?: 'ASSIGNABLE' | 'EDITABLE'): Observable<QuestionDTO[]> {
+    let params: any = {};
+    if (tag) { params.tag = tag; }
+    if (mode) { params.mode = mode; }
+    return this.http.get<QuestionDTO[]>(`${this.baseUrl}/question`, { params });
   }
 
   assignQuestionsToQuiz(quizId: string, questionIds: string[]): Observable<void> {
@@ -64,6 +63,14 @@ export class QuizmasterService {
   removeQuestionsFromQuiz(quizId: string, questionIds: string[]): Observable<void> {
     const request = {quizId, questionIds};
     return this.http.post<void>(`${this.baseUrl}/quiz/remove-questions`, request);
+  }
+
+  updateQuestion(questionId: string, question: QuestionDTO): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/question/${questionId}`, question);
+  }
+
+  createQuestion(question: QuestionDTO): Observable<{questionId: string}> {
+    return this.http.post<{questionId: string}>(`${this.baseUrl}/question`, question);
   }
 
 }

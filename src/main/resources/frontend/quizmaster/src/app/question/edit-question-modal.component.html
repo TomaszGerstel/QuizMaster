@@ -1,0 +1,87 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    {{ question?.id ? 'Edit question' : 'Create new question' }}
+  </h4>
+  <button type="button" class="btn-close" (click)="cancel()"></button>
+</div>
+
+<div class="modal-body">
+  <span class="text-muted">
+    Add question details and as many answers as you need.
+  </span>
+
+  <br><br>
+  <hr>
+
+  <form [formGroup]="questionForm">
+
+    <div class="mb-3">
+      <label class="form-label">Question</label>
+      <input type="text" class="form-control" formControlName="question">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Explanation</label>
+      <textarea class="form-control" formControlName="explanation"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Author</label>
+      <input type="text" class="form-control" formControlName="author">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Tags</label>
+      <input type="text" class="form-control" formControlName="tags">
+    </div>
+
+    <hr>
+
+    <h5>Answers</h5>
+
+    <div formArrayName="answers">
+      <div
+        *ngFor="let answer of answers.controls; let i = index"
+        [formGroupName]="i"
+        class="card p-3 mb-2"
+      >
+        <div class="mb-2">
+          <label class="form-label">Answer {{ i + 1 }}</label>
+          <input type="text" class="form-control" formControlName="value">
+        </div>
+
+        <div class="form-check mb-2">
+          <input type="checkbox" class="form-check-input" formControlName="isCorrect">
+          <label class="form-check-label">Correct answer</label>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-danger btn-sm"
+          (click)="removeAnswer(i)"
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary mt-2"
+      (click)="addAnswer()"
+    >
+      + Add answer
+    </button>
+
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">
+    Exit
+  </button>
+
+  <button type="button" class="btn btn-primary" (click)="saveChanges()">
+    Save
+  </button>
+</div>

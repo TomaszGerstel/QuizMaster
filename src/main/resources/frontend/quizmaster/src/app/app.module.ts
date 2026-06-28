@@ -6,12 +6,14 @@ import { QuizModalComponent } from './quiz/quiz-modal.component';
 import { QuizManagementComponent } from './manage/quiz-management.component';
 import { AssignQuestionsModalComponent } from './manage/assign-questions-modal.component';
 import { NewQuizModalComponent } from './manage/new-quiz-modal.component';
+import { QuestionManagementComponent } from './question/question-management.component';
+import { EditQuestionModalComponent } from './question/edit-question-modal.component';
 import { AboutComponent } from './about/about.component';
 import { AppRoutingModule } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
 import { DurationFormatPipe } from "./pipe/duration-format-pipe";
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,8 @@ import { FormsModule } from '@angular/forms';
     QuizManagementComponent,
     AssignQuestionsModalComponent,
     NewQuizModalComponent,
+    QuestionManagementComponent,
+    EditQuestionModalComponent,
     AboutComponent
   ],
     imports: [
@@ -28,6 +32,7 @@ import { FormsModule } from '@angular/forms';
         AppRoutingModule,
         HttpClientModule,
         FormsModule,
+        ReactiveFormsModule,
         DurationFormatPipe,
         ModalModule.forRoot(),
     ],

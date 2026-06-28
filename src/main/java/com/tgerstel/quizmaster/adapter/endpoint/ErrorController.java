@@ -1,5 +1,7 @@
 package com.tgerstel.quizmaster.adapter.endpoint;
 
+import com.tgerstel.quizmaster.domain.exception.AttemptNotFoundException;
+import com.tgerstel.quizmaster.domain.exception.InvalidQuestionStateException;
 import com.tgerstel.quizmaster.domain.exception.QuestionNotFoundException;
 import com.tgerstel.quizmaster.domain.exception.QuizNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -9,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 @ControllerAdvice
 public class ErrorController {
 
-    @ExceptionHandler({QuizNotFoundException.class, QuestionNotFoundException.class})
+    @ExceptionHandler({QuizNotFoundException.class, QuestionNotFoundException.class, AttemptNotFoundException.class})
     public ResponseEntity<ErrorResponse> handleException(RuntimeException ex) {
         final ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({InvalidQuestionStateException.class, IllegalArgumentException.class})
     public ResponseEntity<ErrorResponse> handleException(IllegalArgumentException ex) {
         final ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

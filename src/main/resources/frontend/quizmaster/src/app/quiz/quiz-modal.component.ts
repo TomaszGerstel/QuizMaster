@@ -76,7 +76,7 @@ export class QuizModalComponent implements OnInit {
     if (this.quiz && this.quizResult) {
       this.quiz.questions.forEach(question => {
         const reportForQuestion = this.quizResult ?
-          this.quizResult.answersReport.find(expectedAnswers => expectedAnswers.questionId === question.id) : null;
+          this.quizResult.answersReport.find(expectedAnswers => expectedAnswers.questionId === question.questionId) : null;
 
         reportForQuestion ?
           (question.status = reportForQuestion.positive ? QuestionStatus.Passed : QuestionStatus.Failed)
@@ -98,7 +98,7 @@ export class QuizModalComponent implements OnInit {
   get answeredQuestionsCount(): number {
     if (!this.quiz) return 0;
     return this.quiz.questions.filter(q =>
-      this.selectedAnswers[q.id]?.length > 0
+      this.selectedAnswers[q.questionId]?.length > 0
     ).length;
   }
 

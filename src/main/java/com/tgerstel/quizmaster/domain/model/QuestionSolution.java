@@ -4,5 +4,8 @@ import org.bson.types.ObjectId;
 
 import java.util.List;
 
-public record QuestionSolution(ObjectId questionId, String explanation, List<Integer> answers) {
-}
+public record QuestionSolution(
+        String questionId,
+        String explanation,
+        List<Integer> answers
+) {}

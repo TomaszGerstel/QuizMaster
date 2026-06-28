@@ -3,7 +3,7 @@ package com.tgerstel.quizmaster.adapter.endpoint;
 import com.tgerstel.quizmaster.domain.command.CreateQuizCommand;
 import com.tgerstel.quizmaster.domain.dto.QuizBasicDTO;
 import com.tgerstel.quizmaster.domain.dto.QuizDTO;
-import com.tgerstel.quizmaster.domain.dto.QuizToSolveDTO;
+import com.tgerstel.quizmaster.domain.dto.QuizToTakeDTO;
 import com.tgerstel.quizmaster.domain.port.QuizManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,7 @@ public class QuizController {
     }
 
     @PostMapping("/start")
-    public ResponseEntity<QuizToSolveDTO> startQuiz(@RequestBody final StartQuizRequest request) {
+    public ResponseEntity<QuizToTakeDTO> startQuiz(@RequestBody final StartQuizRequest request) {
         return ResponseEntity.ok(quizService.startQuiz(request.toCommand()));
     }
 

@@ -5,4 +5,8 @@ public class QuestionNotFoundException extends RuntimeException {
     public QuestionNotFoundException(String id) {
         super("Question with ID " + id + " not found.");
     }
+
+    public QuestionNotFoundException() {
+        super();
+    }
 }

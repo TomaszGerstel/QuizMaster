@@ -2,17 +2,18 @@ package com.tgerstel.quizmaster.adapter.persistence;
 
 import com.tgerstel.quizmaster.domain.dto.QuizBasicDTO;
 import com.tgerstel.quizmaster.domain.dto.QuizDTO;
-import com.tgerstel.quizmaster.domain.dto.QuizToSolveDTO;
-import com.tgerstel.quizmaster.domain.dto.QuizEvalDTO;
+import com.tgerstel.quizmaster.domain.model.Quiz;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Version;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
@@ -24,34 +25,65 @@ import java.util.Set;
 public class QuizDocument {
     @Id
     private ObjectId id;
-    private String title;
-    private boolean editable;
 
-    @DBRef
-    private Set<QuestionDocument> questions;
+    private String title;
+    private String description;
+
+    private String author;
+    private String ownerId;
+
+    private Quiz.Type type;
+    private Quiz.Status status;
+    private Quiz.Visibility visibility;
+
+    private Integer passRate;
+    private boolean shuffleQuestions;
+
+    Set<String> questionIds;
 
     @Version
     private Long version;
 
+    @CreatedDate
+    private Instant createdAt;
+
+    @LastModifiedDate
+    private Instant updatedAt;
+    private Instant publishedAt;
+
     public QuizBasicDTO toBasicDTO() {
-        var count = questions.size();
+        var count = !(questionIds == null) ? questionIds.size() : 0;
         return new QuizBasicDTO(id.toString(), title, count);
     }
 
-    public QuizToSolveDTO toSolveDTO() {
-        var mappedQuestions = questions.stream().map(QuestionDocument::toQuestion).toList();
-        var shuffledQuestions = new ArrayList<>(mappedQuestions);
-        Collections.shuffle(shuffledQuestions);
-        return new QuizToSolveDTO(id.toString(), title, null, shuffledQuestions);
+    public Quiz toDomain(Set<QuestionDocument> questions) {
+        var mappedQuestions = questions.stream().map(QuestionDocument::toDomain).toList();
+
+        var mutableQuestions = new ArrayList<>(mappedQuestions);
+        if (shuffleQuestions) Collections.shuffle(mutableQuestions);
+
+        return new Quiz(
+                id.toString(),
+                title,
+                description,
+                author,
+                ownerId,
+                version,
+                mutableQuestions,
+                type,
+                status,
+                visibility,
+                passRate,
+                shuffleQuestions,
+                createdAt,
+                updatedAt,
+                publishedAt
+                );
     }
 
-    public QuizDTO toDetailedDTO() {
+    public QuizDTO toDetailedDTO(Set<QuestionDocument> questions) {
         var mappedQuestions = questions.stream().map(QuestionDocument::toDTO).toList();
         return new QuizDTO(id.toString(), title, mappedQuestions);
     }
 
-    public QuizEvalDTO toEvalDTO() {
-        var mappedQuestions = questions.stream().map(QuestionDocument::toEvalQuestion).toList();
-        return new QuizEvalDTO(id.toString(), mappedQuestions);
-    }
 }
