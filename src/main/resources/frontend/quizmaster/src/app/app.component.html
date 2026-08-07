@@ -1,30 +1,50 @@
 <header class="bg-primary text-white p-3">
-  <h1 class="text-center">Quiz Master</h1>
+  <h1 class="text-center mb-0">Quiz Master</h1>
 </header>
-<div class="d-flex w-100">
-  <aside class="bg-light border-end min-vh-100 w-25">
+
+<div class="app-layout">
+
+  <aside class="sidebar bg-light border-end">
     <nav class="nav flex-column p-3">
+
       <a class="nav-link" routerLink="/">
-        <i class="bi bi-list-check me-2"></i>Quizzes to take</a>
+        <i class="bi bi-list-check me-2"></i>
+        <span>Quizzes to take</span>
+      </a>
+
       <a class="nav-link disabled" routerLink="/statistics">
         <i class="bi bi-bar-chart-fill me-2"></i>
-        Quiz Statistics
+        <span>Quiz Statistics</span>
       </a>
+
       <div class="text-uppercase text-muted small fw-bold mt-3 mb-2">
         Administration
       </div>
+
       <a class="nav-link" routerLink="/manage-quizzes">
-        <i class="bi bi-gear me-2"></i>Manage Quizzes</a>
+        <i class="bi bi-gear me-2"></i>
+        <span>Manage Quizzes</span>
+      </a>
+
       <a class="nav-link" routerLink="/manage-questions">
-        <i class="bi bi-question-circle me-2"></i>Manage Questions</a>
+        <i class="bi bi-question-circle me-2"></i>
+        <span>Manage Questions</span>
+      </a>
+
       <div class="text-uppercase text-muted small fw-bold mt-3 mb-2">
         Info
       </div>
+
       <a class="nav-link" routerLink="/about">
-        <i class="bi bi-info-circle me-2"></i>About</a>
+        <i class="bi bi-info-circle me-2"></i>
+        <span>About</span>
+      </a>
+
     </nav>
   </aside>
-  <main class="flex-grow-1 p-4 w-100">
+
+  <main class="main-content">
     <router-outlet></router-outlet>
   </main>
+
 </div>
