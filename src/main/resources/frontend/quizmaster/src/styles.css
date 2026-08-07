@@ -3,3 +3,15 @@
   max-width: 70%;
   width: 70%;
 }
+
+@media (max-width: 576px) {
+  .modal-dialog {
+    width: calc(100% - 1rem);
+    max-width: none;
+    margin: 0.5rem auto;
+  }
+
+  .modal-content {
+    width: 100%;
+  }
+}

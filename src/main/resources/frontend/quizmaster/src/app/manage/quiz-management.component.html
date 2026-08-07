@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid px-0">
   <h4>Quizzes management</h4>
 
   <span class="text-muted">
@@ -16,11 +16,11 @@
     *ngFor="let quiz of quizzes" class="card shadow-sm mb-4 border-0">
 
     <!-- QUIZ HEADER -->
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3"
+    <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3"
       style="cursor: pointer;" (click)="expandedQuizId = expandedQuizId === quiz.id ? null : quiz.id">
 
-      <div>
-        <h5 class="mb-1 fw-bold">
+      <div class="flex-grow-1 min-width-0">
+        <h5 class="mb-1 fw-bold text-break">
           {{ quiz.name }}
         </h5>
 
@@ -29,10 +29,10 @@
         </small>
       </div>
 
-      <div>
-        <span class="badge bg-primary">
-          ID: {{ quiz.id }}
-        </span>
+      <div class="flex-shrink-0">
+    <span class="badge bg-primary">
+      ID: {{ quiz.id }}
+    </span>
       </div>
 
     </div>
@@ -41,7 +41,7 @@
     <div *ngIf="expandedQuizId === quiz.id" class="card-body">
 
       <!-- ACTIONS -->
-      <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
 
         <div>
           <button class="btn btn-outline-danger btn-sm" [disabled]="!selectedQuestions[quiz.id]?.length"
@@ -87,11 +87,11 @@
             <div class="flex-grow-1" style="cursor: pointer;"
               (click)="expandedQuestionId = expandedQuestionId === question.id ? null : question.id!">
 
-              <div class="d-flex justify-content-between align-items-center">
-                <strong>
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <strong class="text-break flex-grow-1">
                   Q: {{ question.question }}
                 </strong>
-                <div class="fs-5">
+                <div class="fs-5 flex-shrink-0">
                   {{ expandedQuestionId === question.id ? '−' : '+' }}
                 </div>
               </div>
