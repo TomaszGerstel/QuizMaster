@@ -8,6 +8,7 @@ import java.util.List;
 public record AttemptToEvalDTO(
         String sessionId,
         String quizId,
+        String email,
         Instant startTime,
         List<EvalQuestion> questions
 ) {

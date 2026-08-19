@@ -61,6 +61,7 @@ public class QuizAttemptDocument {
         return new AttemptToEvalDTO(
                 sessionId,
                 quizId.toString(),
+                userEmail,
                 startTime,
                 questions.stream().map(QuestionDocument::toEvalQuestion).toList());
     }

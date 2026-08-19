@@ -1,12 +1,16 @@
 package com.tgerstel.quizmaster.domain;
 
 import com.tgerstel.quizmaster.domain.command.SubmitQuizCommand;
+import com.tgerstel.quizmaster.domain.event.DomainEvent;
+import com.tgerstel.quizmaster.domain.event.EventType;
+import com.tgerstel.quizmaster.domain.event.QuizCompletedEventPayload;
 import com.tgerstel.quizmaster.domain.exception.AttemptNotFoundException;
+import com.tgerstel.quizmaster.domain.exception.EventPublicationException;
 import com.tgerstel.quizmaster.domain.model.*;
+import com.tgerstel.quizmaster.domain.port.EventPublisher;
 import com.tgerstel.quizmaster.domain.port.QuizAttemptRepository;
 import com.tgerstel.quizmaster.domain.port.QuizEvaluator;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -19,16 +23,19 @@ public class QuizEvaluationService implements QuizEvaluator {
 
     private final QuizAttemptRepository attemptRepository;
     private final ScoringStrategyFactory strategyFactory;
+    private final EventPublisher eventPublisher;
 
 
     private static final int QUIZ_PASS_RATE = 65;
 
     public QuizEvaluationService(
             QuizAttemptRepository attemptRepository,
-            ScoringStrategyFactory strategyFactory
+            ScoringStrategyFactory strategyFactory,
+            EventPublisher eventPublisher
     ) {
         this.attemptRepository = attemptRepository;
         this.strategyFactory = strategyFactory;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -78,7 +85,7 @@ public class QuizEvaluationService implements QuizEvaluator {
         log.info("Quiz submission completed for session: {}. Passed: {}, Score: {}/{} ({}%) in {} seconds.",
                 sessionId, passed, scoreSum, maxScore, percentage, attemptTime);
 
-        return new QuizResult(
+        var result = new QuizResult(
                 attempt.quizId(),
                 passed,
                 scoreSum,
@@ -87,6 +94,27 @@ public class QuizEvaluationService implements QuizEvaluator {
                 report,
                 attemptTime
         );
+
+        var eventPayload = new QuizCompletedEventPayload(
+                sessionId,
+                attempt.quizId(),
+                attempt.email()
+        );
+
+        try {
+            eventPublisher.publish(
+                    new DomainEvent<>(
+                            UUID.randomUUID(),
+                            EventType.QUIZ_COMPLETED,
+                            endTime,
+                            eventPayload
+                    )
+            );
+        } catch (EventPublicationException e) {
+            log.error("Failed to publish quiz completed event for attempt: {}", attempt.sessionId(), e);
+        }
+
+        return result;
     }
 
     private Duration getQuizTime(Instant startTime, Instant endTime) {
