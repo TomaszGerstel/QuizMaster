@@ -1,5 +1,6 @@
 package com.tgerstel.quizmaster.adapter.persistence;
 
+import com.tgerstel.quizmaster.domain.command.EndAttemptCommand;
 import com.tgerstel.quizmaster.domain.dto.AttemptToEvalDTO;
 import com.tgerstel.quizmaster.domain.model.QuizAttempt;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -29,11 +29,13 @@ public class QuizAttemptDocument {
     private Integer passRate;
     private String userName;
     private String userEmail;
-    private boolean sendEmail;
+    private Boolean sendEmail;
     private Instant startTime;
     private Instant endTime;
+    private Long quizDurationSeconds;
     private int questionCount;
     private int correctAnswers;
+    private Boolean passed;
 
     @DBRef
     private Set<QuestionDocument> questions;
@@ -51,8 +53,10 @@ public class QuizAttemptDocument {
                 sendEmail,
                 startTime,
                 endTime,
+                quizDurationSeconds,
                 questionCount,
                 correctAnswers,
+                passed,
                 questions.stream().map(QuestionDocument::toDomain).toList()
         );
     }
@@ -63,6 +67,7 @@ public class QuizAttemptDocument {
                 quizId.toString(),
                 userEmail,
                 startTime,
+                passRate,
                 questions.stream().map(QuestionDocument::toEvalQuestion).toList());
     }
 
@@ -76,17 +81,23 @@ public class QuizAttemptDocument {
                 dto.getPassRate(),
                 dto.getUserName(),
                 dto.getUserEmail(),
-                dto.isSendEmail(),
+                dto.getSendEmail(),
                 dto.getStartTime(),
+                null,
                 null,
                 dto.getQuestionsCount(),
                 0,
+                null,
                 questions
         );
     }
 
-    public void completeQuizAttempt(int score, Instant endTime) {
-        this.correctAnswers = score;
-        this.endTime = endTime;
+    public void completeQuizAttempt(EndAttemptCommand command) {
+        this.correctAnswers = command.score();
+        this.endTime = command.endTime();
+        this.passed = command.isPassed();
+        this.quizDurationSeconds = command.attemptDuration();
+        // pass rate in fact used for evaluation
+        this.passRate = command.passRate();
     }
 }

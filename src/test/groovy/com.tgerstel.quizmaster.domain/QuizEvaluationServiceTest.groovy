@@ -2,12 +2,10 @@ package com.tgerstel.quizmaster.domain
 
 import com.tgerstel.quizmaster.domain.command.SubmitQuizCommand
 import com.tgerstel.quizmaster.domain.dto.AttemptToEvalDTO
+import com.tgerstel.quizmaster.domain.event.QuizCompletedEventPayload
 import com.tgerstel.quizmaster.domain.exception.AttemptNotFoundException
-import com.tgerstel.quizmaster.domain.model.Question
-import com.tgerstel.quizmaster.domain.model.AnswerReportEntry
-import com.tgerstel.quizmaster.domain.model.EvalAnswer
-import com.tgerstel.quizmaster.domain.model.EvalQuestion
-import com.tgerstel.quizmaster.domain.model.QuestionSolution
+import com.tgerstel.quizmaster.domain.model.*
+import com.tgerstel.quizmaster.domain.port.EventPublisher
 import com.tgerstel.quizmaster.domain.port.QuizAttemptRepository
 import com.tgerstel.quizmaster.domain.port.QuizEvaluator
 import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
@@ -21,7 +19,9 @@ class QuizEvaluationServiceTest extends Specification {
 
     private QuizAttemptRepository attemptRepository = Mock()
     private ScoringStrategyFactory strategyFactory = new ScoringStrategyFactory();
-    private QuizEvaluator service = new QuizEvaluationService(attemptRepository, strategyFactory)
+    private EventPublisher eventPublisher = Mock()
+
+    private QuizEvaluator service = new QuizEvaluationService(attemptRepository, strategyFactory, eventPublisher)
 
     static String quiz1id = "deadbeefcafebabe12345601"
     static String quiz2id = "deadbeefcafebabe12345602"
@@ -35,18 +35,20 @@ class QuizEvaluationServiceTest extends Specification {
     static Question.Type type = Question.Type.MULTIPLE_CHOICE
     static Question.ScoringStrategyType scoringStrategy = Question.ScoringStrategyType.ALL_OR_NOTHING
 
-    static AttemptToEvalDTO quiz1 = new AttemptToEvalDTO("session123", quiz1id, Instant.now().minusSeconds(60), List.of(
-            new EvalQuestion(question1id, type, scoringStrategy, "some explanation", List.of(new EvalAnswer(1, false), new EvalAnswer(2, true))),
-            new EvalQuestion(question2id, type, scoringStrategy, "some explanation 2", List.of(new EvalAnswer(1, true), new EvalAnswer(2, false)))
-    ))
+    static AttemptToEvalDTO quiz1 = new AttemptToEvalDTO(
+            "session123", quiz1id, "email1", Instant.now().minusSeconds(60), 65,
+            List.of(
+                    new EvalQuestion(question1id, type, scoringStrategy, "some explanation", List.of(new EvalAnswer(1, false), new EvalAnswer(2, true))),
+                    new EvalQuestion(question2id, type, scoringStrategy, "some explanation 2", List.of(new EvalAnswer(1, true), new EvalAnswer(2, false)))
+            ))
 
-    static AttemptToEvalDTO quiz2 = new AttemptToEvalDTO("session124", quiz2id, Instant.now().minusSeconds(30), List.of(
-            new EvalQuestion(question3id, type, scoringStrategy, "explanation 3", List.of(new EvalAnswer(1, true), new EvalAnswer(2, false),
-                    new EvalAnswer(3, true))),
-            new EvalQuestion(question4id, type, scoringStrategy, "", List.of(new EvalAnswer(1, false), new EvalAnswer(2, true),
-                    new EvalAnswer(3, false))),
-            new EvalQuestion(question5id, type, scoringStrategy, "", List.of(new EvalAnswer(1, true), new EvalAnswer(2, false)))
-    ))
+    static AttemptToEvalDTO quiz2 = new AttemptToEvalDTO(
+            "session124", "email2", quiz2id, Instant.now().minusSeconds(30), 65,
+            List.of(
+                    new EvalQuestion(question3id, type, scoringStrategy, "explanation 3", List.of(new EvalAnswer(1, true), new EvalAnswer(2, false), new EvalAnswer(3, true))),
+                    new EvalQuestion(question4id, type, scoringStrategy, "", List.of(new EvalAnswer(1, false), new EvalAnswer(2, true), new EvalAnswer(3, false))),
+                    new EvalQuestion(question5id, type, scoringStrategy, "", List.of(new EvalAnswer(1, true), new EvalAnswer(2, false)))
+            ))
 
     @Unroll("should eval properly quiz solution: #description")
     def "should eval properly quiz solution"() {
@@ -60,7 +62,23 @@ class QuizEvaluationServiceTest extends Specification {
 
         then:
         1 * attemptRepository.getToEval(sessionId) >> quiz
-        1 * attemptRepository.endAttempt(sessionId, _ as Instant, _ as int)
+        1 * attemptRepository.endAttempt({
+            it.attemptId == sessionId &&
+                    it.score == expScore &&
+                    it.isPassed == expPositive &&
+                    it.passRate == 65 &&
+                    it.endTime != null &&
+                    it.endTime instanceof Instant &&
+                    it.attemptDuration != null &&
+                    it.attemptDuration instanceof Long
+        })
+        1 * eventPublisher.publish({ event ->
+            event.payload instanceof QuizCompletedEventPayload &&
+                    event.payload.attemptId == sessionId &&
+                    event.payload.quizId == quizData.quizId() &&
+                    event.payload.recipientEmail == quizData.email()
+        })
+
         result.quizId() == quizData.quizId()
         result.positive == expPositive
         result.quizScore() == expScore

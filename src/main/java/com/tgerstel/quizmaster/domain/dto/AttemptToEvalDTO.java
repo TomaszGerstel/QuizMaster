@@ -10,6 +10,7 @@ public record AttemptToEvalDTO(
         String quizId,
         String email,
         Instant startTime,
+        Integer passRate,
         List<EvalQuestion> questions
 ) {
 }

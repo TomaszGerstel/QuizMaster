@@ -10,5 +10,5 @@ public interface MongoQuestionRepository extends MongoRepository<QuestionDocumen
 
     Optional<QuestionDocument> findTopByQuestionIdOrderByVersionDesc(String id);
     Set<QuestionDocument> findByQuestionIdIn(Set<String> ids);
-    Set<QuestionDocument> findByTagsContaining(String tag);
+    Set<QuestionDocument> findByTagsContainingIgnoreCase(String tag);
 }

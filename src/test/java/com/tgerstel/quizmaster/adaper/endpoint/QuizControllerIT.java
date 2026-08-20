@@ -1,5 +1,7 @@
 package com.tgerstel.quizmaster.adaper.endpoint;
 
+import com.tgerstel.quizmaster.helper.InMemoryEventRepository;
+import com.tgerstel.quizmaster.helper.InMemoryQuizAttemptRepository;
 import com.tgerstel.quizmaster.helper.InMemoryQuizRepositoryImpl;
 import com.tgerstel.quizmaster.helper.QuizTestUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -23,13 +25,17 @@ public class QuizControllerIT {
     private InMemoryQuizRepositoryImpl quizRepository;
 
     @Autowired
-    private InMemoryQuizRepositoryImpl attemptRepository;
+    private InMemoryQuizAttemptRepository attemptRepository;
+
+    @Autowired
+    private InMemoryEventRepository eventRepository;
 
 
     @AfterEach
     public void setUp() {
         quizRepository.clear();
         attemptRepository.clear();
+        eventRepository.clear();
     }
 
     @Test
