@@ -17,11 +17,13 @@ public class QuizAttempt {
     private Integer passRate;
     private String userName;
     private String userEmail;
-    private boolean sendEmail;
+    private Boolean sendEmail;
     private Instant startTime;
     private Instant endTime;
+    private Long quizDurationSeconds;
     private int questionsCount;
     private int correctAnswers;
+    private Boolean isPassed;
 
     private List<Question> questions;
 
@@ -48,11 +50,13 @@ public class QuizAttempt {
                 passRate,
                 userName,
                 userEmail,
-                false,
+                true,
                 start,
+                null,
                 null,
                 questions.size(),
                 0,
+                null,
                 questions
         );
     }

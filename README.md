@@ -21,7 +21,32 @@ Create .env file in the root directory of the project and add the following prop
 
 - MONGO_USER=
 - MONGO_PASS=
+- MAIL_HOST=smtp.gmail.com
+- MAIL_PORT=587
+- MAIL_USERNAME=
+- MAIL_PASSWORD=
 
+## Using SMTP  Email Server locally
+
+### create docker container for mailpit
+
+docker run -d \
+--name quizmaster-mailpit \
+--restart unless-stopped \
+-p 8025:8025 \
+-p 1025:1025 \
+axllent/mailpit:latest
+
+### application.properties
+
+mail:
+    host: localhost
+    port: 1025
+
+### usage
+
+Web UI: http://localhost:8025
+SMTP: localhost:1025
 
 ## Quizmaster - Frontend
 

@@ -10,5 +10,9 @@ spring:
       - org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration
       - org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration
 
+  mail:
+    host: localhost
+    port: 1025
+
 mongo:
   enabled: false

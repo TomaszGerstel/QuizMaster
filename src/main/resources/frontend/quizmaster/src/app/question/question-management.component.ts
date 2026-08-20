@@ -55,10 +55,10 @@ export class QuestionManagementComponent {
   }
 
   loadQuestions(): void {
-    if (!this.tagSearch.trim()) {
-      this.questions = [];
-      return;
-    }
+//     if (!this.tagSearch.trim()) {
+//       this.questions = [];
+//       return;
+//     }
 
     this.quizService.getQuestions(this.tagSearch, 'EDITABLE').subscribe({
       next: (questions: QuestionDTO[]) => {

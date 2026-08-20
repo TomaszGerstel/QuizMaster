@@ -1,5 +1,6 @@
 package com.tgerstel.quizmaster.adapter.persistence;
 
+import com.tgerstel.quizmaster.domain.command.EndAttemptCommand;
 import com.tgerstel.quizmaster.domain.dto.AttemptToEvalDTO;
 import com.tgerstel.quizmaster.domain.model.Question;
 import com.tgerstel.quizmaster.domain.model.QuizAttempt;
@@ -20,6 +21,11 @@ public class QuizAttemptRepositoryImpl implements QuizAttemptRepository {
 
     MongoQuizAttemptRepository mongoRepository;
     MongoQuestionRepository questionRepository;
+
+    @Override
+    public Optional<QuizAttempt> findBySessionId(String sessionId) {
+        return mongoRepository.findBySessionId(sessionId).map(QuizAttemptDocument::toDomain);
+    }
 
     @Override
     public void create(QuizAttempt attempt) {
@@ -44,11 +50,11 @@ public class QuizAttemptRepositoryImpl implements QuizAttemptRepository {
     }
 
     @Override
-    public void endAttempt(String sessionId, Instant endTime, int score) {
-        var attemptOpt = mongoRepository.findBySessionId(sessionId);
+    public void endAttempt(EndAttemptCommand command) {
+        var attemptOpt = mongoRepository.findBySessionId(command.attemptId());
         if (attemptOpt.isPresent()) {
             var a = attemptOpt.get();
-            a.completeQuizAttempt(score, endTime);
+            a.completeQuizAttempt(command);
             mongoRepository.save(a);
         }
     }

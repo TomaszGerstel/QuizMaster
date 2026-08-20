@@ -14,7 +14,6 @@ public class EventScheduler {
 
     @Scheduled(fixedDelay = 10000)
     public void processEvents() {
-        log.info("Scheduled event processing started.");
         eventProcessor.process();
     }
 }

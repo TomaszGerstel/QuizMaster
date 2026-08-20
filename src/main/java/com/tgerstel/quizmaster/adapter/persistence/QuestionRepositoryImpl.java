@@ -58,7 +58,7 @@ public class QuestionRepositoryImpl implements QuestionRepository {
             EnumSet<Question.Status> status,
             EnumSet<Question.Visibility> visibility
     ) {
-        return mongoQuestionRepository.findByTagsContaining(tag)
+        return mongoQuestionRepository.findByTagsContainingIgnoreCase(tag)
                 .stream().collect(Collectors.groupingBy(QuestionDocument::getQuestionId))
                 .values().stream()
                 .map(list -> list.stream()

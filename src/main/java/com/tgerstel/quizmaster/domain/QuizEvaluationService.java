@@ -1,6 +1,7 @@
 package com.tgerstel.quizmaster.domain;
 
 import com.tgerstel.quizmaster.domain.command.SubmitQuizCommand;
+import com.tgerstel.quizmaster.domain.command.EndAttemptCommand;
 import com.tgerstel.quizmaster.domain.event.DomainEvent;
 import com.tgerstel.quizmaster.domain.event.EventType;
 import com.tgerstel.quizmaster.domain.event.QuizCompletedEventPayload;
@@ -26,7 +27,7 @@ public class QuizEvaluationService implements QuizEvaluator {
     private final EventPublisher eventPublisher;
 
 
-    private static final int QUIZ_PASS_RATE = 65;
+    private static final int DEFAULT_PASS_RATE = 65;
 
     public QuizEvaluationService(
             QuizAttemptRepository attemptRepository,
@@ -77,10 +78,13 @@ public class QuizEvaluationService implements QuizEvaluator {
 
         int maxScore = questions.size();
         int percentage = maxScore == 0 ? 0 : (scoreSum * 100 / maxScore);
-        boolean passed = percentage >= QUIZ_PASS_RATE;
+        int passRate = attempt.passRate() != null ? attempt.passRate() : DEFAULT_PASS_RATE;
+        boolean passed = percentage >= passRate;
         var attemptTime = getQuizTime(attempt.startTime(), endTime).getSeconds();
 
-        attemptRepository.endAttempt(sessionId, endTime, scoreSum);
+        var endAttempt = new EndAttemptCommand(sessionId, endTime, attemptTime, scoreSum, passRate, passed);
+
+        attemptRepository.endAttempt(endAttempt);
 
         log.info("Quiz submission completed for session: {}. Passed: {}, Score: {}/{} ({}%) in {} seconds.",
                 sessionId, passed, scoreSum, maxScore, percentage, attemptTime);
