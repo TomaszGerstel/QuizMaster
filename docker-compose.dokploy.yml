@@ -7,6 +7,10 @@ services:
       SPRING_PROFILES_ACTIVE: dokploy
       MONGO_USER: ${MONGO_USER}
       MONGO_PASS: ${MONGO_PASS}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
     depends_on:
       - quizmaster-mongodb
     networks:
