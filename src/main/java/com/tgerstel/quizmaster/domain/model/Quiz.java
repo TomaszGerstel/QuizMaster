@@ -1,5 +1,6 @@
 package com.tgerstel.quizmaster.domain.model;
 
+import com.tgerstel.quizmaster.domain.dto.QuestionDTO;
 import com.tgerstel.quizmaster.domain.dto.QuizToTakeDTO;
 import com.tgerstel.quizmaster.domain.port.QuizTypePolicy;
 import lombok.AllArgsConstructor;
@@ -60,7 +61,7 @@ public class Quiz implements QuizTypePolicy {
     }
 
     @Override
-    public boolean supports(Question question) {
+    public boolean supports(QuestionDTO question) {
 
         var questionType = question.type();
         var strategyType = question.scoringStrategyType();
