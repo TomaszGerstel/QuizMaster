@@ -72,30 +72,51 @@ public class QuizManagementService implements QuizManager {
             log.warn("Quiz creation failed: Quiz with name '{}' already exists.", command.name());
             throw new IllegalArgumentException("Quiz with name '" + command.name() + "' already exists.");
         }
+
+        validateQuiz(command);
+
         var created = quizRepository.createQuiz(command);
         log.info("Quiz created with ID: {}", created);
         return created;
     }
 
+    private void validateQuiz(CreateQuizCommand command) {
+        if (command.passRate() == null) return;
+        if (command.passRate() < 0 || command.passRate() > 100) {
+            log.warn("Quiz creation failed: Pass rate must be between 0 and 100. Provided: {}", command.passRate());
+            throw new IllegalArgumentException("Pass rate must be between 0 and 100.");
+        }
+    }
+
     @Override
-    public List<QuestionDTO> getQuestions(String tag, QuestionMode mode) {
+    public List<QuestionDTO> getQuestions(String tag, QuestionMode mode, String forQuizId) {
         log.info("Fetching all questions");
 
-        var filter = switch (mode) {
+        var questionFilter = switch (mode) {
             case ASSIGNABLE -> QuestionFilter.assignable();
             case EDITABLE -> QuestionFilter.editable();
         };
 
-        return tag == null
+        var result = tag == null
                 ? questionRepository.getAllInLatestVersions(
-                filter.statuses(),
-                filter.visibilities()
+                questionFilter.statuses(),
+                questionFilter.visibilities()
         )
                 : questionRepository.getForTagInLatestVersions(
                 tag,
-                filter.statuses(),
-                filter.visibilities()
+                questionFilter.statuses(),
+                questionFilter.visibilities()
         );
+
+        if (forQuizId == null) return result;
+
+        // if 'forQuizId' provided, return accepted questions in proper type for given quiz
+        var quizFilter = QuizFilter.editable();
+        var quiz = quizRepository.getById(forQuizId, quizFilter.visibilities(), quizFilter.statuses())
+                .orElseThrow(() -> new QuizNotFoundException(forQuizId));
+
+        return result.stream().filter(quiz::supports).toList();
+
     }
 
     @Override
@@ -120,6 +141,7 @@ public class QuizManagementService implements QuizManager {
     }
 
     private void create(CreateQuestionCommand command, String questionId, Long version) {
+
         var recordId = questionRepository.createQuestion(command, questionId, version);
         log.info("Question created with ID: {}, and record ID {}", questionId, recordId);
     }

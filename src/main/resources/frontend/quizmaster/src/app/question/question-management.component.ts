@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {QuizmasterService} from '../quizmaster.service';
-import {QuestionDTO} from '../model/question-dto.model';
+import {QuestionDTO, QuestionType, ScoringStrategyType} from '../model/question-dto.model';
 import {BsModalService, BsModalRef} from 'ngx-bootstrap/modal';
 import {EditQuestionModalComponent} from './edit-question-modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -22,6 +22,8 @@ export class QuestionManagementComponent {
     explanation: '',
     author: '',
     tags: '',
+    type: QuestionType.MULTIPLE_CHOICE,
+    scoringStrategyType: ScoringStrategyType.ALL_OR_NOTHING,
     answers: [{
       value: '',
       isCorrect: false
@@ -30,7 +32,14 @@ export class QuestionManagementComponent {
         value: '',
         isCorrect: false
         },
-      ]
+      ],
+    expectedAnswer: '',
+    correctNumber: undefined,
+    tolerance: undefined,
+    correctBoolean: undefined,
+    ratingMin: undefined,
+    ratingMax: undefined,
+    version: undefined
   };
 
   modalRef!: BsModalRef;
@@ -55,11 +64,6 @@ export class QuestionManagementComponent {
   }
 
   loadQuestions(): void {
-//     if (!this.tagSearch.trim()) {
-//       this.questions = [];
-//       return;
-//     }
-
     this.quizService.getQuestions(this.tagSearch, 'EDITABLE').subscribe({
       next: (questions: QuestionDTO[]) => {
         this.questions = questions;
