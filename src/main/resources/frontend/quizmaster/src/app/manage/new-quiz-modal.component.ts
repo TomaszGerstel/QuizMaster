@@ -13,6 +13,10 @@ export class NewQuizModalComponent implements OnInit {
 
   quizName?: string;
   authorName?: string;
+  description?: string;
+  type: string = "EXAM";
+  passRate?: number;
+
   quizId?: string;
 
   constructor(
@@ -24,8 +28,10 @@ export class NewQuizModalComponent implements OnInit {
   }
 
   createQuiz(): void {
-    if (this.quizName && this.authorName) {
-      this.quizService.createQuiz(this.quizName, this.authorName).subscribe({
+    if (this.quizName && this.authorName && this.type) {
+      this.quizService.createQuiz(
+              this.quizName, this.authorName, this.type, this.passRate, this.description
+          ).subscribe({
         next: response => {
           this.quizId = response.quizId;
           alert('Quiz successfully created!');
@@ -39,7 +45,7 @@ export class NewQuizModalComponent implements OnInit {
         }
       });
     } else {
-      alert('Please provide both quiz name and author name.');
+      alert('Please provide all required fields (quiz name, quiz type and author name).');
     }
   }
 

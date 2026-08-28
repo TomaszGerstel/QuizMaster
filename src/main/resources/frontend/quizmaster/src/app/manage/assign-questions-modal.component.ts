@@ -34,7 +34,7 @@ export class AssignQuestionsModalComponent implements OnInit {
   }
 
   loadAllQuestions(): void {
-    this.quizService.getQuestions(undefined, 'ASSIGNABLE').subscribe({
+    this.quizService.getQuestions(undefined, 'ASSIGNABLE', this.quizId).subscribe({
         next: (questions: QuestionDTO[]) => {
           this.questions = questions;
         }

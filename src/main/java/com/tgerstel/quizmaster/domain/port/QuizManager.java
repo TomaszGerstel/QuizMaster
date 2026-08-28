@@ -17,7 +17,7 @@ public interface QuizManager {
     List<QuizDTO> getAllEditableQuizzesDetailed();
     QuizToTakeDTO startQuiz(StartQuizCommand command);
     String createQuiz(CreateQuizCommand title);
-    List<QuestionDTO> getQuestions(String tag, QuestionMode mode);
+    List<QuestionDTO> getQuestions(String tag, QuestionMode mode, String forQuizId);
     String createQuestion(CreateQuestionCommand command);
     void updateQuestion(String id, CreateQuestionCommand command);
     void assignQuestionsToQuiz(String quizId, Set<String> ids);

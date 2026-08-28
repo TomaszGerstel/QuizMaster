@@ -24,9 +24,10 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<List<QuestionDTO>> getQuestions(
             @RequestParam(required = false) String tag,
-            @RequestParam(required = false) QuestionMode mode
+            @RequestParam(required = false) QuestionMode mode,
+            @RequestParam(required = false) String forQuizId
     ) {
-        return ResponseEntity.ok(quizService.getQuestions(tag, mode));
+        return ResponseEntity.ok(quizService.getQuestions(tag, mode, forQuizId));
     }
 
     @PostMapping

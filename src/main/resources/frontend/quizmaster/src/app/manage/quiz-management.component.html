@@ -19,20 +19,21 @@
     <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3"
       style="cursor: pointer;" (click)="expandedQuizId = expandedQuizId === quiz.id ? null : quiz.id">
 
-      <div class="flex-grow-1 min-width-0">
+      <div class="flex-grow-1 min-width-0 w-75">
         <h5 class="mb-1 fw-bold text-break">
           {{ quiz.name }}
         </h5>
-
-        <small class="text-muted">
-          {{ quiz.questions.length }} questions
-        </small>
+        <p class="m-0">{{ quiz.description }}</p>
+        <br>
+        <small class="text-muted">{{ quiz.questions.length }} questions</small>
+        <br>
+        <small class="text-muted">author: {{ quiz.author }}</small>
       </div>
 
       <div class="flex-shrink-0">
-    <span class="badge bg-primary">
-      ID: {{ quiz.id }}
-    </span>
+        <span class="badge bg-primary">
+        type: {{ quiz.type }}, v. {{ quiz.version }}
+        </span>
       </div>
 
     </div>

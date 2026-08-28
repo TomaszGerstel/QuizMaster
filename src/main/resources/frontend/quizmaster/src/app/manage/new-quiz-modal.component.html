@@ -14,6 +14,33 @@
       <label for="quizName" class="form-label">Quiz Name:</label>
       <input type="text" id="quizName" class="form-control" [(ngModel)]="quizName" placeholder="Enter quiz name">
     </div>
+
+    <div class="mb-3">
+      <label for="quizDescription" class="form-label">Quiz Description:</label>
+      <textarea id="quizDescription" class="form-control" [(ngModel)]="description"
+                placeholder="Enter quiz description"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="quizType" class="form-label">Quiz Type:</label>
+      <select id="quizType" class="form-control" [(ngModel)]="type">
+        <option value="EXAM">EXAM type with singe/multiple choice questions</option>
+        <option value="EXAM_OPEN">EXAM type with open questions and manual grading</option>
+        <option value="SURVEY">Survey - collecting feedback or opinions</option>
+        <option value="POLL">Poll - for quick feedback or opinions, not necessarily scored</option>
+        <option value="ASSESSMENT">Assessment - evaluating knowledge</option>
+        <option value="ASSESSMENT_OPEN">Assessment-Open - with open questions and manual grading</option>
+        <option value="PRACTICE">Practice</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="quizPassRate" class="form-label">Quiz Pass Rate (%), if needed:</label>
+      <input type="number" id="quizPassRate" class="form-control" [(ngModel)]="passRate"
+             placeholder="Enter quiz pass rate">
+    </div>
+
+
     <div class="mb-3">
       <label for="authorName" class="form-label">Author Name:</label>
       <input type="text" id="authorName" class="form-control" [(ngModel)]="authorName" placeholder="Enter author name">

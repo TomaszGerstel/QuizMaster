@@ -2,78 +2,330 @@
   <h4 class="modal-title">
     {{ question?.id ? 'Edit question' : 'Create new question' }}
   </h4>
-  <button type="button" class="btn-close" (click)="cancel()"></button>
+
+  <button
+    type="button"
+    class="btn-close"
+    (click)="cancel()">
+  </button>
 </div>
 
 <div class="modal-body">
-  <span class="text-muted">
-    Add question details and as many answers as you need.
-  </span>
-
-  <br><br>
-  <hr>
 
   <form [formGroup]="questionForm">
 
     <div class="mb-3">
+      <label class="form-label">Question type</label>
+
+      <select
+        class="form-select"
+        formControlName="type">
+
+        <option value="SINGLE_CHOICE">Single choice</option>
+
+        <option value="MULTIPLE_CHOICE">Multiple choice</option>
+
+        <option value="TEXT">
+          Text
+        </option>
+
+        <option value="NUMBER">
+          Number
+        </option>
+
+        <option value="BOOLEAN">
+          True / False
+        </option>
+
+        <option value="RATING">
+          Rating
+        </option>
+
+        <option value="SURVEY">
+          Survey
+        </option>
+
+      </select>
+    </div>
+
+    <div *ngIf="isMultipleChoice" class="mb-3">
+
+      <label class="form-label">
+        Scoring strategy
+      </label>
+
+      <select
+        class="form-select"
+        formControlName="scoringStrategyType">
+
+        <option value="ALL_OR_NOTHING">
+          All or nothing
+        </option>
+
+        <option value="PARTIAL">
+          Partial
+        </option>
+
+      </select>
+
+    </div>
+
+    <div class="mb-3">
       <label class="form-label">Question</label>
-      <input type="text" class="form-control" formControlName="question">
+      <input
+        type="text"
+        class="form-control"
+        formControlName="question">
     </div>
 
     <div class="mb-3">
       <label class="form-label">Explanation</label>
-      <textarea class="form-control" formControlName="explanation"></textarea>
+
+      <textarea
+        class="form-control"
+        formControlName="explanation">
+      </textarea>
     </div>
 
     <div class="mb-3">
       <label class="form-label">Author</label>
-      <input type="text" class="form-control" formControlName="author">
+
+      <input
+        type="text"
+        class="form-control"
+        formControlName="author">
     </div>
 
     <div class="mb-3">
       <label class="form-label">Tags</label>
-      <input type="text" class="form-control" formControlName="tags">
+
+      <input
+        type="text"
+        class="form-control"
+        formControlName="tags">
     </div>
 
-    <hr>
 
-    <h5>Answers</h5>
+    <div *ngIf="isChoiceQuestion">
 
-    <div formArrayName="answers">
-      <div
-        *ngFor="let answer of answers.controls; let i = index"
-        [formGroupName]="i"
-        class="card p-3 mb-2"
-      >
-        <div class="mb-2">
-          <label class="form-label">Answer {{ i + 1 }}</label>
-          <input type="text" class="form-control" formControlName="value">
-        </div>
+      <hr>
 
-        <div class="form-check mb-2">
-          <input type="checkbox" class="form-check-input" formControlName="isCorrect">
-          <label class="form-check-label">Correct answer</label>
-        </div>
+      <h5>Answers</h5>
 
-        <button
-          type="button"
-          class="btn btn-danger btn-sm"
-          (click)="removeAnswer(i)"
+      <div formArrayName="answers">
+
+        <div
+          *ngFor="let answer of answers.controls; let i = index"
+          [formGroupName]="i"
+          class="card p-3 mb-2"
         >
-          Remove
-        </button>
+
+          <div class="mb-2">
+            <label class="form-label">
+              Answer {{ i + 1 }}
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              formControlName="value">
+          </div>
+
+          <!-- SINGLE -->
+          <div
+            *ngIf="isSingleChoice"
+            class="form-check mb-2"
+          >
+            <input
+              type="radio"
+              class="form-check-input"
+              name="correctAnswer"
+              [checked]="answer.get('isCorrect')?.value"
+              (change)="setCorrectAnswer(i)"
+            >
+
+            <label class="form-check-label">
+              Correct answer
+            </label>
+          </div>
+
+          <!-- MULTIPLE -->
+          <div
+            *ngIf="isMultipleChoice"
+            class="form-check mb-2"
+          >
+            <input
+              type="checkbox"
+              class="form-check-input"
+              formControlName="isCorrect"
+            >
+
+            <label class="form-check-label">
+              Correct answer
+            </label>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            (click)="removeAnswer(i)"
+          >
+            Remove
+          </button>
+
+        </div>
+
       </div>
+
+      <button
+        type="button"
+        class="btn btn-outline-primary mt-2"
+        (click)="addAnswer()"
+      >
+        + Add answer
+      </button>
+
     </div>
 
-    <button
-      type="button"
-      class="btn btn-outline-primary mt-2"
-      (click)="addAnswer()"
-    >
-      + Add answer
-    </button>
+    <div *ngIf="questionType === 'TEXT'">
+
+      <hr>
+
+      <h5>Text answer</h5>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Expected answer / grading instructions
+        </label>
+
+        <textarea
+          class="form-control"
+          rows="5"
+          formControlName="expectedAnswer">
+    </textarea>
+      </div>
+
+      <div class="alert alert-info">
+        Text questions require manual grading.
+      </div>
+
+    </div>
+
+    <div *ngIf="questionType === 'NUMBER'">
+
+      <hr>
+
+      <h5>Numeric answer</h5>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Correct value
+        </label>
+
+        <input
+          type="number"
+          class="form-control"
+          formControlName="correctNumber">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">
+          Tolerance
+        </label>
+
+        <input
+          type="number"
+          class="form-control"
+          formControlName="tolerance">
+
+        <div class="form-text">
+          Optional. For example, 0.01 allows answers within ±0.01.
+        </div>
+      </div>
+
+    </div>
+
+
+    <div *ngIf="questionType === 'BOOLEAN'">
+
+      <hr>
+
+      <h5>Correct answer</h5>
+
+      <div class="form-check">
+        <input
+          type="radio"
+          class="form-check-input"
+          formControlName="correctBoolean"
+          [value]="true"
+          id="correctTrue">
+
+        <label
+          class="form-check-label"
+          for="correctTrue">
+          True
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input
+          type="radio"
+          class="form-check-input"
+          formControlName="correctBoolean"
+          [value]="false"
+          id="correctFalse">
+
+        <label
+          class="form-check-label"
+          for="correctFalse">
+          False
+        </label>
+      </div>
+
+    </div>
+
+    <div *ngIf="questionType === 'RATING'">
+
+      <hr>
+
+      <h5>Rating</h5>
+
+      <div class="row">
+
+        <div class="col">
+          <label class="form-label">
+            Minimum
+          </label>
+
+          <input
+            type="number"
+            class="form-control"
+            formControlName="ratingMin">
+        </div>
+
+        <div class="col">
+          <label class="form-label">
+            Maximum
+          </label>
+
+          <input
+            type="number"
+            class="form-control"
+            formControlName="ratingMax">
+        </div>
+
+      </div>
+
+      <div class="alert alert-info mt-3">
+        Rating questions are not scored.
+      </div>
+
+    </div>
+
 
   </form>
+
+
 </div>
 
 <div class="modal-footer">

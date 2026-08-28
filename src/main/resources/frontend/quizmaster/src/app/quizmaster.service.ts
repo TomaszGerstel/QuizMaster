@@ -5,6 +5,7 @@ import {Quiz} from './model/quiz.model';
 import {Injectable} from '@angular/core';
 import {QuestionSolution} from './model/question-solution.model';
 import {QuizSubmissionRequest} from './model/submission-request';
+import {CreateQuizRequest} from './model/create-quiz-request'
 import {StartQuizRequest} from './model/start-quiz-request';
 import {QuizResult} from './model/quiz-result.model';
 import {environment} from '../environments/environment';
@@ -43,10 +44,11 @@ export class QuizmasterService {
     return this.http.get<QuizDTO[]>(`${this.baseUrl}/quiz/manage`);
   }
 
-  getQuestions(tag?: string, mode?: 'ASSIGNABLE' | 'EDITABLE'): Observable<QuestionDTO[]> {
+  getQuestions(tag?: string, mode?: 'ASSIGNABLE' | 'EDITABLE', quizId?: string): Observable<QuestionDTO[]> {
     let params: any = {};
     if (tag) { params.tag = tag; }
     if (mode) { params.mode = mode; }
+    if (quizId) { params.forQuizId = quizId; }
     return this.http.get<QuestionDTO[]>(`${this.baseUrl}/question`, { params });
   }
 
@@ -55,8 +57,10 @@ export class QuizmasterService {
     return this.http.post<void>(`${this.baseUrl}/quiz/assign-questions`, request);
   }
 
-  createQuiz(quizName: string, author: string): Observable<{quizId: string}> {
-    const request = {name: quizName, author: author, questionIds: []};
+  createQuiz(quizName: string, author: string, type: string, passRate?: number,
+        description?: string): Observable<{quizId: string}> {
+    const request: CreateQuizRequest = {name: quizName, description: description, type: type,
+        passRate: passRate, author: author, questionIds: []};
     return this.http.post<{quizId: string}>(`${this.baseUrl}/quiz/manage/new`, request);
   }
 

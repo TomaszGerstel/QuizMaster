@@ -59,10 +59,11 @@ public class QuizRepositoryImpl implements QuizRepository {
         var quizDocument = new QuizDocument();
         quizDocument.setTitle(command.name());
         quizDocument.setAuthor(command.author());
+        quizDocument.setDescription(command.description());
+        quizDocument.setPassRate(command.passRate());
+        quizDocument.setType(command.type());
 
-        quizDocument.setPassRate(70);
         quizDocument.setShuffleQuestions(true);
-        quizDocument.setType(Quiz.Type.EXAM);
         quizDocument.setStatus(Quiz.Status.PUBLISHED);
         quizDocument.setVisibility(Quiz.Visibility.PUBLIC);
 

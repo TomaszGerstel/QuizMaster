@@ -1,7 +1,7 @@
 package com.tgerstel.quizmaster.domain.port;
 
-import com.tgerstel.quizmaster.domain.model.Question;
+import com.tgerstel.quizmaster.domain.dto.QuestionDTO;
 
 public interface QuizTypePolicy {
-    boolean supports(Question question);
+    boolean supports(QuestionDTO question);
 }

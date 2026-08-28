@@ -53,7 +53,7 @@ public class QuizDocument {
 
     public QuizBasicDTO toBasicDTO() {
         var count = !(questionIds == null) ? questionIds.size() : 0;
-        return new QuizBasicDTO(id.toString(), title, count);
+        return new QuizBasicDTO(id.toString(), title, description, count, type);
     }
 
     public Quiz toDomain(Set<QuestionDocument> questions) {
@@ -83,7 +83,7 @@ public class QuizDocument {
 
     public QuizDTO toDetailedDTO(Set<QuestionDocument> questions) {
         var mappedQuestions = questions.stream().map(QuestionDocument::toDTO).toList();
-        return new QuizDTO(id.toString(), title, mappedQuestions);
+        return new QuizDTO(id.toString(), title, description, author, type, version, mappedQuestions);
     }
 
 }
