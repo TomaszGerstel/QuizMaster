@@ -1,9 +1,16 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { QuizmasterService } from '../quizmaster.service';
-import { BsModalRef } from 'ngx-bootstrap/modal';
-import { QuestionDTO, QuestionType, ScoringStrategyType} from "../model/question-dto.model";
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  Validators
+} from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+
+import { QuizmasterService } from '../quizmaster.service';
+import {QuestionDTO} from '../model/question-dto.model';
+import {QuestionType, ScoringStrategyType} from "../model/question.model";
 
 @Component({
   templateUrl: './edit-question-modal.component.html',
@@ -11,6 +18,10 @@ import { HttpErrorResponse } from '@angular/common/http';
   standalone: false
 })
 export class EditQuestionModalComponent implements OnInit {
+
+  readonly QuestionType = QuestionType;
+  readonly ScoringStrategyType = ScoringStrategyType;
+
   @Output() questionUpdated = new EventEmitter<void>();
 
   question!: QuestionDTO;
@@ -52,7 +63,8 @@ export class EditQuestionModalComponent implements OnInit {
 
       scoringStrategyType: [
         this.question?.scoringStrategyType ||
-        ScoringStrategyType.ALL_OR_NOTHING
+        ScoringStrategyType.ALL_OR_NOTHING,
+        Validators.required
       ],
 
       answers: this.fb.array([]),
@@ -82,20 +94,13 @@ export class EditQuestionModalComponent implements OnInit {
       ]
     });
 
-    this.initializeAnswers();
-    this.updateScoringStrategy();
+    this.updateForQuestionType();
 
     this.questionForm
       .get('type')!
       .valueChanges
-      .subscribe(type => {
-        if (
-          type !== QuestionType.SINGLE_CHOICE &&
-          type !== QuestionType.MULTIPLE_CHOICE
-        ) {
-          this.answers.clear();
-        }
-        this.updateScoringStrategy();
+      .subscribe(() => {
+        this.updateForQuestionType();
       });
   }
 
@@ -120,26 +125,196 @@ export class EditQuestionModalComponent implements OnInit {
     return this.questionType === QuestionType.MULTIPLE_CHOICE;
   }
 
-  private initializeAnswers(): void {
-    if (!this.isChoiceQuestion) {
+  /**
+   * Returns scoring strategies allowed for a given question type.
+   */
+  getScoringStrategies(type: QuestionType): ScoringStrategyType[] {
+    switch (type) {
+      case QuestionType.SINGLE_CHOICE:
+        return [
+          ScoringStrategyType.ALL_OR_NOTHING
+        ];
+
+      case QuestionType.MULTIPLE_CHOICE:
+        return [
+          ScoringStrategyType.ALL_OR_NOTHING,
+          ScoringStrategyType.PARTIAL
+        ];
+
+      case QuestionType.TEXT:
+        return [
+          ScoringStrategyType.MANUAL
+        ];
+
+      case QuestionType.NUMBER:
+      case QuestionType.BOOLEAN:
+        return [
+          ScoringStrategyType.ALL_OR_NOTHING
+        ];
+
+      case QuestionType.RATING:
+      case QuestionType.SURVEY:
+        return [
+          ScoringStrategyType.NONE
+        ];
+    }
+  }
+
+  getScoringStrategyLabel(strategy: ScoringStrategyType): string {
+    switch (strategy) {
+      case ScoringStrategyType.ALL_OR_NOTHING:
+        return 'All or nothing';
+
+      case ScoringStrategyType.PARTIAL:
+        return 'Partial';
+
+      case ScoringStrategyType.MANUAL:
+        return 'Manual grading';
+
+      case ScoringStrategyType.NONE:
+        return 'Not scored';
+    }
+  }
+
+  /**
+   * Adjusts form fields and scoring strategy according to question type.
+   */
+  private updateForQuestionType(): void {
+    const type = this.questionType;
+
+    this.updateScoringStrategy(type);
+    this.updateAnswers(type);
+    this.updateValidators(type);
+  }
+
+  /**
+   * Makes sure the selected scoring strategy is valid
+   * for the current question type.
+   */
+  private updateScoringStrategy(type: QuestionType): void {
+    const control = this.questionForm.get('scoringStrategyType');
+
+    if (!control) {
       return;
     }
 
-  if (this.question?.answers?.length) {
-    this.question.answers.forEach(answer => {
-      this.addAnswer(answer.value, answer.isCorrect);
-    });
-  } else {
-    this.addAnswer();
-    this.addAnswer();
+    const allowedStrategies = this.getScoringStrategies(type);
+    const currentStrategy = control.value;
+
+    if (!allowedStrategies.includes(currentStrategy)) {
+      control.setValue(allowedStrategies[0], {
+        emitEvent: false
+      });
     }
+
+    // If only one strategy is possible, disable the selector.
+    if (allowedStrategies.length === 1) {
+      control.disable({ emitEvent: false });
+    } else {
+      control.enable({ emitEvent: false });
+    }
+  }
+
+  /**
+   * Initializes/clears answers depending on question type.
+   */
+  private updateAnswers(type: QuestionType): void {
+    if (
+      type !== QuestionType.SINGLE_CHOICE &&
+      type !== QuestionType.MULTIPLE_CHOICE
+    ) {
+      this.answers.clear();
+      return;
+    }
+
+    // Do not recreate answers if they are already present.
+    if (this.answers.length > 0) {
+      return;
+    }
+
+    if (this.question?.answers?.length) {
+      this.question.answers.forEach(answer => {
+        this.addAnswer(answer.value, answer.isCorrect);
+      });
+    } else {
+      this.addAnswer();
+      this.addAnswer();
+    }
+  }
+
+  /**
+   * Updates validators specific to the selected question type.
+   */
+  private updateValidators(type: QuestionType): void {
+    const expectedAnswer = this.questionForm.get('expectedAnswer');
+    const correctNumber = this.questionForm.get('correctNumber');
+    const tolerance = this.questionForm.get('tolerance');
+    const correctBoolean = this.questionForm.get('correctBoolean');
+    const ratingMin = this.questionForm.get('ratingMin');
+    const ratingMax = this.questionForm.get('ratingMax');
+
+    // Clear validators first.
+    expectedAnswer?.clearValidators();
+    correctNumber?.clearValidators();
+    tolerance?.clearValidators();
+    correctBoolean?.clearValidators();
+    ratingMin?.clearValidators();
+    ratingMax?.clearValidators();
+
+    switch (type) {
+      case QuestionType.TEXT:
+        expectedAnswer?.setValidators([
+          Validators.required
+        ]);
+        break;
+
+      case QuestionType.NUMBER:
+        correctNumber?.setValidators([
+          Validators.required
+        ]);
+
+        tolerance?.setValidators([
+          Validators.min(0)
+        ]);
+        break;
+
+      case QuestionType.BOOLEAN:
+        correctBoolean?.setValidators([
+          Validators.required
+        ]);
+        break;
+
+      case QuestionType.RATING:
+        ratingMin?.setValidators([
+          Validators.required,
+          Validators.min(1)
+        ]);
+
+        ratingMax?.setValidators([
+          Validators.required,
+          Validators.min(1)
+        ]);
+        break;
+    }
+
+    expectedAnswer?.updateValueAndValidity({ emitEvent: false });
+    correctNumber?.updateValueAndValidity({ emitEvent: false });
+    tolerance?.updateValueAndValidity({ emitEvent: false });
+    correctBoolean?.updateValueAndValidity({ emitEvent: false });
+    ratingMin?.updateValueAndValidity({ emitEvent: false });
+    ratingMax?.updateValueAndValidity({ emitEvent: false });
   }
 
   addAnswer(value = '', isCorrect = false): void {
     this.answers.push(
       this.fb.group({
-        value: [value, Validators.required],
-        isCorrect: [isCorrect]
+        value: [
+          value,
+          Validators.required
+        ],
+        isCorrect: [
+          isCorrect
+        ]
       })
     );
   }
@@ -150,7 +325,14 @@ export class EditQuestionModalComponent implements OnInit {
     }
   }
 
+  /**
+   * Used for SINGLE_CHOICE.
+   */
   setCorrectAnswer(index: number): void {
+    if (!this.isSingleChoice) {
+      return;
+    }
+
     this.answers.controls.forEach((control, i) => {
       control.patchValue({
         isCorrect: i === index
@@ -158,83 +340,40 @@ export class EditQuestionModalComponent implements OnInit {
     });
   }
 
-  private updateScoringStrategy(): void {
-    const control = this.questionForm.get('scoringStrategyType');
-
-    switch (this.questionType) {
-
-      case QuestionType.SINGLE_CHOICE:
-        control?.setValue(
-          this.question?.scoringStrategyType ||
-          ScoringStrategyType.ALL_OR_NOTHING,
-          { emitEvent: false }
-        );
-        break;
-
-      case QuestionType.MULTIPLE_CHOICE:
-        control?.setValue(
-          this.question?.scoringStrategyType ||
-          ScoringStrategyType.ALL_OR_NOTHING,
-          { emitEvent: false }
-        );
-        break;
-
-      case QuestionType.TEXT:
-        control?.setValue(
-          ScoringStrategyType.MANUAL,
-          { emitEvent: false }
-        );
-        break;
-
-      case QuestionType.NUMBER:
-        control?.setValue(
-          ScoringStrategyType.ALL_OR_NOTHING,
-          { emitEvent: false }
-        );
-        break;
-
-      case QuestionType.BOOLEAN:
-        control?.setValue(
-          ScoringStrategyType.ALL_OR_NOTHING,
-          { emitEvent: false }
-        );
-        break;
-
-      case QuestionType.RATING:
-      case QuestionType.SURVEY:
-        control?.setValue(
-          ScoringStrategyType.NONE,
-          { emitEvent: false }
-        );
-        break;
-    }
+  /**
+   * Used when changing question type from template,
+   * if you want an explicit handler there.
+   */
+  onQuestionTypeChanged(type: QuestionType): void {
+    this.questionForm.patchValue(
+      { type },
+      { emitEvent: true }
+    );
   }
 
   saveChanges(): void {
     if (this.questionForm.invalid) {
       this.questionForm.markAllAsTouched();
-      console.log("invalid")
-      Object.keys(this.questionForm.controls).forEach(key => {
-        const control = this.questionForm.get(key);
-
-        if (control?.invalid) {
-          console.log('INVALID:', key, control.errors, control.value);
-        }
-      });
       return;
     }
-  console.log("valid")
-
 
     const payload: QuestionDTO = {
       ...this.question,
       ...this.questionForm.getRawValue()
     };
 
+    /*
+     * The type is disabled during edit, therefore getRawValue()
+     * is important here.
+     */
+
     if (!this.isChoiceQuestion) {
       payload.answers = [];
     }
 
+    /*
+     * Remove fields that do not belong to the selected type.
+     */
     if (payload.type !== QuestionType.TEXT) {
       payload.expectedAnswer = undefined;
     }
@@ -251,6 +390,15 @@ export class EditQuestionModalComponent implements OnInit {
     if (payload.type !== QuestionType.RATING) {
       payload.ratingMin = undefined;
       payload.ratingMax = undefined;
+    }
+
+    /*
+     * Make sure the strategy is always valid.
+     */
+    const allowedStrategies = this.getScoringStrategies(payload.type);
+
+    if (!allowedStrategies.includes(payload.scoringStrategyType)) {
+      payload.scoringStrategyType = allowedStrategies[0];
     }
 
     if (payload.id) {

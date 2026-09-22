@@ -6,4 +6,5 @@ export interface QuizResult {
   questionsCount: number;
   answersReport: { questionId: string, expectedAnswers: number[], explanation: string, positive: boolean }[];
   attemptTimeInSeconds: number;
+  isScored: boolean;
 }

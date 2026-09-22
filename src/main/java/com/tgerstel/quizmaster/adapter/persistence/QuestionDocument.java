@@ -80,8 +80,34 @@ public class QuestionDocument {
     }
 
     public EvalQuestion toEvalQuestion() {
-        var mappedAnswers = answers.stream().map(BaseAnswer::toEvalAnswer).toList();
-        return new EvalQuestion(questionId, type, scoringStrategyType, explanation, mappedAnswers);
+        var mappedAnswers = answers.stream()
+                .map(BaseAnswer::toEvalAnswer)
+                .toList();
+
+        String expectedValue = switch (type) {
+            case TEXT -> expectedAnswer;
+            case NUMBER -> correctNumber != null
+                    ? correctNumber.toPlainString()
+                    : null;
+            case BOOLEAN -> correctBoolean != null
+                    ? correctBoolean.toString()
+                    : null;
+            default -> null;
+        };
+
+        BigDecimal questionTolerance = type == Question.Type.NUMBER
+                ? tolerance
+                : null;
+
+        return new EvalQuestion(
+                questionId,
+                type,
+                scoringStrategyType,
+                explanation,
+                mappedAnswers,
+                expectedValue,
+                questionTolerance
+        );
     }
 
     public QuestionDTO toDTO() {

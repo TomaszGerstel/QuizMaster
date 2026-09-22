@@ -46,48 +46,175 @@
 
       <div class="card"
            [ngClass]="{
-             'border-success': question.status === 'Passed',
-             'border-danger': question.status === 'Failed'
-           }">
+              'border-success': question.status === 'PASSED',
+              'border-danger': question.status === 'FAILED',
+              'border-secondary': question.status === 'ANSWERED',
+              'border-warning': question.status === 'MANUAL'
+            }">
 
         <!-- QUESTION HEADER -->
         <div class="card-header d-flex justify-content-between align-items-center">
           <strong>{{ question.question }}</strong>
 
-          <i *ngIf="question.status === 'Passed'"
-             class="bi bi-check-circle-fill text-success fs-5"></i>
+          <span>
+            <i *ngIf="question.status === 'PASSED'"
+         class="bi bi-check-circle-fill text-success fs-5"
+         title="Correct">
+            </i>
 
-          <i *ngIf="question.status === 'Failed'"
-             class="bi bi-x-circle-fill text-danger fs-5"></i>
+            <i *ngIf="question.status === 'FAILED'"
+         class="bi bi-x-circle-fill text-danger fs-5"
+         title="Incorrect">
+            </i>
+
+            <i *ngIf="question.status === 'ANSWERED'"
+         class="bi bi-check-circle text-secondary fs-5"
+         title="Answered">
+            </i>
+
+            <i *ngIf="question.status === 'MANUAL'"
+         class="bi bi-hourglass-split text-warning fs-5"
+         title="Requires manual grading">
+            </i>
+          </span>
         </div>
 
         <!-- ANSWERS -->
         <div class="card-body">
 
-          <div class="form-check mb-2"
-               *ngFor="let answer of question.answers">
+          <!-- SINGLE / MULTIPLE CHOICE -->
+          <div *ngIf="isChoiceQuestion(question)">
 
-            <input class="form-check-input"
-                   type="checkbox"
-                   id="answer-{{question.questionId}}-{{answer.no}}"
-                   (change)="toggleAnswer(question.questionId, answer.no)"
-                   [disabled]="isFormDisabled">
+            <div class="form-check mb-2"
+                 *ngFor="let answer of question.answers">
 
-            <label class="form-check-label"
-                   [ngClass]="{
-                     'text-success': answer.status === 'Correct',
-                     'text-danger': answer.status === 'Wrong'
-                   }"
-                   for="answer-{{question.questionId}}-{{answer.no}}">
+              <input
+                class="form-check-input"
+                [type]="isSingleChoice(question) ? 'radio' : 'checkbox'"
+                [name]="'question-' + question.questionId"
+                id="answer-{{question.questionId}}-{{answer.no}}"
 
-              <i *ngIf="answer.status === 'Correct'"
-                 class="bi bi-check-lg me-1"></i>
+                [checked]="isAnswerSelected(question, answer.no)"
 
-              <i *ngIf="answer.status === 'Wrong'"
-                 class="bi bi-x-lg me-1"></i>
+                (change)="toggleAnswer(question, answer.no)"
 
-              {{ answer.content }}
-            </label>
+                [disabled]="isFormDisabled"
+              >
+
+              <label
+                class="form-check-label"
+                [ngClass]="{
+        'text-success': answer.status === 'Correct',
+        'text-danger': answer.status === 'Wrong'
+      }"
+                for="answer-{{question.questionId}}-{{answer.no}}">
+
+                <i
+                  *ngIf="answer.status === 'Correct'"
+                  class="bi bi-check-lg me-1">
+                </i>
+
+                <i
+                  *ngIf="answer.status === 'Wrong'"
+                  class="bi bi-x-lg me-1">
+                </i>
+
+                {{ answer.content }}
+
+              </label>
+
+            </div>
+
+          </div>
+
+          <!-- TEXT -->
+          <div *ngIf="question.type === 'TEXT'">
+
+  <textarea
+    class="form-control"
+    rows="4"
+    [disabled]="isFormDisabled"
+    [value]="userAnswers[question.questionId]?.textAnswer ?? ''"
+    (input)="setTextAnswer(
+      question.questionId,
+      $any($event.target).value
+    )">
+  </textarea>
+
+          </div>
+
+          <!-- NUMBER -->
+          <div *ngIf="question.type === 'NUMBER'">
+
+            <input
+              type="number"
+              class="form-control"
+              [disabled]="isFormDisabled"
+              [value]="userAnswers[question.questionId]?.numberAnswer ?? ''"
+              (input)="setNumberAnswer(
+      question.questionId,
+      $any($event.target).value
+    )">
+
+          </div>
+
+          <!-- BOOLEAN -->
+          <div *ngIf="question.type === 'BOOLEAN'">
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                [name]="'boolean-' + question.questionId"
+                [checked]="userAnswers[question.questionId]?.booleanAnswer === true"
+                [disabled]="isFormDisabled"
+                (change)="setBooleanAnswer(question.questionId, true)">
+
+              <label class="form-check-label">
+                True
+              </label>
+            </div>
+
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                [name]="'boolean-' + question.questionId"
+                [checked]="userAnswers[question.questionId]?.booleanAnswer === false"
+                [disabled]="isFormDisabled"
+                (change)="setBooleanAnswer(question.questionId, false)">
+
+              <label class="form-check-label">
+                False
+              </label>
+            </div>
+
+          </div>
+
+          <!-- RATING -->
+          <div *ngIf="question.type === 'RATING'">
+
+            <select
+              class="form-select"
+              [disabled]="isFormDisabled"
+              [value]="userAnswers[question.questionId]?.ratingAnswer ?? ''"
+              (change)="setNumberAnswer(
+      question.questionId,
+      $any($event.target).value
+    )">
+
+              <option value="">Select...</option>
+
+              <option
+                *ngFor="let value of ratingValues(question)"
+                [value]="value">
+
+                {{ value }}
+
+              </option>
+
+            </select>
+
           </div>
 
           <!-- EXPLANATION -->
@@ -126,7 +253,7 @@
         <strong [ngClass]="{
           'text-success': quizResult.isPositive,
           'text-danger': !quizResult.isPositive
-        }">
+          }">
           {{ quizResult.isPositive ? 'POSITIVE' : 'NEGATIVE' }}
         </strong>
       </p>
@@ -137,15 +264,15 @@
         {{ quizResult.attemptTimeInSeconds | durationFormat }}
       </p>
 
-      <p>
+      <p *ngIf="quizResult.isScored">
         <i class="bi bi-award me-1"></i>
         Score:
         {{ quizResult.quizScore }}/{{ quizResult.questionsCount }}
       </p>
 
-      <p>
+      <p *ngIf="quizResult.isScored">
         <i class="bi bi-percent me-1"></i>
-        {{ quizResult.percentageScore }}
+        {{ quizResult.percentageScore }}%
       </p>
     </div>
   </div>

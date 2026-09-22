@@ -20,7 +20,8 @@ public record Question(
 ) {
 
     public QuestionToTakeDTO toTakeDTO() {
-        return new QuestionToTakeDTO(questionId, question, answers.stream().map(Answer::toTakeDTO).toList());
+        return new QuestionToTakeDTO(questionId, question, type, scoringStrategyType,
+                answers.stream().map(Answer::toTakeDTO).toList());
     }
 
     public enum Type {

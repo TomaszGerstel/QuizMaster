@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {QuizmasterService} from '../quizmaster.service';
-import {QuestionDTO, QuestionType, ScoringStrategyType} from '../model/question-dto.model';
+import {QuestionDTO} from '../model/question-dto.model';
+import {QuestionType, ScoringStrategyType} from '../model/question.model';
 import {BsModalService, BsModalRef} from 'ngx-bootstrap/modal';
 import {EditQuestionModalComponent} from './edit-question-modal.component';
 import { HttpErrorResponse } from '@angular/common/http';
