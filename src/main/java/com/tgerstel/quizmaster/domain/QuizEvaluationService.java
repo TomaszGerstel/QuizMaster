@@ -57,15 +57,15 @@ public class QuizEvaluationService implements QuizEvaluator {
         solutions.forEach(s -> validateQuestionId(questions, s.questionId()));
 
         for (EvalQuestion q : questions) {
-            Set<Integer> actual = solutions.stream()
+
+            QuestionSolution solution = solutions.stream()
                     .filter(s -> s.questionId().equals(q.id()))
-                    .map(QuestionSolution::answers)
                     .findFirst()
-                    .map(HashSet::new)
-                    .orElse(new HashSet<>());
+                    .orElse(QuestionSolution.empty(q.id(), q.type()));
 
             var strategy = strategyFactory.get(q.scoringStrategyType());
-            EvaluationResult result = strategy.evaluate(q, actual);
+
+            EvaluationResult result = strategy.evaluate(q, solution);
 
             report.add(new AnswerReportEntry(
                     q.id(),
@@ -73,6 +73,7 @@ public class QuizEvaluationService implements QuizEvaluator {
                     q.explanation(),
                     result.correct()
             ));
+
             scoreSum += result.score();
         }
 
@@ -134,4 +135,5 @@ public class QuizEvaluationService implements QuizEvaluator {
                         "Question with id: " + questionId + " not related to the quiz"
                 ));
     }
+
 }

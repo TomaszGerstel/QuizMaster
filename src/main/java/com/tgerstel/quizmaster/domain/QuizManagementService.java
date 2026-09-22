@@ -121,6 +121,7 @@ public class QuizManagementService implements QuizManager {
 
     @Override
     public String createQuestion(CreateQuestionCommand command) {
+        ScoringStrategyEvaluator.validate(command.type(), command.scoringStrategyType());
         log.info("Creating new question with text: {}", command.question());
         var questionId = UUID.randomUUID().toString();
         create(command, questionId, 1L);

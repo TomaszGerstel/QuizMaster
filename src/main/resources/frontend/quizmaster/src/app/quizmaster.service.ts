@@ -29,15 +29,19 @@ export class QuizmasterService {
     return this.http.post<Quiz>(`${this.baseUrl}/quiz/start`, params);
   }
 
-  submitAnswers(quizId: string, sessionId: string, answers: {
-    [questionId: string]: number[]
-  }): Observable<QuizResult> {
-    const solutions: QuestionSolution[] = Object.keys(answers).map(questionId => ({
-      questionId,
-      answers: answers[questionId]
-    }));
-    const request: QuizSubmissionRequest = {quizId, sessionId, solutions};
-    return this.http.post<QuizResult>(`${this.baseUrl}/submission`, request);
+  submitAnswers(quizId: string, sessionId: string, answers: { [questionId: string]: QuestionSolution })
+          : Observable<QuizResult> {
+    const solutions: QuestionSolution[] = Object.values(answers);
+    const request: QuizSubmissionRequest = {
+      quizId,
+      sessionId,
+      solutions
+    };
+
+    return this.http.post<QuizResult>(
+      `${this.baseUrl}/submission`,
+      request
+    );
   }
 
   getQuizzesForManagement(): Observable<QuizDTO[]> {

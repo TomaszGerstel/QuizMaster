@@ -1,4 +1,5 @@
 import {AnswerDTO} from './answer-dto.model';
+import {QuestionType, ScoringStrategyType} from './question.model';
 
 export interface QuestionDTO {
   id?: string;
@@ -21,21 +22,4 @@ export interface QuestionDTO {
   ratingMax?: number;
 
   version?: number;
-}
-
-export enum QuestionType {
-  SINGLE_CHOICE = 'SINGLE_CHOICE',
-  MULTIPLE_CHOICE = 'MULTIPLE_CHOICE',
-  TEXT = 'TEXT',
-  NUMBER = 'NUMBER',
-  BOOLEAN = 'BOOLEAN',
-  RATING = 'RATING',
-  SURVEY = 'SURVEY'
-}
-
-export enum ScoringStrategyType {
-  ALL_OR_NOTHING = 'ALL_OR_NOTHING',
-  PARTIAL = 'PARTIAL',
-  MANUAL = 'MANUAL',
-  NONE = 'NONE'
 }
