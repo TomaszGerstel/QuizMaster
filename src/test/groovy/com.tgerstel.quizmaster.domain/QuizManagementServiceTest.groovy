@@ -23,8 +23,8 @@ class QuizManagementServiceTest extends Specification {
 
     def "should return all quizzes"() {
         given:
-        def quizzes = [new QuizBasicDTO("qId1", "quiz1", 10),
-                       new QuizBasicDTO("qId2", "quiz2", 20)]
+        def quizzes = [new QuizBasicDTO("qId1", "quiz1", "desc1", 10, Quiz.Type.EXAM),
+                       new QuizBasicDTO("qId2", "quiz2", "desc2", 20, Quiz.Type.EXAM)]
         var filter = QuizFilter.assignable()
         quizRepository.getAllQuizzesForVisibilityAndStatus(filter.visibilities(), filter.statuses()) >> quizzes
 
@@ -137,7 +137,7 @@ class QuizManagementServiceTest extends Specification {
 
     def "should create quiz"() {
         given:
-        def command = new CreateQuizCommand("New Quiz", "user02", List.of("qId1", "qId2"))
+        def command = new CreateQuizCommand("New Quiz", "desc", Quiz.Type.EXAM, 70, "auth1", List.of("qId1", "qId2"))
         def quizId = "deadbeefcafebabe12345602"
 
         when:
@@ -151,7 +151,7 @@ class QuizManagementServiceTest extends Specification {
     def "should add questions to quiz"() {
         given:
         def quizId = "deadbeefcafebabe12345603"
-        def command = new CreateQuizCommand("New Quiz", "user02", List.of())
+        def command = new CreateQuizCommand("New Quiz", "desc", Quiz.Type.EXAM, 70, "auth1",  List.of())
         var filter = QuestionFilter.assignable();
 
         when:
@@ -166,7 +166,7 @@ class QuizManagementServiceTest extends Specification {
     def "should remove questions from quiz"() {
         given:
         def quizId = "deadbeefcafebabe12345604"
-        def command = new CreateQuizCommand("New Quiz", "user02", List.of())
+        def command = new CreateQuizCommand("New Quiz", "some desc", Quiz.Type.EXAM, 68, "auth2",  List.of())
 
         when:
         quizManagementService.createQuiz(command)

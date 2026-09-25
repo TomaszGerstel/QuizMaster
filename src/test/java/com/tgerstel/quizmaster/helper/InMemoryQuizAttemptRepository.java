@@ -52,7 +52,8 @@ public class InMemoryQuizAttemptRepository implements QuizAttemptRepository {
         var questions = new ArrayList<EvalQuestion>();
         for (Question q : in) {
             questions.add(new EvalQuestion(
-                    q.id(), q.type(), q.scoringStrategyType(), q.explanation(), mapToEvalAnswers(q.answers())
+                    q.id(), q.type(), q.scoringStrategyType(), q.explanation(), mapToEvalAnswers(q.answers()),
+                    null, null
             ));
         }
         return questions;
