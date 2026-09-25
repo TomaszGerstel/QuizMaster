@@ -31,7 +31,8 @@ public class InMemoryQuizRepositoryImpl implements QuizRepository {
     public List<QuizBasicDTO> getAllQuizzesForVisibilityAndStatus(EnumSet<Quiz.Visibility> visibility, EnumSet<Quiz.Status> status) {
         return quizzes.stream()
                 .filter(q -> visibility.contains(q.getVisibility()) && status.contains(q.getStatus()))
-                .map(q -> new QuizBasicDTO(q.getId(), q.getTitle(), q.getQuestions().size()))
+                .map(q -> new QuizBasicDTO(q.getId(), q.getTitle(), q.getDescription(),
+                        q.getQuestions().size(), q.getType()))
                 .collect(Collectors.toList());
     }
 
@@ -39,7 +40,8 @@ public class InMemoryQuizRepositoryImpl implements QuizRepository {
     public List<QuizDTO> getAllQuizzesDetailedForVisibilityAndStatus(EnumSet<Quiz.Visibility> visibility, EnumSet<Quiz.Status> status) {
         return quizzes.stream()
                 .filter(q -> visibility.contains(q.getVisibility()) && status.contains(q.getStatus()))
-                .map(q -> new QuizDTO(q.getId(), q.getTitle(), toQuestionDtos(q.getQuestions()))).toList();
+                .map(q -> new QuizDTO(q.getId(), q.getTitle(), q.getDescription(), q.getAuthor(),
+                        q.getType(), q.getVersion(), toQuestionDtos(q.getQuestions()))).toList();
     }
 
     private List<QuestionDTO> toQuestionDtos(List<Question> questions) {
@@ -48,7 +50,9 @@ public class InMemoryQuizRepositoryImpl implements QuizRepository {
 
     private QuestionDTO toQuestionDto(Question q) {
         var mappedAnswers = q.answers().stream().map(this::toAnswerDTO).toList();
-        return new QuestionDTO(q.id(), q.question(), q.tags(), q.explanation(), q.author(), q.version(), mappedAnswers);
+        return new QuestionDTO(q.id(), q.question(), q.tags(), q.explanation(), q.type(), q.scoringStrategyType(),
+                q.author(), q.version(), mappedAnswers,
+                null, null, null, null, null, null);
     }
 
     private List<Answer> toAnswers(List<AnswerDTO> answers) {
